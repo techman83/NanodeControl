@@ -13,6 +13,7 @@
                         <div class='togglebox [% station.state %]' id='[% station.id %]'></div></td>
                         <div class='group'>[% station.name %]</div>
                         <div class='success' id='on'>TURNED ON</div><div class='success' id='off'>TURNED OFF</div><div class='failure'>FAILURE</div></p>
+                        <br>
                         [% END %]
         </div><!-- /content -->
         <div data-role="footer" data-theme="d">

@@ -24,6 +24,9 @@
 }
 
 .togglebox  {  /* stylised checkboxes */
+    position: fixed;
+    left: 50%;
+    margin-left: -45px;
     display: block;  
     width: 87px;  
     height: 28px;  
@@ -43,11 +46,17 @@
 }
 
 .category { /* group categories */
+        position: fixed;
+        left: 50%;
+        margin-left: -45px;
         font-weight: bold;
         font-size: 1.1em;
         padding: 5px;
 }
 .group { /* each group check box */
+        position: fixed;
+        left: 50%;
+        margin-left: 90px;
         display: block;
         font-weight: normal;
         font-size: 1em;
@@ -85,14 +94,15 @@ td.togglespacer { /* toggle -> label spacing */
 }
 
 .loader { /* loading gif */
-        top: 5px;
-        margin-left: 20px;
+        position: fixed;
+        left: 50%;
+        margin-left: -95px;
         height: 30px;
         width: 30px;
         background-position: 0% 100%;
         visibility:hidden;
         background: url('/images/ajax-loader.gif') no-repeat;
-        float: left;
+/*        float: left; */
 }
 
 .error { /* POST timeout modal screen */
