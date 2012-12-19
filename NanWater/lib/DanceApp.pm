@@ -22,7 +22,7 @@ get '/stations' => sub {
                    );
 
   my $category = 'Water Stations';
-  template 'stations', {
+  template 'stations-mobile', {
         stations => \@stations,
         category => "Watering Stations",
         title  => "Water Station Manager - Control",
