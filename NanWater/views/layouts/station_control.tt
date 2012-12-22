@@ -36,10 +36,13 @@
 
                 // set initial states
                 $('div.togglebox').each(function() {
-                        if($(this).hasClass('on')) 
-                                $(this)[0].checked = true;
-                        else
-                                $(this)[0].checked = false;
+                        if($(this).hasClass('on')) {
+                                $($(this).id + '-toggle').slider('enable');
+                                $($(this).id + '-toggle').slider('refresh');
+                        } else {
+                                $($(this).id + '-toggle').slider('disable');
+                                $($(this).id + '-toggle').slider('refresh');
+                        }
                 }); // togglebox foreach
 
                 // toggle actions
