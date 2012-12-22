@@ -1,0 +1,46 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd" />
+<!-- Start of first page: #one -->
+<div data-role="page" id="one">
+
+        <div data-role="header">
+                <h1>Nanode Water My Garden!</h1>
+        </div><!-- /header -->
+        <div data-role="content" >      
+                <h2>[% category %]<hr>
+                        [% FOREACH station IN stations %]
+                        <div data-role="fieldcontain">
+                              <div class='ui-loader ' id='[% station.id %]-load'><span class='ui-icon ui-icon-loading'></span></div>
+                              <fieldset data-role="controlgroup">
+                                  <label for="toggleswitch-[% station.id %]">
+                                  </label>
+                                  <select name="toggleswitch-[% station.id %]" id="[% station.id %]" data-theme="b" data-role="slider">
+                                      <option value="off">
+                                          Off
+                                      </option>
+                                      <option value="on">
+                                          On
+                                      </option>
+                                  </select>
+                              </fieldset>
+                              <div class='success' id='on'>TURNED ON</div><div class='success' id='off'>TURNED OFF</div><div class='failure'>FAILURE</div></p>
+                        </div>
+                        [% END %]
+        </div><!-- /content -->
+        <div data-role="footer" data-theme="d">
+                <h4></h4>
+        </div><!-- /footer -->
+</div><!-- /page one -->
+<!--
+<table>
+<tr><td colspan='3'>
+<div class='category'>[% category %]</div>
+</td></tr>
+[% FOREACH station IN stations %]
+<tr>
+<td class='indent'><div class='loader'></div></td>
+<td class='togglespacer'><div class='togglebox [% station.state %]' id='[% station.id %]'></div></td>
+<td> <table border=0 cellspacing=0 cellpadding=0><tr><td><div class='group'>[% station.name %]</div></td>
+<td><div class='success' id='on'>TURNED ON</div><div class='success' id='off'>TURNED OFF</div><div class='failure'>FAILURE</div></td> </tr></table> </td>
+</tr>
+[% END %]
+-->
