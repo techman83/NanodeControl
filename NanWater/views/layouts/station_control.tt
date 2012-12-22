@@ -6,9 +6,9 @@
         <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en" />
         <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
         <link rel="stylesheet" type="text/css" href="/css/stations.css" />
-        <link rel="stylesheet" href="http://code.jquery.com/mobile/1.2.0/jquery.mobile-1.2.0.min.css" />
-        <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.8.3/jquery.min.js" type="text/javascript" /></script />
-        <script src="http://code.jquery.com/mobile/1.2.0/jquery.mobile-1.2.0.min.js"></script>
+        <link rel="stylesheet" href="/css/jquery.mobile-1.2.0.min.css" />
+        <script src="/javascripts/jquery.min.js" type="text/javascript" /></script>
+        <script src="/javascripts/jquery.mobile-1.2.0.min.js"></script>
         <script type="text/javascript" />
         $(document).ready(function(){
 
@@ -35,22 +35,22 @@
                 }
 
                 // set initial states
-                $('div.togglebox').each(function() {
-                        if($(this).hasClass('on')) {
-                                $($(this).id + '-toggle').slider('enable');
-                                $($(this).id + '-toggle').slider('refresh');
+                $('select').each(function() {
+                        if('#' + $(this).hasClass('on')) {
+                                $('#' + $(this).id).val('on').attr('selected', true)
+                                $('#' + $(this).id).selectmenu('refresh', true);
                         } else {
-                                $($(this).id + '-toggle').slider('disable');
-                                $($(this).id + '-toggle').slider('refresh');
+                                $($(this).id).val('off').attr('selected', true)
+                                $($(this).id).selectmenu('refresh', true);
                         }
                 }); // togglebox foreach
 
                 // toggle actions
-                $('div.togglebox').click(function() {
+                $('select').change(function() {
                         if ( active ) {
                                 active = 0;
 
-                        function submit (id, action) {
+                        function submit (id, value) {
                                 $('#' + id + '-load').css("visibility","visible");
                                 $('#' + id).find('div.success,div.failure').stop(true,true).clearQueue();
                                 $('#' + id).find('div.success,div.failure').hide();
@@ -58,7 +58,7 @@
                                 $.ajax({
                                         type: "POST",
                                         url: "/stations/:" + id,
-                                        data: { grp: id, act: action },
+                                        data: { station: id, act: value },
                                         dataType: "json",
                                         //async: false,
                                         timeout: 1000, // in milliseconds
@@ -69,7 +69,7 @@
 
                                                 switch (data.result) {
                                                         case 'success':
-                                                                status = '#' + action;
+                                                                status = '#' + value;
                                                                 toggleit(id);
                                                         case 'failure':
                                                                 $('#' + id).closest('td').parent('tr').find('div.' + data.result + status).fadeIn('fast').animate({opacity:1},1000).fadeOut(1000);
