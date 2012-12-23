@@ -7,61 +7,50 @@
         <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
         <link rel="stylesheet" type="text/css" href="/css/stations.css" />
         <link rel="stylesheet" href="/css/jquery.mobile-1.2.0.min.css" />
-        <script src="/javascripts/jquery.min.js" type="text/javascript" /></script>
+        <script src="/javascripts/jquery-1.8.3.min.js" type="text/javascript" /></script>
         <script src="/javascripts/jquery.mobile-1.2.0.min.js"></script>
         <script type="text/javascript" />
         $(document).ready(function(){
 
                 // AAACHOO!!!  Javascript, I'm alergic to you, but I'm slightly indebted to you for this:
 
-                var active = 1;
-
                 // timeout refresh
                 $('div.error,div#error').click( function() {
                         location.reload();
                 });
 
-                // manual non-submitting toggle
-                function toggleit ( toggleid ) {
-                    if($('#' + toggleid)[0].checked == false) {  
-                        $('#' + toggleid).removeClass('off').addClass('on');
-                        $('#' + toggleid)[0].checked = true;  
-                  
-                    } else {
-                        $('#' + toggleid)[0].checked = false;  
-                        $('#' + toggleid).removeClass('on').addClass('off');  
-                  
-                    }  
-                }
-
                 // set initial states
                 $('select').each(function() {
-                        if('#' + $(this).hasClass('on')) {
-                                $('#' + $(this).id).val('on').attr('selected', true)
-                                $('#' + $(this).id).selectmenu('refresh', true);
+                        if($(this).hasClass('on')) {
+                                console.log('#' + this.id);
+                                $('#' + this.id).val('on').slider("refresh");
                         } else {
-                                $($(this).id).val('off').attr('selected', true)
-                                $($(this).id).selectmenu('refresh', true);
+                                console.log(this.id);
+                                $('#' + this.id).val('off').slider("refresh");
                         }
                 }); // togglebox foreach
 
                 // toggle actions
                 $('select').change(function() {
-                        if ( active ) {
+                                console.log(this.value) 
+//                        if ( active ) {
+  //
                                 active = 0;
 
-                        function submit (id, value) {
-                                $('#' + id + '-load').css("visibility","visible");
+                        function submit (id, attr) {
+                                //$('#' + id + '-load').show();
+                                $.mobile.showPageLoadingMsg(); 
                                 $('#' + id).find('div.success,div.failure').stop(true,true).clearQueue();
                                 $('#' + id).find('div.success,div.failure').hide();
+                                console.log($(this)) 
                                 
                                 $.ajax({
                                         type: "POST",
                                         url: "/stations/:" + id,
-                                        data: { station: id, act: value },
+                                        data: { station: id, act: attr },
                                         dataType: "json",
                                         //async: false,
-                                        timeout: 1000, // in milliseconds
+                                        timeout: 2000, // in milliseconds
                                         success: function(data) {
                                                 // process data here
 
@@ -69,25 +58,23 @@
 
                                                 switch (data.result) {
                                                         case 'success':
-                                                                status = '#' + value;
-                                                                toggleit(id);
+                                                                status = '#' + attr;
                                                         case 'failure':
-                                                                $('#' + id).closest('td').parent('tr').find('div.' + data.result + status).fadeIn('fast').animate({opacity:1},1000).fadeOut(1000);
-                                                                active = 1;
+                                                                $('div.' + data.result + status).fadeIn('fast').animate({opacity:1},1000).fadeOut(1000);
                                                                 break;
                                                         default:
                                                                 $('div.fullscreen').show();
                                                                 $('div.' + data.result).show().empty().append(data.msg);
                                                 }
 
-                                                $('#' + id + '-load').css({visibility: "hidden"});
+                                                $.mobile.hidePageLoadingMsg();
                                         },
                                         error: function(request, status, err) {
                                                 if (status == "timeout") {
                                                         $('div.fullscreen').show();
                                                         $('div.error').show().empty().append('REQUEST TIMED OUT<p>Refresh page or click this window to continue.');
                                                         $('#' + id).closest('td').parent('tr').find('div.loader').css({visibility: "hidden"});
-                                                        active = 1;
+                                                        //active = 1;
                                                         //revert toggle
                                                 }
                                         }
@@ -96,14 +83,14 @@
 
 
 
-                            if($(this)[0].checked == false) {  
-                                submit($(this).attr('id'),'on');
+                            //if(this.checked == false) {  
+                                submit(this.id, this.value);
                           
-                            } else {  
-                                submit($(this).attr('id'),'off');
+                            //} else {  
+                              //  submit($(this).attr('id'),'off');
                           
-                            }  
-                        }
+                            //}  
+                       // }
                 }); // togglebox click
 
         }); // document.ready

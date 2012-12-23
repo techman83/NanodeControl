@@ -8,11 +8,10 @@
         <div data-role="content" >      
                 <h2>[% category %]<hr>
                         [% FOREACH station IN stations %]
-                        <div class='ui-loader ' id='[% station.id %]-load'><span class='ui-icon ui-icon-loading'></span></div>
-                        <div data-role="fieldcontain">
+                        <div class='togglebox' data-role="fieldcontain">
                               <fieldset data-role="controlgroup">
                                   <label for="toggleswitch-[% station.id %]">[% station.name %]</label>
-                                  <select class="[% station.state %]" name="toggleswitch-[% station.id %]" id="[% station.id %]" data-theme="b" data-role="slider">
+                                  <select class="[% station.state %]" name="[% station.id %]" id="[% station.id %]" data-theme="b" data-role="slider">
                                       <option value="off">
                                           Off
                                       </option>
@@ -22,7 +21,7 @@
                                   </select>
                               </fieldset>
                         </div>
-                        <div class='success' id='on'>TURNED ON</div><div class='success' id='off'>TURNED OFF</div><div class='failure'>FAILURE</div></p>
+                        <div class='success' id='[% station.id %]-on'>TURNED ON</div><div class='success' id='[% station.id %]-off'>TURNED OFF</div><div class='failure' id='[% station.id %]-failure'>FAILURE</div></p>
                         [% END %]
         </div><!-- /content -->
         <div data-role="footer" data-theme="d">
