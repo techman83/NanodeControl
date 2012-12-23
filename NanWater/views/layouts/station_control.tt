@@ -32,7 +32,6 @@
 
                 // toggle actions
                 $('select').change(function() {
-                                console.log(this.value) 
 //                        if ( active ) {
   //
                                 active = 0;
@@ -50,7 +49,7 @@
                                         data: { station: id, act: attr },
                                         dataType: "json",
                                         //async: false,
-                                        timeout: 2000, // in milliseconds
+                                        timeout: 500, // in milliseconds
                                         success: function(data) {
                                                 // process data here
 
@@ -71,32 +70,40 @@
                                         },
                                         error: function(request, status, err) {
                                                 if (status == "timeout") {
-                                                        $('div.fullscreen').show();
-                                                        $('div.error').show().empty().append('REQUEST TIMED OUT<p>Refresh page or click this window to continue.');
-                                                        $('#' + id).closest('td').parent('tr').find('div.loader').css({visibility: "hidden"});
-                                                        //active = 1;
-                                                        //revert toggle
+                                			console.log('timeout'); 
+                                                        $("#lnkError").click();
+                                			console.log('click');
+                                                	$.mobile.hidePageLoadingMsg();
                                                 }
                                         }
                                 });
                         } // function submit
-
-
-
-                            //if(this.checked == false) {  
-                                submit(this.id, this.value);
-                          
-                            //} else {  
-                              //  submit($(this).attr('id'),'off');
-                          
-                            //}  
-                       // }
+                        submit(this.id, this.value);
                 }); // togglebox click
-
+		$('#error_popup').live('pagehide',function(event) {
+			location.reload();
+		});
         }); // document.ready
         </script />
 </head>
 <body>
 [% content %]
+
+<!-- Start of Error dialog -->
+<div data-role="page" id="error_popup">
+
+	<div data-role="header" data-theme="b">
+		<h1>Error</h1>
+	</div><!-- /header -->
+
+	<div data-role="content" data-theme="d">	
+		<h2>Timeout</h2>
+		<p>'REQUEST TIMED OUT<p>Refresh page or close this window to continue.'</p>		
+	</div><!-- /content -->
+	
+	<div data-role="footer">
+	</div><!-- /footer -->
+</div><!-- /page popup -->
+<a href="#error_popup" id='lnkError' data-rel="dialog" data-transition="pop" style='dislay:none;'></a>
 </body>
 </html>
