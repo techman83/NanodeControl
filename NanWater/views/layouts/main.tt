@@ -3,13 +3,36 @@
 <head>
         <meta charset="utf-8">
         <meta name="viewport" content="width=device-width, initial-scale=1"> 
+<!--        <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en" /> -->
+        <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
         <title>[% title %]</title>
+        <link rel="stylesheet" type="text/css" href="/css/nanode_control.css" />
         <link rel="stylesheet" href="http://code.jquery.com/mobile/1.2.0/jquery.mobile-1.2.0.min.css" />
         <script src="http://code.jquery.com/jquery-1.8.3.min.js"></script>
         <script src="http://code.jquery.com/mobile/1.2.0/jquery.mobile-1.2.0.min.js"></script>
+	[% IF script %]
+        <script src="/javascripts/[% script %]" type="text/javascript"></script>
+	[% END %]
 </head> 
 <body> 
 [% content %]
+
+<!-- Start of Error dialog -->
+<div data-role="page" id="error_popup">
+
+	<div data-role="header" data-theme="b">
+		<h1>Error</h1>
+	</div><!-- /header -->
+
+	<div data-role="content" data-theme="d">	
+		<h2>Timeout</h2>
+		<p>'REQUEST TIMED OUT<p>Refresh page or close this window to continue.'</p>		
+	</div><!-- /content -->
+	
+	<div data-role="footer">
+	</div><!-- /footer -->
+</div><!-- /page popup -->
+<a href="#error_popup" id='lnkError' data-rel="dialog" data-transition="pop" style='dislay:none;'></a>
 </body>
 </html>
 
