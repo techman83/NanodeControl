@@ -12,13 +12,6 @@
         <script type="text/javascript" />
         $(document).ready(function(){
 
-                // AAACHOO!!!  Javascript, I'm alergic to you, but I'm slightly indebted to you for this:
-
-                // timeout refresh
-                $('div.error,div#error').click( function() {
-                        location.reload();
-                });
-
                 // set initial states
                 $('select').each(function() {
                         if($(this).hasClass('on')) {
@@ -32,16 +25,11 @@
 
                 // toggle actions
                 $('select').change(function() {
-//                        if ( active ) {
-  //
-                                active = 0;
-
                         function submit (id, attr) {
-                                //$('#' + id + '-load').show();
                                 $.mobile.showPageLoadingMsg(); 
                                 $('#' + id).find('div.success,div.failure').stop(true,true).clearQueue();
                                 $('#' + id).find('div.success,div.failure').hide();
-                                console.log($(this)) 
+                                console.log($(this)); 
                                 
                                 $.ajax({
                                         type: "POST",
@@ -52,14 +40,16 @@
                                         timeout: 500, // in milliseconds
                                         success: function(data) {
                                                 // process data here
-
-                                                var status = '';
-
+						var status = '';
                                                 switch (data.result) {
                                                         case 'success':
+                                                                $('#' + id + '-' + attr).fadeIn('fast').animate({opacity:1},1000).fadeOut(1000);
+                                				console.log("Success:" + data.result); 
                                                                 status = '#' + attr;
+                                                                break;
                                                         case 'failure':
-                                                                $('div.' + data.result + status).fadeIn('fast').animate({opacity:1},1000).fadeOut(1000);
+                                				console.log("Failure:" + data.result); 
+                                                                $('#' + id + '-failure').fadeIn('fast').animate({opacity:1},1000).fadeOut(1000);
                                                                 break;
                                                         default:
                                                                 $('div.fullscreen').show();

@@ -21,7 +21,7 @@
                                   </select>
                               </fieldset>
                         </div>
-                        <div class='success' id='[% station.id %]-on'>TURNED ON</div><div class='success' id='[% station.id %]-off'>TURNED OFF</div><div class='failure' id='[% station.id %]-failure'>FAILURE</div></p>
+                        <div class='success' id='[% station.id %]-on'>ON</div><div class='success' id='[% station.id %]-off'>OFF</div><div class='failure' id='[% station.id %]-failure'>FAILURE</div></p>
                         [% END %]
         </div><!-- /content -->
         <div data-role="footer" data-theme="d">

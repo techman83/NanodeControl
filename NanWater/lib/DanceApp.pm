@@ -10,7 +10,6 @@ get '/' => sub {
 };
 
 post '/stations/:id' => sub {
-  sleep(1);
   return qq({"result":"success"});
 };
 

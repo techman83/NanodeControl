@@ -1,31 +1,6 @@
-/* { /* default text style
-        color: #000; 
-        font-family: Arial, Helvetica, sans-serif;
-        font-size: 1em;
-} 
-.body { /* to allow full screen div
-        height: 100%;
-} 
-
-.fullscreen {
-    display: none;
-
-    /*set the div in the top-left corner of the screen
-    background-color: #000;
-    opacity: 0.5;
-    position:absolute;
-    top:0;
-    left:0;
-    
-    /*set the width and height to 100% of the screen
-    width:100%;
-    height:100%;
-    z-index: 0;
-} */
-
 .togglebox  {  /* stylised checkboxes */
     position: fixed;
-    left: 100px;
+    left: 5px;
     display: block;  
 /*    width: 87px;  
     height: 28px;  
@@ -37,8 +12,10 @@
     cursor: pointer;
     float: left;
 }  
+
 .on { /* checkbox checked/on */
 }
+
 .off { /* checkbox unchecked/off */
 }
 
@@ -62,6 +39,7 @@
 .success { /* next to group name after confirmed change */
         float: left;
         display: none;
+	top: 45px;
         height: 1em;
         position: relative;
         left: 5px;
@@ -79,6 +57,7 @@
         padding-left: 15px;
         color: #f00;
         float: left;
+	top: 45px;
 }
 
 .loader { /* loading gif */
