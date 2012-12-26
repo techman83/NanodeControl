@@ -1,4 +1,5 @@
-$(document).ready(function(){
+$(document).bind('pageinit', function(){
+        // $(document).ready(function(){ <- This here does not work in jquery mobile. You will encounter hours of frustration until you learn this!
 
         // set initial states
         $('select').each(function() {
