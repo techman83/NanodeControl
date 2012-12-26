@@ -4,10 +4,10 @@ $(document).bind('pageinit', function(){
         // set initial states
         $('select').each(function() {
                 if($(this).hasClass('on')) {
-                        console.log('#' + this.id);
+                        console.log(this.id + ' on');
                         $('#' + this.id).val('on').slider("refresh");
                 } else {
-                        console.log(this.id);
+                        console.log(this.id + ' off');
                         $('#' + this.id).val('off').slider("refresh");
                 }
         }); // togglebox foreach
