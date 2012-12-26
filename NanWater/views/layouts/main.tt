@@ -12,7 +12,18 @@
         <script src="/javascripts/jquery.mobile-1.2.0.min.js"></script>
 </head> 
 <body> 
+<div data-role="page" id="one">
+
+        <div data-role="header">
+		<a href="/" data-icon="home" class="ui-btn-left">Home</a>
+                <h1>Nanode Water My Garden!</h1>
+		<a href="/settings" data-icon="gear" class="ui-btn-right">Settings</a>
+        </div><!-- /header -->
 [% content %]
+        <div data-role="footer" data-theme="d">
+                <h4></h4>
+        </div><!-- /footer -->
+</div><!-- /page one -->
 </body>
 </html>
 

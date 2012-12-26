@@ -1,10 +1,5 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd" />
 <!-- Start of first page: #one -->
-<div data-role="page" id="one">
-
-        <div data-role="header">
-                <h1>Nanode Water My Garden!</h1>
-        </div><!-- /header -->
         <div data-role="content" >      
                 <h2>[% category %]<hr>
                         [% FOREACH station IN stations %]
@@ -24,8 +19,3 @@
                         <!--<div class='success' id='[% station.id %]-on'>ON</div><div class='success' id='[% station.id %]-off'>OFF</div><div class='failure' id='[% station.id %]-failure'>FAILURE</div></p>-->
                         [% END %]
         </div><!-- /content -->
-        <div data-role="footer" data-theme="d">
-                <h4></h4>
-        </div><!-- /footer -->
-</div><!-- /page one -->
--->
