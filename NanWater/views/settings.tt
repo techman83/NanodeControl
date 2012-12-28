@@ -1,6 +1,6 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd" />
 <!-- Start of first page: #one -->
-<div data-role="page" id="#one">
+<div data-role="page" id="settings">
 
         <div data-role="header">
 		<a href="/" data-icon="home" class="ui-btn-left">Home</a>
@@ -19,7 +19,7 @@
 
                 <h3>Show internal pages:</h3>
                 <p><a href="#main" data-role="button">Main</a></p>       
-                <p><a href="#add"data-role="button">Add Stations</a></p>
+                <p><a href="#add" data-role="button">Add Stations</a></p>
                 <p><a href="#remove" data-role="button">Remove Stations</a></p>
 
         </div><!-- /content -->
