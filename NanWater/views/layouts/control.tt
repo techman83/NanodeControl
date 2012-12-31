@@ -13,35 +13,7 @@
         <script src="/javascripts/nanode_control.js" type="text/javascript"></script>
 </head> 
 <body> 
-<div data-role="page" id="one">
-
-        <div data-role="header">
-		<a href="/" data-icon="home" class="ui-btn-left">Home</a>
-                <h1>Nanode Water My Garden!</h1>
-		<a href="/settings" data-icon="gear" class="ui-btn-right">Settings</a>
-        </div><!-- /header -->
 [% content %]
-        <div data-role="footer" data-theme="d">
-                <h4></h4>
-        </div><!-- /footer -->
-</div><!-- /page one -->
-
-<!-- Start of Error dialog -->
-<div data-role="page" id="error_popup">
-
-	<div data-role="header" data-theme="b">
-		<h1>Error</h1>
-	</div><!-- /header -->
-
-	<div data-role="content" data-theme="d">	
-		<h2>Timeout</h2>
-		<p>'REQUEST TIMED OUT<p>Refresh page or close this window to continue.'</p>		
-	</div><!-- /content -->
-	
-	<div data-role="footer">
-	</div><!-- /footer -->
-</div><!-- /page popup -->
-<a href="#error_popup" id='lnkError' data-rel="dialog" data-transition="pop" style='dislay:none;'></a>
 </body>
 </html>
 

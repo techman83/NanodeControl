@@ -1,7 +1,17 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd" />
-<!-- Start of first page: #one -->
+<div data-role="page" id="home">
+
+        <div data-role="header">
+		<a href="/" data-icon="home" class="ui-btn-left">Home</a>
+                <h1>Nanode Water My Garden!</h1>
+		<a href="/settings" data-ajax="false" data-icon="gear" class="ui-btn-right">Settings</a>
+        </div><!-- /header -->
         <div data-role="content" >      
                 <h2>One</h2>
                 <p>Some text</p>
                 <p><a href="/stations" data-role="button">Control Stations</a></p>        
         </div><!-- /content -->
+        <div data-role="footer" data-theme="d">
+                <h4></h4>
+        </div><!-- /footer -->
+</div><!-- /page one -->

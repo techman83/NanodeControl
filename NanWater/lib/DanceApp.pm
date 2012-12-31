@@ -16,7 +16,7 @@ post '/stations/:id' => sub {
 };
 
 get '/settings' => sub {
-  set layout => 'settings';
+#  set layout => 'settings';
 
   template 'settings', {
         title  => "Nanode Control - Settings",
@@ -24,10 +24,10 @@ get '/settings' => sub {
 };
 
 get '/stations' => sub {
-  set layout => 'control';
+#  set layout => 'control';
 
-  my @stations = ( { id => '10001', name => 'Station 1', state => 'on', },
-                   { id => '10002', name => 'Station 2', state => 'off', },
+  my @stations = ( { id => '10001', name => 'Station 1', state => 'off', },
+                   { id => '10002', name => 'Station 2', state => 'on', },
                    { id => '10003', name => 'Station 3', state => 'on', },
                    );
 
