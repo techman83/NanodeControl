@@ -14,6 +14,64 @@ $(document).on('pageshow',function(event, ui){
 });
 
 $(document).on('pageinit', function(e){
+        if (e.target.id == 'removestation') {
+                console.log("Remove Station"); 
+                // toggle actions        
+                $('form').submit(function(event) {
+                        console.log("Submit"); 
+                        event.stopPropagation();
+                        event.preventDefault();
+                        function submit (ids) {
+                                $.mobile.showPageLoadingMsg(); 
+                                console.log($(this)); 
+                                
+                                $.ajax({
+                                        type: "POST",
+                                        url: "/stations/:remove",
+                                        data: { stations: ids },
+                                        dataType: "json",
+                                        //async: false,
+                                        timeout: 500, // in milliseconds
+                                        success: function(data) {
+                                                // process data here
+        					var status = '';
+                                                switch (data.result) {
+                                                        case 'success':
+                                				console.log("Success:" + data.result); 
+                                                                status = '#';
+                                                                break;
+                                                        case 'failure':
+                                				console.log("Failure:" + data.result); 
+                                                                break;
+                                                        default:
+                                                                $('div.fullscreen').show();
+                                                                $('div.' + data.result).show().empty().append(data.msg);
+                                                }
+        
+                                                $.mobile.hidePageLoadingMsg();
+                                        },
+                                        error: function(request, status, err) {
+                                                if (status == "timeout") {
+                                			console.log('timeout'); 
+                                                        $("#lnkError").click();
+                                			console.log('click');
+                                                	$.mobile.hidePageLoadingMsg();
+                                                }
+                                        }
+                                });
+                        } // function submit
+                        var stations = [];
+                        $(":checkbox:checked").each(function() { 
+                                console.log("Remove Station: " + $(this).attr("id"));
+                                stations.push($(this).attr("id"));
+                        });
+                        submit(stations);
+                }); // togglebox click
+        	$('#error_popup').live('pagehide',function(event) {
+        		location.reload();
+                        return false;
+        	});
+        } // e.target.id == 'add'
         if (e.target.id == 'addstation') {
                 console.log("Add Station"); 
                 // toggle actions        

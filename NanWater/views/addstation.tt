@@ -1,0 +1,51 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd" />
+<!-- Start of add page -->
+<div data-role="page" id="addstation">
+
+        <div data-role="header">
+		<a href="/" data-icon="home" class="ui-btn-left">Home</a>
+                <h1>Add Stations</h1>
+		<a href="/settings" data-icon="gear" class="ui-btn-right">Settings</a>
+        </div><!-- /header -->
+
+        <div data-role="content">       
+                <h2>Add Station</h2>
+                <form>
+                        <div data-role="fieldcontain">
+                            <fieldset data-role="controlgroup">
+                                <label for="nameinput">
+                                    Station Name
+                                </label>
+                                <input name="name" id="nameinput" placeholder="" value="" type="text">
+                            </fieldset>
+                        </div>
+                        <div data-role="fieldcontain">
+                            <fieldset data-role="controlgroup">
+                                <label for="stationurlinput">
+                                    Station URL
+                                </label>
+                                <input name="stationurl" id="stationurlinput" placeholder="" value=""
+                                type="text">
+                            </fieldset>
+                        </div>
+                        <div data-role="fieldcontain">
+                            <label for="categoryselect">
+                                Category:
+                            </label>
+                            <select id="categoryselect" name="category" data-theme="c">
+                                [% FOREACH category IN categories %]
+                                <option value="[% category.id %]">
+                                    [% category.name %]
+                                </option>
+                                [% END %]
+                            </select>
+                        </div>
+                        <input id="add_submit" data-ajax="false" data-theme="d" data-icon="plus" data-iconpos="left" value="Submit" type="submit">
+                </form>      
+        </div><!-- /content -->
+        
+        <div data-role="footer" data-theme="d">
+                <h4></h4>
+        </div><!-- /footer -->
+</div><!-- end add page -->
+
