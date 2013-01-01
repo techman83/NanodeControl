@@ -9,7 +9,7 @@
         <div data-role="content" >      
                 <h2>One</h2>
                 <p>Some text</p>
-                <p><a href="/stations" data-role="button">Control Stations</a></p>        
+                <p><a href="/stations" data-ajax="false" data-role="button">Control Stations</a></p>        
         </div><!-- /content -->
         <div data-role="footer" data-theme="d">
                 <h4></h4>

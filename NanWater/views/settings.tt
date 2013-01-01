@@ -19,8 +19,8 @@
 
                 <h3>Show internal pages:</h3>
                 <p><a href="#main" data-role="button">Main</a></p>       
-                <p><a href="#add" data-role="button">Add Stations</a></p>
-                <p><a href="#remove" data-role="button">Remove Stations</a></p>
+                <p><a href="#addstation" data-role="button">Add Stations</a></p>
+                <p><a href="#removestation" data-role="button">Remove Stations</a></p>
 
         </div><!-- /content -->
         
@@ -53,8 +53,8 @@
 </div><!-- /page two -->
 
 
-<!-- Start of third page -->
-<div data-role="page" id="add">
+<!-- Start of add page -->
+<div data-role="page" id="addstation">
 
         <div data-role="header">
 		<a href="/" data-icon="home" class="ui-btn-left">Home</a>
@@ -63,17 +63,49 @@
         </div><!-- /header -->
 
         <div data-role="content">       
-                <h2>Popup</h2>
-                <p>I have an id of "popup" on my page container and only look like a dialog because the link to me had a <code>data-rel="dialog"</code> attribute which gives me this inset look and a <code>data-transition="pop"</code> attribute to change the transition to pop. Without this, I'd be styled as a normal page.</p>          
+                <h2>Add Station</h2>
+                <form>
+                        <div data-role="fieldcontain">
+                            <fieldset data-role="controlgroup">
+                                <label for="nameinput">
+                                    Station Name
+                                </label>
+                                <input name="name" id="nameinput" placeholder="" value="" type="text">
+                            </fieldset>
+                        </div>
+                        <div data-role="fieldcontain">
+                            <fieldset data-role="controlgroup">
+                                <label for="stationurlinput">
+                                    Station URL
+                                </label>
+                                <input name="stationurl" id="stationurlinput" placeholder="" value=""
+                                type="text">
+                            </fieldset>
+                        </div>
+                        <div data-role="fieldcontain">
+                            <label for="categoryselect">
+                                Category:
+                            </label>
+                            <select id="categoryselect" name="category" data-theme="c">
+                                [% FOREACH category IN categories %]
+                                <option value="[% category.id %]">
+                                    [% category.name %]
+                                </option>
+                                [% END %]
+                            </select>
+                        </div>
+                        <input id="submitstation" data-ajax="false" data-theme="d" data-icon="plus" data-iconpos="left"
+                        value="Submit" type="submit">
+                </form>      
         </div><!-- /content -->
         
         <div data-role="footer" data-theme="d">
                 <h4></h4>
         </div><!-- /footer -->
-</div><!-- /page popup -->
+</div><!-- end add page -->
 
 <!-- Start of fourth page -->
-<div data-role="page" id="remove">
+<div data-role="page" id="removestation">
 
         <div data-role="header">
 		<a href="/" data-icon="home" class="ui-btn-left">Home</a>
