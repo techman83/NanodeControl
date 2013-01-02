@@ -1,22 +1,25 @@
 package NanodeControl;
 use Dancer ':syntax';
 use Data::Dumper;
-#set serializer => 'JSON';
+set serializer => 'JSON';
 
 our $VERSION = '0.1';
 
+# Index
 get '/' => sub {
     template 'index', {
         title  => "Nanode Control - Home",
     };
 };
 
+# Settings Menu
 get '/settings' => sub {
   template 'settings', {
         title  => "Nanode Control - Settings",
   };
 };
 
+# Main Settings
 get '/mainsettings' => sub {
   template 'mainsettings', {
         title  => "Nanode Control - Main Settings",
@@ -27,9 +30,10 @@ post '/mainsettings' => sub {
   return qq({"result":"success"});
 };
 
+# Add Station
 get '/addstation' => sub {
-  my @categories = ( { id => '20001', name => 'Water Station', },
-                   { id => '20002', name => 'Shed Control', state => 'on', },
+  my @categories = ( { id => '10001', name => 'Water Station', },
+                   { id => '10002', name => 'Shed Control', state => 'on', },
                    );
 
   template 'addstation', {
@@ -42,6 +46,7 @@ post '/addstation' => sub {
   return qq({"result":"success"});
 };
 
+# Remove Stations
 get '/removestations' => sub {
   my @stations = ( { category => 'Water Station', id => '10001', name => 'Station 1', state => 'off', },
                    { category => 'Water Station', id => '10002', name => 'Station 2', state => 'on', },
@@ -58,14 +63,27 @@ post '/removestations' => sub {
   return qq({"result":"success"});
 };
 
-post '/settings/:addcategory' => sub {
+# Add/Remove Categories
+get '/categories' => sub {
+  my @categories = ( { id => '10001', name => 'Water Station', },
+                   { id => '10002', name => 'Shed Control', state => 'on', },
+                   );
+
+  template 'categories', {
+        title  => "Nanode Control - Categories",
+        categories => \@categories,
+  };
+};
+
+post '/addcategory' => sub {
   return qq({"result":"success"});
 };
 
-post '/settings/:removecategory' => sub {
+post '/removecategory' => sub {
   return qq({"result":"success"});
 };
 
+# Station Control
 get '/stations' => sub {
   my @stations = ( { category => 'Water Station', id => '10001', name => 'Station 1', state => 'off', },
                    { category => 'Water Station', id => '10002', name => 'Station 2', state => 'on', },

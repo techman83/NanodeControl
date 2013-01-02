@@ -14,6 +14,72 @@ $(document).on('pageshow',function(event, ui){
 });
 
 $(document).on('pageinit', function(e){
+        if (e.target.id == 'categories') {
+                console.log("Add/Remove Categories"); 
+                // toggle actions        
+                $('form').submit(function(event) {
+                        console.log("Submit"); 
+                        event.stopPropagation();
+                        event.preventDefault();
+                        function submit (data, action, url) {
+                                $.mobile.showPageLoadingMsg(); 
+                                console.log($(this));
+                                $.ajax({
+                                        type: "POST",
+                                        url: url,
+                                        data: { data: data },
+                                        dataType: "json",
+                                        //async: false,
+                                        timeout: 500, // in milliseconds
+                                        success: function(data) {
+                                                // process data here
+        					var status = '';
+                                                switch (data.result) {
+                                                        case 'success':
+                                				console.log("Success:" + data.result); 
+                                                                status = '#';
+                                                                break;
+                                                        case 'failure':
+                                				console.log("Failure:" + data.result); 
+                                                                break;
+                                                        default:
+                                                                $('div.fullscreen').show();
+                                                                $('div.' + data.result).show().empty().append(data.msg);
+                                                }
+        
+                                                $.mobile.hidePageLoadingMsg();
+                                        },
+                                        error: function(request, status, err) {
+                                                if (status == "timeout") {
+                                			console.log('timeout'); 
+                                                        $("#lnkError").click();
+                                			console.log('click');
+                                                	$.mobile.hidePageLoadingMsg();
+                                                }
+                                        }
+                                });
+                        } // function submit
+                        switch ($(this).attr('id')) {
+                          case 'removecategory':
+                              var categories = [];
+                              $(":checkbox:checked").each(function() { 
+                                     console.log("Remove Category: " + $(this).attr("id"));
+                                     categories.push($(this).attr("id"));
+                              });
+                              submit(categories, "remove", "/removecategory");
+                              break;
+                          case 'addcategory':
+                              console.log($('[name=name]').val());
+                              submit($('[name=name]').val(),"add","/addcategory")
+                              break;
+                          default:
+                              // some sort error handling here
+                        }
+
+                        console.log($(this).attr('id'));
+
+                }); // togglebox click
+            }; // categories
         if (e.target.id == 'removestation') {
                 console.log("Remove Station"); 
                 // toggle actions        

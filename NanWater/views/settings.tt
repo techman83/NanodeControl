@@ -10,6 +10,7 @@
 
         <div data-role="content" >      
                 <p><a href="/mainsettings" data-ajax="false" data-role="button">Main Settings</a></p>       
+                <p><a href="/categories" data-ajax="false" data-role="button">Categories</a></p>       
                 <p><a href="/addstation" data-ajax="false" data-role="button">Add Stations</a></p>
                 <p><a href="/removestations" data-ajax="false" data-role="button">Remove Stations</a></p>
         </div><!-- /content -->
