@@ -1,0 +1,43 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd" />
+<!-- Start of remove page -->
+<div data-role="page" id="categories">
+
+        <div data-role="header">
+		<a href="/" data-icon="home" class="ui-btn-left">Home</a>
+                <h1>Add/Remove Categories</h1>
+		<a href="/settings" data-icon="gear" class="ui-btn-right">Settings</a>
+        </div><!-- /header -->
+
+        <h2>Remove Category</h2>
+        <form id="removecategory">
+        <div data-role="content">       
+            <div id="station_checkboxes" data-role="fieldcontain">
+                <fieldset data-role="controlgroup" data-type="vertical">
+                        [% FOREACH category IN categories %]
+                        <input id="[% category.id %]" name="" type="checkbox">
+                        <label for="[% category.id %]">
+                              [% category.name %]
+                        </label>
+                        [% END %]
+               </fieldset>
+           </div>
+           <input id="submit_remove" data-ajax="false" data-theme="d" data-icon="minus" data-iconpos="left" value="Submit" type="submit">
+        </form>
+        <h2>Add Category</h2>
+        <form id="addcategory">
+                <div data-role="fieldcontain">
+                    <fieldset data-role="controlgroup">
+                        <label for="nameinput">
+                            Category Name
+                        </label>
+                        <input name="name" id="nameinput" placeholder="" value="" type="text">
+                    </fieldset>
+                </div>
+                <input id="add_submit" data-ajax="false" data-theme="d" data-icon="plus" data-iconpos="left" value="Submit" type="submit">
+        </form>      
+        </div><!-- /content -->
+        
+        <div data-role="footer" data-theme="d">
+                <h4></h4>
+        </div><!-- /footer -->
+</div><!-- /remove -->
