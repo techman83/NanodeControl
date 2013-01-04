@@ -7,8 +7,13 @@ our $VERSION = '0.1';
 
 # Index
 get '/' => sub {
+    my @categories = ( { id => '10001', name => 'Water Station', },
+                       { id => '10002', name => 'Shed Control', },
+                     );
+
     template 'index', {
         title  => "Nanode Control - Home",
+        categories => \@categories,
     };
 };
 
@@ -84,16 +89,17 @@ post '/removecategory' => sub {
 };
 
 # Station Control
-get '/stations' => sub {
-  my @stations = ( { category => 'Water Station', id => '10001', name => 'Station 1', state => 'off', },
-                   { category => 'Water Station', id => '10002', name => 'Station 2', state => 'on', },
-                   { category => 'Water Station', id => '10003', name => 'Station 3', state => 'on', },
+get '/stations/:category' => sub {
+  my $category = params->{category};
+  my @stations = ( { category => $category, id => '10001', name => 'Station 1', state => 'off', },
+                   { category => $category, id => '10002', name => 'Station 2', state => 'on', },
+                   { category => $category, id => '10003', name => 'Station 3', state => 'on', },
                    );
 
   template 'control', {
         stations => \@stations,
-        category => "Watering Stations",
-        title  => "Nanode Control - Watering Sations",
+        category => $category,
+        title  => "Nanode Control - Sations",
   };
 };
 

@@ -4,7 +4,7 @@
 
         <div data-role="header">
 		<a href="/" data-icon="home" class="ui-btn-left">Home</a>
-                <h1>Nanode Water My Garden!</h1>
+                <h1>[% title %]</h1>
 		<a href="/settings" data-ajax="false" data-icon="gear" class="ui-btn-right">Settings</a>
         </div><!-- /header -->
         <div data-role="content" >      

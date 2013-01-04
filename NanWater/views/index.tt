@@ -3,13 +3,14 @@
 
         <div data-role="header">
 		<a href="/" data-icon="home" class="ui-btn-left">Home</a>
-                <h1>Nanode Water My Garden!</h1>
+                <h1>[% title %]</h1>
 		<a href="/settings" data-ajax="false" data-icon="gear" class="ui-btn-right">Settings</a>
         </div><!-- /header -->
-        <div data-role="content" >      
-                <h2>One</h2>
-                <p>Some text</p>
-                <p><a href="/stations" data-ajax="false" data-role="button">Control Stations</a></p>        
+        <div data-role="content" >     
+                <p><a href="/stations/All" data-ajax="false" data-role="button">All</a></p>
+                [% FOREACH category IN categories %] 
+                <p><a href="/stations/[% category.name %]" data-ajax="false" data-role="button">[% category.name %]</a></p> <!-- Change /stations:[% category.name %] -> /stationsi:[% category.id %] once db implemented. -->
+                [% END %]
         </div><!-- /content -->
         <div data-role="footer" data-theme="d">
                 <h4></h4>
