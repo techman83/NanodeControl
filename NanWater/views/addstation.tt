@@ -40,6 +40,18 @@
                                 [% END %]
                             </select>
                         </div>
+                        <div data-role="fieldcontain">
+                            <label for="typeselect">
+                                Type:
+                            </label>
+                            <select id="typeselect" name="type" data-theme="c">
+                                [% FOREACH type IN types %]
+                                <option value="[% type.id %]">
+                                    [% type.name %]
+                                </option>
+                                [% END %]
+                            </select>
+                        </div>
                         <input id="add_submit" data-ajax="false" data-theme="d" data-icon="plus" data-iconpos="left" value="Submit" type="submit">
                 </form>      
         </div><!-- /content -->

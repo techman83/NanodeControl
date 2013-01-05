@@ -24,10 +24,11 @@ $(document).on('pageinit', function(e){
                         function submit (data, action, url) {
                                 $.mobile.showPageLoadingMsg(); 
                                 console.log($(this));
+                                var jsondata = { data: data };
                                 $.ajax({
                                         type: "POST",
                                         url: url,
-                                        data: { data: data },
+                                        data: JSON.stringify(jsondata),
                                         dataType: "json",
                                         //async: false,
                                         timeout: 500, // in milliseconds
@@ -90,11 +91,12 @@ $(document).on('pageinit', function(e){
                         function submit (ids) {
                                 $.mobile.showPageLoadingMsg(); 
                                 console.log($(this)); 
+                                var jsondata = { stations: ids };
                                 
                                 $.ajax({
                                         type: "POST",
                                         url: "/stations/:remove",
-                                        data: { stations: ids },
+                                        data: JSON.stringify(jsondata),
                                         dataType: "json",
                                         //async: false,
                                         timeout: 500, // in milliseconds
@@ -144,15 +146,16 @@ $(document).on('pageinit', function(e){
                 $('form').submit(function(event) {
                         event.stopPropagation();
                         event.preventDefault();
-                        function submit (name, url, category) {
+                        function submit (name, url, category, type) {
                                 $.mobile.showPageLoadingMsg(); 
                                 console.log($(this)); 
-                                
+                                var jsondata = { "stationname": name, "stationurl": url, "stationcategory": category, "stationtype": type };
                                 $.ajax({
                                         type: "POST",
-                                        url: "/stations/:add",
-                                        data: { stationname: name, stationurl: url, stationcategory: category },
+                                        url: "/addstation",
+                                        contentType: 'application/json',
                                         dataType: "json",
+                                        data: JSON.stringify(jsondata),
                                         //async: false,
                                         timeout: 500, // in milliseconds
                                         success: function(data) {
@@ -186,7 +189,8 @@ $(document).on('pageinit', function(e){
                         console.log("Name: " + $('[name=name]').val());
                         console.log("Url: " + $('[name=stationurl]').val());
                         console.log("Category: " + $('[name=category]').val());
-                        submit($('[name=name]').val(), $('[name=stationurl]').val(), $('[name=category]').val());
+                        console.log("Type: " + $('[name=type]').val());
+                        submit($('[name=name]').val(), $('[name=stationurl]').val(), $('[name=category]').val(), $('[name=type]').val());
                 }); // togglebox click
         	$('#error_popup').live('pagehide',function(event) {
         		location.reload();
@@ -203,11 +207,11 @@ $(document).on('pageinit', function(e){
                                 $('#' + id).find('div.success,div.failure').stop(true,true).clearQueue();
                                 $('#' + id).find('div.success,div.failure').hide();
                                 console.log($(this)); 
-                                
+                                var jsondata = { station: id, act: attr };
                                 $.ajax({
                                         type: "POST",
                                         url: "/stations/:" + id,
-                                        data: { station: id, act: attr },
+                                        data: JSON.stringify(jsondata),
                                         dataType: "json",
                                         //async: false,
                                         timeout: 500, // in milliseconds
