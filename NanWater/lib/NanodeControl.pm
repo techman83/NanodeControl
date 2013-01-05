@@ -1,15 +1,20 @@
 package NanodeControl;
 use Dancer ':syntax';
 use Data::Dumper;
+use NanodeControl::DBsqlite;
 set serializer => 'JSON';
 
 our $VERSION = '0.1';
 
+get '/test' => sub {
+    #my $db = NanodeControl::DBsqlite->new( database => "db/nanode_control.sqlite", );
+    my @categories = get_categories();
+    print Dumper(@categories);
+};
+
 # Index
 get '/' => sub {
-    my @categories = ( { id => '10001', name => 'Water Station', },
-                       { id => '10002', name => 'Shed Control', },
-                     );
+    my @categories = get_categories();
 
     template 'index', {
         title  => "Nanode Control - Home",
@@ -39,13 +44,8 @@ post '/mainsettings' => sub {
 
 # Add Station
 get '/addstation' => sub {
-  my @categories = ( { id => '10001', name => 'Water Station', },
-                   { id => '10002', name => 'Shed Control', },
-                   );
-
-  my @types = ( { id => '10001', name => 'On/Off', },
-                   { id => '10002', name => 'Slider', },
-                   );
+  my @categories = get_categories();
+  my @types = get_types();
 
   template 'addstation', {
         title  => "Nanode Control - Add Station",
@@ -81,9 +81,7 @@ post '/removestations' => sub {
 
 # Add/Remove Categories
 get '/categories' => sub {
-  my @categories = ( { id => '10001', name => 'Water Station', },
-                   { id => '10002', name => 'Shed Control', state => 'on', },
-                   );
+  my @categories = get_categories();
 
   template 'categories', {
         title  => "Nanode Control - Categories",
