@@ -92,8 +92,8 @@ sub get_stations {
   while (my ($id,$name,$category,$type) = $sth->fetchrow_array) {
       push @stations, {
           id => $id,
-          name => $name
-          category => $category
+          name => $name,
+          category => $category,
           type => $type
       };
   }
