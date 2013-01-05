@@ -9,7 +9,7 @@
         <div data-role="content" >     
                 <p><a href="/stations/All" data-ajax="false" data-role="button">All</a></p>
                 [% FOREACH category IN categories %] 
-                <p><a href="/stations/[% category.name %]" data-ajax="false" data-role="button">[% category.name %]</a></p> <!-- Change /stations:[% category.name %] -> /stationsi:[% category.id %] once db implemented. -->
+                <p><a href="/stations/[% category.id %]" data-ajax="false" data-role="button">[% category.name %]</a></p> <!-- Change /stations:[% category.name %] -> /stationsi:[% category.id %] once db implemented. -->
                 [% END %]
         </div><!-- /content -->
         <div data-role="footer" data-theme="d">
