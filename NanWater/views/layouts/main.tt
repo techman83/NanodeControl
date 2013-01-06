@@ -14,6 +14,22 @@
 </head> 
 <body> 
 [% content %]
+<!-- Start of Error dialog -->
+<div data-role="page" id="error_popup">
+
+	<div data-role="header" data-theme="b">
+		<h1>Error</h1>
+	</div><!-- /header -->
+
+	<div data-role="content" data-theme="d">	
+		<h2 id="error_headding"></h2>
+		<p id="error_content"></p>		
+	</div><!-- /content -->
+	
+	<div data-role="footer">
+	</div><!-- /footer -->
+</div><!-- /page popup -->
+<a href="#error_popup" id='lnkError' data-rel="dialog" data-transition="pop" style='dislay:none;'></a>
 </body>
 </html>
 

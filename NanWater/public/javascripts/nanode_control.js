@@ -168,6 +168,10 @@ $(document).on('pageinit', function(e){
                                                                 break;
                                                         case 'failure':
                                 				console.log("Failure:" + data.result); 
+                                                                
+                                                                $("#lnkError").click();
+                                			        console.log('click');
+                                                	        $.mobile.hidePageLoadingMsg();
                                                                 break;
                                                         default:
                                                                 $('div.fullscreen').show();
