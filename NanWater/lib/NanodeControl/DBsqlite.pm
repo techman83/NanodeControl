@@ -1,6 +1,7 @@
 package NanodeControl::DBsqlite;
 use strict;
 use DBD::SQLite;
+use Data::Dumper;
 #use Moose;
 
 use base 'Exporter';
@@ -28,6 +29,7 @@ sub get_categories {
   my $sth = $dbh->prepare(q{
       SELECT id, name
       FROM categories
+      WHERE deleted = 0
       ORDER BY id ASC
   });
   
@@ -43,12 +45,12 @@ sub get_categories {
 };
 
 sub get_category {
-  my $categoryid = $_;
+  my ($categoryid) = @_;
   my $dbh = connect_db();
   my $sth = $dbh->prepare(q{
       SELECT name
       FROM categories
-      WHERE id = ?
+      WHERE id = ? AND deleted = 0
   });
   
   $sth->execute($categoryid);
@@ -62,6 +64,7 @@ sub get_types {
   my $sth = $dbh->prepare(q{
       SELECT id, name
       FROM type
+      WHERE deleted = 0
       ORDER BY id ASC
   });
   
@@ -76,28 +79,56 @@ sub get_types {
   return @types;
 };
 
-# Returns stations in an array
+# Returns stations in an array - Category ID expected for the where.
 sub get_stations {
-  my $category = $_;
+  my ($category) = @_;
   my $dbh = connect_db();
-  my $sth = $dbh->prepare(q{
-      SELECT id, name, category, type
-      FROM stations
-      WHERE category = ?
-      ORDER BY id ASC, type ASC
-  });
-  
-  $sth->execute($_);
+  my $sth = ""; 
+  unless ($category eq 'All') {
+    $sth = $dbh->prepare(q{
+        SELECT s.id, s.name, s.category, s.type, c.name
+        FROM stations s 
+        LEFT OUTER JOIN categories c 
+        ON s.category = c.id
+        WHERE s.category = ? AND s.deleted = 0
+        ORDER BY s.id ASC, s.type ASC
+    });
+    $sth->execute($category);
+  } else {
+    $sth = $dbh->prepare(q{
+        SELECT s.id, s.name, s.category, s.type, c.name
+        FROM stations s 
+        LEFT OUTER JOIN categories c 
+        ON s.category = c.id
+        WHERE s.deleted = 0
+        ORDER BY s.id ASC, s.type ASC
+    });
+    $sth->execute();
+  }
   my @stations;
-  while (my ($id,$name,$category,$type) = $sth->fetchrow_array) {
+  while (my ($id,$name,$categoryid,$type,$category) = $sth->fetchrow_array) {
       push @stations, {
           id => $id,
           name => $name,
           category => $category,
+          categoryid => $categoryid,
           type => $type
       };
   }
   return @stations;
+};
+
+sub add_station {
+  my ($name,$url,$type,$category) = @_;
+  my $dbh = connect_db();
+  my $sth = $dbh->prepare(q{
+      INSERT INTO stations
+      (name,category,type,url)
+      VALUES (?, ?, ?, ?)
+  });
+  
+  my $add = $sth->execute($name,$category,$type,$url);
+  return $add;
 };
 
 1
