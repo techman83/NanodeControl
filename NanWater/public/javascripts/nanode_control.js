@@ -14,6 +14,7 @@ $(document).on('pageshow',function(event, ui){
 });
 
 $(document).on('pageinit', function(e){
+        var timeout = 5000;
         if (e.target.id == 'categories') {
                 console.log("Add/Remove Categories"); 
                 // toggle actions        
@@ -31,7 +32,7 @@ $(document).on('pageinit', function(e){
                                         data: JSON.stringify(jsondata),
                                         dataType: "json",
                                         //async: false,
-                                        timeout: 2000, // in milliseconds
+                                        timeout: timeout, // in milliseconds
                                         success: function(data) {
                                                 // process data here
         					var status = '';
@@ -118,7 +119,7 @@ $(document).on('pageinit', function(e){
                                         data: JSON.stringify(jsondata),
                                         dataType: "json",
                                         //async: false,
-                                        timeout: 2000, // in milliseconds
+                                        timeout: timeout, // in milliseconds
                                         success: function(data) {
                                                 // process data here
         					var status = '';
@@ -180,7 +181,7 @@ $(document).on('pageinit', function(e){
                                         dataType: "json",
                                         data: JSON.stringify(jsondata),
                                         //async: false,
-                                        timeout: 2000, // in milliseconds
+                                        timeout: timeout, // in milliseconds
                                         success: function(data) {
                                                 // process data here
         					var status = '';
@@ -253,7 +254,7 @@ $(document).on('pageinit', function(e){
                                         data: JSON.stringify(jsondata),
                                         dataType: "json",
                                         //async: false,
-                                        timeout: 2000, // in milliseconds
+                                        timeout: timeout, // in milliseconds
                                         success: function(data) {
                                                 // process data here
         					var status = '';
