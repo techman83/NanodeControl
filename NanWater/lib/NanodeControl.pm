@@ -2,14 +2,17 @@ package NanodeControl;
 use Dancer ':syntax';
 use Data::Dumper;
 use NanodeControl::DBsqlite;
+use Data::Validate::URI qw(is_web_uri);
 set serializer => 'JSON';
 
 our $VERSION = '0.1';
 
 get '/test' => sub {
     #my $db = NanodeControl::DBsqlite->new( database => "db/nanode_control.sqlite", );
-    my @categories = get_stations(10001);
-    print Dumper(@categories);
+    my $data;
+    @{$data->{stations}} = (10001,10002,1003);
+    remove_stations(@{$data->{stations}});
+    #print Dumper(@categories);
 };
 
 # Index
@@ -57,7 +60,7 @@ get '/addstation' => sub {
 post '/addstation' => sub {
   my $data = from_json(request->body);
   debug("Add station: ", $data);
-  #{'stationcategory' => '10001','stationname' => 'Test','stationtype' => '10001','stationurl' => 'http://test/1'}
+  unless (is_web_uri($data->{stationurl})) { return qq({"result":"failure","error":"URL"}); }
   unless ($data->{stationname} eq "" || $data->{stationurl} eq "" || $data->{stationtype} eq "" || $data->{stationcategory} eq "") {
     my $add = add_station($data->{stationname},$data->{stationurl},$data->{stationtype},$data->{stationcategory});
     debug($add);
@@ -78,7 +81,8 @@ get '/removestations' => sub {
 
 post '/removestations' => sub {
   my $data = from_json(request->body);
-  debug("Remove station(s): ", $data);
+  debug("Remove station(s): ", @{$data->{stations}});
+  remove_stations(@{$data->{stations}});
   return qq({"result":"success"});
 };
 
@@ -95,12 +99,30 @@ get '/categories' => sub {
 post '/addcategory' => sub {
   my $data = from_json(request->body);
   debug("Add Category: ", $data);
-  return qq({"result":"success"});
+  unless ($data->{data} eq "") {
+    add_category($data->{data});
+    return qq({"result":"success"});
+  } else {
+    return qq({"result":"failure", "error":"undefined"});
+  }
 };
 
 post '/removecategory' => sub {
   my $data = from_json(request->body);
   debug("Remove Category: ", $data);
+  if ( defined $data->{data}[0] ) {
+    my $result = remove_categories(@{$data->{data}});
+    if ( $result eq "success" ) {
+      debug("Category remove: ", $result);
+      return qq({"result":"success"});
+    } else {
+      debug("Category still associated: ", $result);
+      my $category = get_category($result);
+      return qq({"result":"failure", "error":"station_associated", "category":"$category"});
+    }
+  } else {
+    return qq({"result":"failure", "error":"none_seleceted"});
+  }
   return qq({"result":"success"});
 };
 

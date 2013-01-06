@@ -1,18 +1,9 @@
 package NanodeControl::DBsqlite;
 use strict;
 use DBD::SQLite;
-use Data::Dumper;
-#use Moose;
-
 use base 'Exporter';
-#has 'database' => (is => 'rw', isa => 'Str');
 
-our @EXPORT    = qw(get_stations get_categories get_category get_types add_station remove_station add_category remove_category);
-
-sub BUILD {
-  my $self = shift;   
-  return;
-}
+our @EXPORT    = qw(get_stations get_categories get_category get_types add_station remove_stations add_category remove_categories);
 
 # DB connection
 sub connect_db {
@@ -23,6 +14,7 @@ sub connect_db {
   return $dbh;
 }
 
+### Categories ###
 # Returns categories in an array
 sub get_categories {
   my $dbh = connect_db();
@@ -44,6 +36,7 @@ sub get_categories {
   return @categories;
 };
 
+# Returns a single category
 sub get_category {
   my ($categoryid) = @_;
   my $dbh = connect_db();
@@ -58,6 +51,39 @@ sub get_category {
   return $name;
 };
 
+# Add a category
+sub add_category {
+  my ($name,$url,$type,$category) = @_;
+  my $dbh = connect_db();
+  my $sth = $dbh->prepare(q{
+      INSERT INTO categories
+      (name)
+      VALUES (?)
+  });
+  
+  $sth->execute($name);
+  return;
+};
+
+# Remove categories 
+sub remove_categories {
+  my (@categories) = @_;
+  my $dbh = connect_db();
+  foreach my $category (@categories) {
+    if (get_stations($category)) { return $category; }
+  }
+  foreach my $category (@categories) {
+    my $sth = $dbh->prepare(q{
+        UPDATE categories 
+        SET deleted = 1
+        WHERE id = ?
+    });
+    $sth->execute($category);
+  }
+  return "success";
+};
+
+### Types ###
 # Returns types in an array
 sub get_types {
   my $dbh = connect_db();
@@ -79,6 +105,7 @@ sub get_types {
   return @types;
 };
 
+### Stations ###
 # Returns stations in an array - Category ID expected for the where.
 sub get_stations {
   my ($category) = @_;
@@ -101,7 +128,7 @@ sub get_stations {
         LEFT OUTER JOIN categories c 
         ON s.category = c.id
         WHERE s.deleted = 0
-        ORDER BY s.id ASC, s.type ASC
+        ORDER BY s.category ASC, s.id ASC, s.type ASC
     });
     $sth->execute();
   }
@@ -118,6 +145,7 @@ sub get_stations {
   return @stations;
 };
 
+# Add a station
 sub add_station {
   my ($name,$url,$type,$category) = @_;
   my $dbh = connect_db();
@@ -129,6 +157,21 @@ sub add_station {
   
   my $add = $sth->execute($name,$category,$type,$url);
   return $add;
+};
+
+# Remove stations
+sub remove_stations {
+  my (@stations) = @_;
+  my $dbh = connect_db();
+  foreach my $station (@stations) {
+    my $sth = $dbh->prepare(q{
+        UPDATE stations
+        SET deleted = 1
+        WHERE id = ?
+    });
+    $sth->execute($station);
+  }
+  return;
 };
 
 1

@@ -38,10 +38,27 @@ $(document).on('pageinit', function(e){
                                                 switch (data.result) {
                                                         case 'success':
                                 				console.log("Success:" + data.result); 
+                                                	        $.mobile.hidePageLoadingMsg();
+        		                                        location.reload();
                                                                 status = '#';
                                                                 break;
                                                         case 'failure':
-                                				console.log("Failure:" + data.result); 
+                                				console.log("Failure:" + data.error);
+                                                                  if ( data.error == "undefined") {
+                                                                    $("#error_heading").text('UNDEFINED');
+                                                                    $("#error_content").text('Category name has been left blank.');
+                                                                    $("#lnkInfo").click();
+                                                                  };
+                                                                  if ( data.error == "none_seleceted") {
+                                                                    $("#error_heading").text('None Seleceted');
+                                                                    $("#error_content").text('A Category has not been seleceted.') 
+                                                                    $("#lnkInfo").click();
+                                                                  };
+                                                                  if ( data.error == "station_associated") {
+                                                                    $("#error_heading").text('Station Associated'); 
+                                                                    $("#error_content").text('At least one station is still associated with the category "' + data.category + '".') 
+                                                                    $("#lnkInfo").click();
+                                                                  };
                                                                 break;
                                                         default:
                                                                 $('div.fullscreen').show();
@@ -53,7 +70,7 @@ $(document).on('pageinit', function(e){
                                         error: function(request, status, err) {
                                                 if (status == "timeout") {
                                 			console.log('timeout'); 
-                                                        $("#lnkError").click();
+                                                        $("#lnkInfo").click();
                                 			console.log('click');
                                                 	$.mobile.hidePageLoadingMsg();
                                                 }
@@ -95,17 +112,19 @@ $(document).on('pageinit', function(e){
                                 
                                 $.ajax({
                                         type: "POST",
-                                        url: "/stations/:remove",
+                                        url: "/removestations",
                                         data: JSON.stringify(jsondata),
                                         dataType: "json",
                                         //async: false,
-                                        timeout: 500, // in milliseconds
+                                        timeout: 5000, // in milliseconds
                                         success: function(data) {
                                                 // process data here
         					var status = '';
                                                 switch (data.result) {
                                                         case 'success':
-                                				console.log("Success:" + data.result); 
+                                				console.log("Success:" + data.result);
+                                                	        $.mobile.hidePageLoadingMsg();
+        		                                        location.reload();
                                                                 status = '#';
                                                                 break;
                                                         case 'failure':
@@ -121,7 +140,7 @@ $(document).on('pageinit', function(e){
                                         error: function(request, status, err) {
                                                 if (status == "timeout") {
                                 			console.log('timeout'); 
-                                                        $("#lnkError").click();
+                                                        $("#lnkInfo").click();
                                 			console.log('click');
                                                 	$.mobile.hidePageLoadingMsg();
                                                 }
@@ -164,13 +183,23 @@ $(document).on('pageinit', function(e){
                                                 switch (data.result) {
                                                         case 'success':
                                 				console.log("Success:" + data.result); 
+                                                                $("#error_heading").text('Success') 
+                                                                $("#error_content").text('Station Added Successfully.') 
+                                                                $("#lnkInfo").click();
                                                                 status = '#';
                                                                 break;
                                                         case 'failure':
-                                				console.log("Failure:" + data.result); 
-                                                                
-                                                                $("#lnkError").click();
-                                			        console.log('click');
+                                				console.log("Failure:" + data.error);
+                                                                if ( data.error == "undefined" ) {
+                                                                  $("#error_heading").text('UNDEFINED') 
+                                                                  $("#error_content").text('A field has been left blank. All fields are required.') 
+                                                                  $("#lnkInfo").click();
+                                                                }
+                                                                if ( data.error == "URL" ) {
+                                                                  $("#error_heading").text('Invalid URL') 
+                                                                  $("#error_content").text('Station URL is Invalid, please correct it and try again.') 
+                                                                  $("#lnkInfo").click();
+                                                                }
                                                 	        $.mobile.hidePageLoadingMsg();
                                                                 break;
                                                         default:
@@ -183,7 +212,7 @@ $(document).on('pageinit', function(e){
                                         error: function(request, status, err) {
                                                 if (status == "timeout") {
                                 			console.log('timeout'); 
-                                                        $("#lnkError").click();
+                                                        $("#lnkInfo").click();
                                 			console.log('click');
                                                 	$.mobile.hidePageLoadingMsg();
                                                 }
@@ -240,7 +269,7 @@ $(document).on('pageinit', function(e){
                                         error: function(request, status, err) {
                                                 if (status == "timeout") {
                                 			console.log('timeout'); 
-                                                        $("#lnkError").click();
+                                                        $("#lnkInfo").click();
                                 			console.log('click');
                                                 	$.mobile.hidePageLoadingMsg();
                                                 }
