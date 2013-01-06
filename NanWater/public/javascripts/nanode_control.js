@@ -31,7 +31,7 @@ $(document).on('pageinit', function(e){
                                         data: JSON.stringify(jsondata),
                                         dataType: "json",
                                         //async: false,
-                                        timeout: 500, // in milliseconds
+                                        timeout: 2000, // in milliseconds
                                         success: function(data) {
                                                 // process data here
         					var status = '';
@@ -70,6 +70,8 @@ $(document).on('pageinit', function(e){
                                         error: function(request, status, err) {
                                                 if (status == "timeout") {
                                 			console.log('timeout'); 
+                                                        $("#error_heading").text('TIMEOUT');
+                                                        $("#error_content").text('Request timed out, please refresh your browser.');
                                                         $("#lnkInfo").click();
                                 			console.log('click');
                                                 	$.mobile.hidePageLoadingMsg();
@@ -116,7 +118,7 @@ $(document).on('pageinit', function(e){
                                         data: JSON.stringify(jsondata),
                                         dataType: "json",
                                         //async: false,
-                                        timeout: 5000, // in milliseconds
+                                        timeout: 2000, // in milliseconds
                                         success: function(data) {
                                                 // process data here
         					var status = '';
@@ -140,6 +142,8 @@ $(document).on('pageinit', function(e){
                                         error: function(request, status, err) {
                                                 if (status == "timeout") {
                                 			console.log('timeout'); 
+                                                        $("#error_heading").text('TIMEOUT');
+                                                        $("#error_content").text('Request timed out, please refresh your browser.');
                                                         $("#lnkInfo").click();
                                 			console.log('click');
                                                 	$.mobile.hidePageLoadingMsg();
@@ -176,7 +180,7 @@ $(document).on('pageinit', function(e){
                                         dataType: "json",
                                         data: JSON.stringify(jsondata),
                                         //async: false,
-                                        timeout: 500, // in milliseconds
+                                        timeout: 2000, // in milliseconds
                                         success: function(data) {
                                                 // process data here
         					var status = '';
@@ -212,6 +216,8 @@ $(document).on('pageinit', function(e){
                                         error: function(request, status, err) {
                                                 if (status == "timeout") {
                                 			console.log('timeout'); 
+                                                        $("#error_heading").text('TIMEOUT');
+                                                        $("#error_content").text('Request timed out, please refresh your browser.');
                                                         $("#lnkInfo").click();
                                 			console.log('click');
                                                 	$.mobile.hidePageLoadingMsg();
@@ -247,7 +253,7 @@ $(document).on('pageinit', function(e){
                                         data: JSON.stringify(jsondata),
                                         dataType: "json",
                                         //async: false,
-                                        timeout: 500, // in milliseconds
+                                        timeout: 2000, // in milliseconds
                                         success: function(data) {
                                                 // process data here
         					var status = '';
@@ -269,6 +275,8 @@ $(document).on('pageinit', function(e){
                                         error: function(request, status, err) {
                                                 if (status == "timeout") {
                                 			console.log('timeout'); 
+                                                        $("#error_heading").text('TIMEOUT');
+                                                        $("#error_content").text('Request timed out, please refresh your browser.');
                                                         $("#lnkInfo").click();
                                 			console.log('click');
                                                 	$.mobile.hidePageLoadingMsg();
