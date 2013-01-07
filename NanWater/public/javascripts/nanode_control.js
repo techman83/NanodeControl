@@ -1,17 +1,17 @@
-$(document).on('pageshow',function(event, ui){
-        if (event.target.id == 'control') {
-                // set initial states
-                $('select').each(function() {
-                        if($(this).hasClass('on')) {
-                                console.log(this.id + ' on');
-                                $('#' + this.id).val('on').slider("refresh");
-                        } else {
-                                console.log(this.id + ' off');
-                                $('#' + this.id).val('off').slider("refresh");
-                        }
-                }); // togglebox foreach
-        }
-});
+//$(document).on('pageshow',function(event, ui){
+//        if (event.target.id == 'control') {
+//                // set initial states
+//                $('select').each(function() {
+//                        if($(this).hasClass('on')) {
+//                                console.log(this.id + ' on');
+//                                $('#' + this.id).val('on').slider("refresh");
+//                        } else {
+//                                console.log(this.id + ' off');
+//                                $('#' + this.id).val('off').slider("refresh");
+//                        }
+//                }); // togglebox foreach
+//        }
+//});
 
 $(document).on('pageinit', function(e){
         var timeout = 5000;

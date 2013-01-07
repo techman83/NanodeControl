@@ -15,10 +15,10 @@
                                   <fieldset data-role="controlgroup">
                                       <label for="toggleswitch-[% station.id %]">[% station.name %]</label>
                                       <select class="[% station.state %]" name="[% station.id %]" id="[% station.id %]" data-theme="b" data-role="slider">
-                                          <option value="LOW">
+                                          <option value="LOW" [% IF station.off %]selected[% END %]>
                                               Off
                                           </option>
-                                          <option value="HIGH">
+                                          <option value="HIGH" [% IF station.on %]selected[% END %]>
                                               On
                                           </option>
                                       </select>
