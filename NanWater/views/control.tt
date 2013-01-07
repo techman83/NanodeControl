@@ -8,21 +8,33 @@
 		<a href="/settings" data-ajax="false" data-icon="gear" class="ui-btn-right">Settings</a>
         </div><!-- /header -->
         <div data-role="content" >      
-                <h2>[% category %]<hr>
+                <h2>[% category %]</h2><hr>
                         [% FOREACH station IN stations %]
-                        <div class='togglebox' data-role="fieldcontain">
-                              <fieldset data-role="controlgroup">
-                                  <label for="toggleswitch-[% station.id %]">[% station.name %]</label>
-                                  <select class="[% station.state %]" name="[% station.id %]" id="[% station.id %]" data-theme="b" data-role="slider">
-                                      <option value="off">
-                                          Off
-                                      </option>
-                                      <option value="on">
-                                          On
-                                      </option>
-                                  </select>
-                              </fieldset>
-                        </div>
+                          [% IF station.onoff %]
+                            <div class='togglebox' data-role="fieldcontain">
+                                  <fieldset data-role="controlgroup">
+                                      <label for="toggleswitch-[% station.id %]">[% station.name %]</label>
+                                      <select class="[% station.state %]" name="[% station.id %]" id="[% station.id %]" data-theme="b" data-role="slider">
+                                          <option value="LOW">
+                                              Off
+                                          </option>
+                                          <option value="HIGH">
+                                              On
+                                          </option>
+                                      </select>
+                                  </fieldset>
+                            </div>
+                          [% END %]
+                          [% IF station.slider %]
+                            <div data-role="fieldcontain">
+                                <fieldset data-role="controlgroup">
+                                    <label for="slider-[% station.id %]">
+                                        [% station.name %] 
+                                    </label>
+                                    <input class="[% station.state %]" name="[% station.id %]" id="[% station.id %]" value="0" min="0" max="255" data-highlight="false" type="range">
+                                </fieldset>
+                            </div>
+                          [% END %]
                         [% END %]
         </div><!-- /content -->
         <div data-role="footer" data-theme="d">

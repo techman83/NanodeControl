@@ -241,7 +241,6 @@ $(document).on('pageinit', function(e){
                 // $(document).ready(function(){ <- This here does not work in jquery mobile. You will encounter hours of frustration until you learn this!
         
                 // toggle actions
-                $('select').change(function() {
                         function submit (id, attr) {
                                 $.mobile.showPageLoadingMsg(); 
                                 $('#' + id).find('div.success,div.failure').stop(true,true).clearQueue();
@@ -285,7 +284,22 @@ $(document).on('pageinit', function(e){
                                         }
                                 });
                         } // function submit
+                $('select').change(function() {
                         submit(this.id, this.value);
+                }); // togglebox click
+                $('input').change(function() {
+                        var id = $(this).attr("id");
+                        var val = $(this).val();
+                        var $this = $(this);
+                        var delay = 2000; // 2 seconds delay after last input
+
+                        clearTimeout($this.data('timer'));
+                        $this.data('timer', setTimeout(function(){
+                        $this.removeData('timer');
+                                console.log("Set id: " + id);
+                                console.log("Set val: " + val);
+                                submit(id, val);
+                        }, delay));
                 }); // togglebox click
         	$('#error_popup').live('pagehide',function(event) {
         		location.reload();

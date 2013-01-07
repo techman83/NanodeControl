@@ -137,6 +137,7 @@ get '/stations/:category' => sub {
     $categoryname = 'All';
   }
 
+  debug("Stations: ", @stations);
   template 'control', {
         stations => \@stations,
         category => $categoryname,
