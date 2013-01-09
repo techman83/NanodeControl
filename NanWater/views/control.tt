@@ -14,11 +14,11 @@
                             <div class='togglebox' data-role="fieldcontain">
                                   <fieldset data-role="controlgroup">
                                       <label for="toggleswitch-[% station.id %]">[% station.name %]</label>
-                                      <select class="[% station.state %]" name="[% station.id %]" id="[% station.id %]" data-theme="b" data-role="slider">
-                                          <option value="LOW" [% IF station.off %]selected[% END %]>
+                                      <select class="state-[% station.state %]" name="[% station.id %]" id="[% station.id %]" data-theme="b" data-role="slider">
+                                          <option value="0">
                                               Off
                                           </option>
-                                          <option value="HIGH" [% IF station.on %]selected[% END %]>
+                                          <option value="255">
                                               On
                                           </option>
                                       </select>
@@ -31,7 +31,7 @@
                                     <label for="slider-[% station.id %]">
                                         [% station.name %] 
                                     </label>
-                                    <input class="[% station.state %]" name="[% station.id %]" id="[% station.id %]" value="0" min="0" max="255" data-highlight="false" type="range">
+                                    <input class="[% station.state %]" name="[% station.id %]" id="[% station.id %]" value="[% station.state %]" min="0" max="255" data-highlight="false" type="range">
                                 </fieldset>
                             </div>
                           [% END %]

@@ -2,6 +2,7 @@ package NanodeControl;
 use Dancer ':syntax';
 use Data::Dumper;
 use NanodeControl::DBsqlite;
+use NanodeControl::RESTduino;
 use Data::Validate::URI qw(is_web_uri);
 set serializer => 'JSON';
 
@@ -146,8 +147,11 @@ get '/stations/:category' => sub {
 };
 
 post '/stations/:id' => sub {
-  my $data = from_json(request->body);
-  debug("Control Station: ", $data);
+  my $station = from_json(request->body);
+  $station->{url} =  get_station_url($station->{station});
+  debug("Control Station: ", $station);
+  my $result = set_station_state($station->{url},$station->{act},$station->{station}); # improve this, should be able to pass the whole object to the class... just not done it before!
+  debug("result: $result");
   return qq({"result":"success"});
 };
 

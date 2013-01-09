@@ -1,9 +1,10 @@
 package NanodeControl::DBsqlite;
 use strict;
 use DBD::SQLite;
+use NanodeControl::RESTduino;
 use base 'Exporter';
 
-our @EXPORT    = qw(get_stations get_categories get_category get_types add_station remove_stations add_category remove_categories);
+our @EXPORT    = qw(get_station_url get_stations get_categories get_category get_types add_station remove_stations add_category remove_categories);
 
 # DB connection
 sub connect_db {
@@ -123,7 +124,7 @@ sub get_stations {
     $sth->execute($category);
   } else {
     $sth = $dbh->prepare(q{
-        SELECT s.id, s.name, s.category, s.type, c.name
+        SELECT s.id, s.name, s.category, s.type, c.name, s.url
         FROM stations s 
         LEFT OUTER JOIN categories c 
         ON s.category = c.id
@@ -133,7 +134,7 @@ sub get_stations {
     $sth->execute();
   }
   my @stations;
-  while (my ($id,$name,$categoryid,$type,$category) = $sth->fetchrow_array) {
+  while (my ($id,$name,$categoryid,$type,$category, $url) = $sth->fetchrow_array) {
     if ($type == 10001) {
       push @stations, {
           id => $id,
@@ -141,7 +142,8 @@ sub get_stations {
           category => $category,
           categoryid => $categoryid,
           type => $type,
-          onoff => 1
+          onoff => 1,
+          state => get_station_state($url, $id)
       };
     } else {
       push @stations, {
@@ -150,7 +152,8 @@ sub get_stations {
           category => $category,
           categoryid => $categoryid,
           type => $type,
-          slider => 1
+          slider => 1,
+          state => get_station_state($url, $id)
       };
     }
   }
@@ -184,6 +187,21 @@ sub remove_stations {
     $sth->execute($station);
   }
   return;
+};
+
+# Returns a stations URL
+sub get_station_url {
+  my ($stationid) = @_;
+  my $dbh = connect_db();
+  my $sth = $dbh->prepare(q{
+      SELECT url
+      FROM stations
+      WHERE id = ? AND deleted = 0
+  });
+  
+  $sth->execute($stationid);
+  my $url = $sth->fetchrow_array; 
+  return $url;
 };
 
 1
