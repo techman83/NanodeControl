@@ -1,0 +1,70 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd" />
+<!-- Start of second page: #two -->
+<div data-role="page" id="schedule">
+
+        <div data-role="header">
+		<a href="/" data-icon="home" class="ui-btn-left">Home</a>
+                <h1>[% title %]</h1>
+		<a href="/settings" data-icon="gear" class="ui-btn-right">Settings</a>
+        </div><!-- /header -->
+
+        <div data-role="content">      
+       <!-- Home -->
+            <form>
+                <div id="dowpicker" data-role="fieldcontain">
+                    <fieldset data-role="controlgroup" data-type="vertical" data-mini="true">
+                        <legend>
+                            Choose:
+                        </legend>
+                        <input id="checkbox1" name="dowpicker" value="1" type="checkbox">
+                        <label for="checkbox1">
+                            Monday
+                        </label>
+                        <input id="checkbox2" name="dowpicker" value="2" type="checkbox">
+                        <label for="checkbox2">
+                            Tueday
+                        </label>
+                        <input id="checkbox3" name="dowpicker" value="3" type="checkbox">
+                        <label for="checkbox3">
+                            Wednesday
+                        </label>
+                        <input id="checkbox4" name="dowpicker" value="4" type="checkbox">
+                        <label for="checkbox4">
+                            Thursday
+                        </label>
+                        <input id="checkbox5" name="dowpicker" value="5" type="checkbox">
+                        <label for="checkbox5">
+                            Friday
+                        </label>
+                        <input id="checkbox6" name="dowpicker" value="6" type="checkbox">
+                        <label for="checkbox6">
+                            Saturday
+                        </label>
+                        <input id="checkbox7" name="dowpicker" value="7" type="checkbox">
+                        <label for="checkbox7">
+                            Sunday
+                        </label>
+                    </fieldset>
+                </div>
+                <div data-role="fieldcontain">
+                    <label for="duration">Duration per Station</label>
+                    <input name="duration" id="duration" type="date" data-mini="true"data-role="datebox"
+                        data-options='{"mode": "durationbox"}'>
+                </div>
+                <div data-role="fieldcontain">
+                    <label for="starttime">Start Time</label>
+                    <input name="starttime" id="starttime" type="date" data-mini="true" data-role="datebox"
+                        data-options='{"mode": "timebox", "overrideTimeFormat": 24}'>
+                </div>
+                <div data-role="fieldcontain">
+                    <input data-icon="plus" data-iconpos="left" value="Submit" data-mini="true" type="submit">
+                </div>
+            </form>
+        </div><!-- /content -->
+        
+        <div data-role="footer" data-theme="d">
+                <h4></h4>
+        </div><!-- /footer -->
+</div><!-- /page two -->
+
+

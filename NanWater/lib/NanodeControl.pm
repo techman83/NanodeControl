@@ -33,16 +33,17 @@ get '/settings' => sub {
   };
 };
 
-# Main Settings
-get '/mainsettings' => sub {
-  template 'mainsettings', {
-        title  => "Nanode Control - Main Settings",
-  };
+# Schedule
+get '/schedule' => sub {
+
+  template 'schedule', {
+        title  => "Nanode Control - Schedule",
+  }, { layout => 'schedule' };
 };
 
-post '/mainsettings' => sub {
+post '/schedule' => sub {
   my $data = from_json(request->body);
-  debug("Control Station: ", $data);
+  debug("Schedule: ", $data);
   return qq({"result":"success"});
 };
 

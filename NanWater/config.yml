@@ -3,7 +3,7 @@
 # all the settings in this file will be loaded at Dancer's startup.
 
 # Your application's name
-appname: "DanceApp"
+appname: "Nanode Control"
 
 # The default layout to use for your application (located in
 # views/layouts/main.tt)
@@ -18,12 +18,12 @@ charset: "UTF-8"
 # simple: default and very basic template engine
 # template_toolkit: TT
 
-template: "tiny"
+#template: "tiny"
 
-# template: "template_toolkit"
-# engines:
-#   template_toolkit:
-#     encoding:  'utf8'
-#     start_tag: '[%'
-#     end_tag:   '%]'
+template: "template_toolkit"
+engines:
+  template_toolkit:
+    encoding:  'utf8'
+    start_tag: '[%'
+    end_tag:   '%]'
 
