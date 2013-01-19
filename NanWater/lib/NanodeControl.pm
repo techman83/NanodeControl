@@ -3,7 +3,7 @@ use Dancer ':syntax';
 use Data::Dumper;
 use NanodeControl::DBsqlite;
 use NanodeControl::RESTduino;
-use Data::Validate::URI qw(is_web_uri);
+use NanodeControl::PIcontrol;
 set serializer => 'JSON';
 
 our $VERSION = '0.1';
@@ -62,7 +62,6 @@ get '/addstation' => sub {
 post '/addstation' => sub {
   my $data = from_json(request->body);
   debug("Add station: ", $data);
-  unless (is_web_uri($data->{stationurl})) { return qq({"result":"failure","error":"URL"}); }
   unless ($data->{stationname} eq "" || $data->{stationurl} eq "" || $data->{stationtype} eq "" || $data->{stationcategory} eq "") {
     my $add = add_station($data->{stationname},$data->{stationurl},$data->{stationtype},$data->{stationcategory});
     debug($add);
@@ -153,7 +152,27 @@ post '/stations/:id' => sub {
   debug("Control Station: ", $station);
   my $result = set_station_state($station->{url},$station->{act},$station->{station}); # improve this, should be able to pass the whole object to the class... just not done it before!
   debug("result: $result");
+  if ($result eq "success") {
+    return qq({"result":"success"});
+  } else {
+    return qq({"result":"failed"});
+  }
+};
+
+get '/pigpio/:gpio/:state' => sub {
+  my $gpio = params->{gpio};
+  my $state = params->{state};
+  debug("Control gpio $gpio: $state");
+  set_pigpio_state($gpio,$state);
   return qq({"result":"success"});
+};
+get '/pigpio/:gpio' => sub {
+  my $gpio = params->{gpio};
+  debug("Get gpio $gpio state");
+  my $state = get_pigpio_state($gpio);
+  my $result = qq({"$gpio":"$state"});
+  debug($result);
+  return $result;
 };
 
 true;

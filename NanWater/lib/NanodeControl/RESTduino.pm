@@ -1,46 +1,45 @@
 package NanodeControl::RESTduino;
 use strict;
-use REST::Client;
-use JSON;
+use NanodeControl::PIcontrol;
+use LWP::Simple qw(get);
+use Dancer qw(:syntax !get);
 use base 'Exporter';
-# Dev stuff
-use File::Touch; # will just use files until the arduinos arrive!
 
 our @EXPORT = qw(get_station_state set_station_state);
 
 sub get_station_state {
-  # id only needed during dev for tempfile name
-  my ($url,$id) = @_;
-# Potential code for rest state getting stuffs
-#  my $restclient = REST::Client->new();
-#  $restclient->GET($url);
-#  my $result = from_json($restclient->responseContent());
+  my ($url) = @_;
+  debug("Getting URL: $url");
   my $result = "";
-  if ( -e "/tmp/$id.txt") {
-    open (STATEFILE, "/tmp/$id.txt");
-    while (<STATEFILE>) {
-           chomp;
-           $result = $_;
-    }
-    close (STATEFILE);
+  unless ($url =~ /http/) {
+    $result = get_pigpio_state($url);
+    debug("State: $result");
+    return $result;
   } else {
-    $result = 0;
+    my $state = get($url);
+    my $data = from_json($state);
+    my $pinid = (keys $data)[0];
+    my $result = $data->{"$pinid"};
+    debug("State: $state Result: $result");
+    return $result;
   }
-  return $result;
 }
 
 sub set_station_state {
-  # id only needed during dev for tempfile name
-  my ($url,$state,$id) = @_;
-# Potential code for rest state settings stuffs
-#  my $restclient = REST::Client->new();
-#  my $stateurl = "$url/$state";  
-#  $restclient->POST($stateurl);
-#  $result = from_json($restclient->responseContent());
-  open (STATEFILE, ">/tmp/$id.txt");
-  print STATEFILE "$state";
-  close (STATEFILE);
-  return "success: $id - $state";
+  my ($url,$state,) = @_;
+  unless ($url =~ /http/) {
+    set_pigpio_state($url,$state);
+  } else {
+    my $stateurl = "$url/$state";  
+    get($stateurl);
+  }
+
+  my $result = get_station_state($url);
+  if ( $state == $result) {
+    return "success: $result";
+  } else {
+    return "failed: $result";
+  }
 }
 
 1

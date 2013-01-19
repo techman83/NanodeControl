@@ -1,5 +1,6 @@
 package NanodeControl::DBsqlite;
 use strict;
+use Dancer ':syntax';
 use DBD::SQLite;
 use NanodeControl::RESTduino;
 use base 'Exporter';
@@ -114,7 +115,7 @@ sub get_stations {
   my $sth = ""; 
   unless ($category eq 'All') {
     $sth = $dbh->prepare(q{
-        SELECT s.id, s.name, s.category, s.type, c.name
+        SELECT s.id, s.name, s.category, s.type, c.name, s.url
         FROM stations s 
         LEFT OUTER JOIN categories c 
         ON s.category = c.id
@@ -134,8 +135,9 @@ sub get_stations {
     $sth->execute();
   }
   my @stations;
-  while (my ($id,$name,$categoryid,$type,$category, $url) = $sth->fetchrow_array) {
+  while (my ($id,$name,$categoryid,$type,$category,$url) = $sth->fetchrow_array) {
     if ($type == 10001) {
+      debug("Station Details: $id, $name, $type, $category, $url");
       push @stations, {
           id => $id,
           name => $name,
@@ -143,9 +145,10 @@ sub get_stations {
           categoryid => $categoryid,
           type => $type,
           onoff => 1,
-          state => get_station_state($url, $id)
+          state => get_station_state($url)
       };
     } else {
+      debug("Station Details: $id, $name, $type, $category, $url");
       push @stations, {
           id => $id,
           name => $name,
@@ -153,7 +156,7 @@ sub get_stations {
           categoryid => $categoryid,
           type => $type,
           slider => 1,
-          state => get_station_state($url, $id)
+          state => get_station_state($url)
       };
     }
   }
