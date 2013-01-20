@@ -135,29 +135,15 @@ sub get_stations {
   }
   my @stations;
   while (my ($id,$name,$categoryid,$type,$category,$url) = $sth->fetchrow_array) {
-    if ($type == 10001) {
-      debug("Station Details: $id, $name, $type, $category, $url");
-      push @stations, {
-          id => $id,
-          name => $name,
-          category => $category,
-          categoryid => $categoryid,
-          type => $type,
-          onoff => 1,
-          url => $url,
-      };
-    } else {
-      debug("Station Details: $id, $name, $type, $category, $url");
-      push @stations, {
-          id => $id,
-          name => $name,
-          category => $category,
-          categoryid => $categoryid,
-          type => $type,
-          slider => 1,
-          url => $url,
-      };
-    }
+    debug("Station Details: $id, $name, $type, $category, $url");
+    push @stations, {
+        id => $id,
+        name => $name,
+        category => $category,
+        categoryid => $categoryid,
+        type => $type,
+        url => $url,
+    };
   }
   return @stations;
 };

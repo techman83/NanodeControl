@@ -10,7 +10,8 @@
         <div data-role="content" >      
                 <h2>[% category %]</h2><hr>
                         [% FOREACH station IN stations %]
-                          [% IF station.onoff %]
+                          [% SWITCH station.type %]
+                          [% CASE '10001' %]
                             <div class='togglebox' data-role="fieldcontain">
                                   <fieldset data-role="controlgroup">
                                       <label for="toggleswitch-[% station.id %]">[% station.name %]</label>
@@ -24,8 +25,7 @@
                                       </select>
                                   </fieldset>
                             </div>
-                          [% END %]
-                          [% IF station.slider %]
+                          [% CASE '10002' %]
                             <div data-role="fieldcontain">
                                 <fieldset data-role="controlgroup">
                                     <label for="slider-[% station.id %]">
