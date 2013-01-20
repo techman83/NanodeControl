@@ -17,8 +17,8 @@
 <!-- Start of Error dialog -->
 <div data-role="page" id="info_popup">
 
-	<div data-role="header" data-theme="b">
-		<h1 id="error_heading"></h2>
+	<div id="popup_header" data-role="header" data-theme="b">
+		<h1 id="error_heading"></h1>
 	</div><!-- /header -->
 
 	<div data-role="content" data-theme="d">	
@@ -26,7 +26,7 @@
 	</div><!-- /content -->
 	
 	<div data-role="footer">
-          &nbsp
+          &nbsp;
 	</div><!-- /footer -->
 </div><!-- /page popup -->
 <a href="#info_popup" id='lnkInfo' data-rel="dialog" data-transition="pop" style='dislay:none;'></a>

@@ -14,7 +14,7 @@ $(document).on('pageshow',function(event, ui){
 });
 
 $(document).on('pageinit', function(e){
-        var timeout = 5000;
+        var timeout = 15000;
         if (e.target.id == 'categories') {
                 console.log("Add/Remove Categories"); 
                 // toggle actions        
@@ -46,16 +46,19 @@ $(document).on('pageinit', function(e){
                                                         case 'failure':
                                 				console.log("Failure:" + data.error);
                                                                   if ( data.error == "undefined") {
+                                                                    $("#popup_header").attr("data-theme","a").removeClass("ui-bar-b").addClass("ui-bar-a");
                                                                     $("#error_heading").text('UNDEFINED');
                                                                     $("#error_content").text('Category name has been left blank.');
                                                                     $("#lnkInfo").click();
                                                                   };
                                                                   if ( data.error == "none_seleceted") {
+                                                                    $("#popup_header").attr("data-theme","a").removeClass("ui-bar-b").addClass("ui-bar-a");
                                                                     $("#error_heading").text('None Seleceted');
                                                                     $("#error_content").text('A Category has not been seleceted.') 
                                                                     $("#lnkInfo").click();
                                                                   };
                                                                   if ( data.error == "station_associated") {
+                                                                    $("#popup_header").attr("data-theme","a").removeClass("ui-bar-b").addClass("ui-bar-a");
                                                                     $("#error_heading").text('Station Associated'); 
                                                                     $("#error_content").text('At least one station is still associated with the category "' + data.category + '".') 
                                                                     $("#lnkInfo").click();
@@ -71,6 +74,7 @@ $(document).on('pageinit', function(e){
                                         error: function(request, status, err) {
                                                 if (status == "timeout") {
                                 			console.log('timeout'); 
+                                                        $("#popup_header").attr("data-theme","a").removeClass("ui-bar-b").addClass("ui-bar-a");
                                                         $("#error_heading").text('TIMEOUT');
                                                         $("#error_content").text('Request timed out, please refresh your browser.');
                                                         $("#lnkInfo").click();
@@ -143,6 +147,7 @@ $(document).on('pageinit', function(e){
                                         error: function(request, status, err) {
                                                 if (status == "timeout") {
                                 			console.log('timeout'); 
+                                                        $("#popup_header").attr("data-theme","a").removeClass("ui-bar-b").addClass("ui-bar-a");
                                                         $("#error_heading").text('TIMEOUT');
                                                         $("#error_content").text('Request timed out, please refresh your browser.');
                                                         $("#lnkInfo").click();
@@ -200,11 +205,6 @@ $(document).on('pageinit', function(e){
                                                                   $("#error_content").text('A field has been left blank. All fields are required.') 
                                                                   $("#lnkInfo").click();
                                                                 }
-                                                                if ( data.error == "URL" ) {
-                                                                  $("#error_heading").text('Invalid URL') 
-                                                                  $("#error_content").text('Station URL is Invalid, please correct it and try again.') 
-                                                                  $("#lnkInfo").click();
-                                                                }
                                                 	        $.mobile.hidePageLoadingMsg();
                                                                 break;
                                                         default:
@@ -217,6 +217,7 @@ $(document).on('pageinit', function(e){
                                         error: function(request, status, err) {
                                                 if (status == "timeout") {
                                 			console.log('timeout'); 
+                                                        $("#popup_header").attr("data-theme","a").removeClass("ui-bar-b").addClass("ui-bar-a");
                                                         $("#error_heading").text('TIMEOUT');
                                                         $("#error_content").text('Request timed out, please refresh your browser.');
                                                         $("#lnkInfo").click();
@@ -275,6 +276,7 @@ $(document).on('pageinit', function(e){
                                         error: function(request, status, err) {
                                                 if (status == "timeout") {
                                 			console.log('timeout'); 
+                                                        $("#popup_header").attr("data-theme","a").removeClass("ui-bar-b").addClass("ui-bar-a");
                                                         $("#error_heading").text('TIMEOUT');
                                                         $("#error_content").text('Request timed out, please refresh your browser.');
                                                         $("#lnkInfo").click();
@@ -305,4 +307,80 @@ $(document).on('pageinit', function(e){
         		location.reload();
         	});
         } // e.target.id == 'control'
+        if (e.target.id == "schedule" ) {
+                console.log("Station Schedule");
+
+                // Submit function
+                function submit (name, duration, starttime, days, stations) {
+                        $.mobile.showPageLoadingMsg(); 
+                        var jsondata = { name: name, duration: duration, starttime: starttime, days: days, stations: stations };
+                        $.ajax({
+                                type: "POST",
+                                url: "/addschedule",
+                                data: JSON.stringify(jsondata),
+                                dataType: "json",
+                                //async: false,
+                                timeout: timeout, // in milliseconds
+                                success: function(data) {
+                                        // process data here
+        				var status = '';
+                                        switch (data.result) {
+                                                case 'success':
+                        				console.log("Success:" + data.result); 
+                                                        $("#error_heading").text('Success'); 
+                                                        $("#error_content").text('Schedule added and enabled successfully.');
+                                                        $("#lnkInfo").click();
+                                			console.log('click');
+                                                        status = '#';
+                                                        break;
+                                                case 'failure':
+                        				console.log("Failure:" + data.result); 
+                                                        break;
+                                                default:
+                                                        $('div.fullscreen').show();
+                                                        $('div.' + data.result).show().empty().append(data.msg);
+                                        }
+        
+                                        $.mobile.hidePageLoadingMsg();
+                                },
+                                error: function(request, status, err) {
+                                        if (status == "timeout") {
+                        			console.log('timeout'); 
+                                                $("#popup_header").attr("data-theme","a").removeClass("ui-bar-b").addClass("ui-bar-a");
+                                                $("#error_heading").text('TIMEOUT');
+                                                $("#error_content").text('Request timed out, please refresh your browser.');
+                                                $("#lnkInfo").click();
+                        			console.log('click');
+                                        	$.mobile.hidePageLoadingMsg();
+                                        }
+                                }
+                        });
+                } // function submit
+
+                // Schedule
+                $("form[id='schedule']").submit(function(event) {
+                        event.stopPropagation();
+                        event.preventDefault();
+                        var days = [];
+                        $(":checkbox:checked[id^='checkbox']").each(function() { 
+                             days.push($(this).val());
+                        });
+                        var stations = [];
+                        $(":checkbox:checked[id^='station-']").each(function() { 
+                             stations.push($(this).attr("name"));
+                        });
+                        var name = $('[name=name]').val();
+                        var duration = $('[name=duration]').val();
+                        var starttime = $('[name=starttime]').val();
+                        console.log("Submit: " + name + ", " + duration + ", " + starttime + ", [" + days + "], [" + stations + "]");
+                        submit(name, duration, starttime, days, stations);
+                });
+                 
+                // Set station popups
+                $("form[id^='station_select-']").submit(function(event) {
+                        event.stopPropagation();
+                        event.preventDefault();
+                        $("#" + this.id).popup("close")
+                });
+        } // e.target.id == 'category-+'
 }); // document.ready

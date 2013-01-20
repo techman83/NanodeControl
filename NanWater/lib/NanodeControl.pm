@@ -9,11 +9,9 @@ set serializer => 'JSON';
 our $VERSION = '0.1';
 
 get '/test' => sub {
-    #my $db = NanodeControl::DBsqlite->new( database => "db/nanode_control.sqlite", );
-    my $data;
-    @{$data->{stations}} = (10001,10002,1003);
-    remove_stations(@{$data->{stations}});
-    #print Dumper(@categories);
+  template 'test', {
+        title  => "Nanode Control - Schedule",
+  }, { layout => 'schedule' };
 };
 
 # Index
@@ -45,9 +43,10 @@ get '/schedule' => sub {
   }, { layout => 'schedule' };
 };
 
-post '/schedule' => sub {
+post '/addschedule' => sub {
   my $data = from_json(request->body);
   debug("Schedule: ", $data);
+  sleep(1);
   return qq({"result":"success"});
 };
 

@@ -9,100 +9,96 @@
         </div><!-- /header -->
 
         <div data-role="content">      
-        <div id="categories" data-role="fieldcontain">
-                [% FOREACH category IN categories %] 
-                <p><a href="#[% category.id %]" data-ajax="false" data-role="button">[% category.name %]</a></p>
-                [% END %]
-        <div data-role="fieldcontain">
-        </div><!-- /content -->
-            <form>
-                <div id="dowpicker" data-role="fieldcontain">
-                    <fieldset data-role="controlgroup" data-type="vertical" data-mini="true">
-                        <legend>
-                            Choose:
-                        </legend>
-                        <input id="checkbox1" name="dowpicker" value="1" type="checkbox">
-                        <label for="checkbox1">
-                            Monday
-                        </label>
-                        <input id="checkbox2" name="dowpicker" value="2" type="checkbox">
-                        <label for="checkbox2">
-                            Tuesday
-                        </label>
-                        <input id="checkbox3" name="dowpicker" value="3" type="checkbox">
-                        <label for="checkbox3">
-                            Wednesday
-                        </label>
-                        <input id="checkbox4" name="dowpicker" value="4" type="checkbox">
-                        <label for="checkbox4">
-                            Thursday
-                        </label>
-                        <input id="checkbox5" name="dowpicker" value="5" type="checkbox">
-                        <label for="checkbox5">
-                            Friday
-                        </label>
-                        <input id="checkbox6" name="dowpicker" value="6" type="checkbox">
-                        <label for="checkbox6">
-                            Saturday
-                        </label>
-                        <input id="checkbox7" name="dowpicker" value="7" type="checkbox">
-                        <label for="checkbox7">
-                            Sunday
-                        </label>
-                    </fieldset>
-                </div>
-                <div data-role="fieldcontain">
-                    <label for="duration">Duration per Station</label>
-                    <input name="duration" id="duration" type="date" data-mini="true"data-role="datebox"
-                        data-options='{"mode": "durationbox"}'>
-                </div>
-                <div data-role="fieldcontain">
-                    <label for="starttime">Start Time</label>
-                    <input name="starttime" id="starttime" type="date" data-mini="true" data-role="datebox"
-                        data-options='{"mode": "timebox", "overrideTimeFormat": 24}'>
-                </div>
-                <div data-role="fieldcontain">
-                    <input data-icon="plus" data-iconpos="left" value="Submit" data-mini="true" type="submit">
-                </div>
-            </form>
+            <div id="categories" data-role="fieldcontain">
+                    [% FOREACH category IN categories %] 
+                    <p><a href="#station_select-[% category.id %]" data-rel="popup" data-transition="pop" data-mini="true" data-position-to="window" data-role="button">[% category.name %]</a></p>
+                    <div data-role="popup" id="station_select-[% category.id %]" data-overlay-theme="a" class="ui-content">
+                            <a href="#" data-rel="back" data-role="button" data-theme="a" data-icon="delete" data-iconpos="notext" class="ui-btn-right">Close</a>
+                            <form id="station_select-[% category.id %]">
+                                <div id="station_checkboxes" data-role="fieldcontain">
+                                    <fieldset data-role="controlgroup" data-type="vertical">
+                                            <legend>
+                                                   Select Stations: 
+                                            </legend>
+                                            [% FOREACH station IN stations %]
+                                                  [% IF station.categoryid == category.id %]
+                                                          <input id="station-[% station.id %]" name="[% station.id %]" type="checkbox">
+                                                          <label for="station-[% station.id %]">
+                                                                [% station.name %]
+                                                          </label>
+                                                  [% END %]
+                                            [% END %]
+                                   </fieldset>
+                               </div>
+                               <input id="select" data-theme="d" data-icon="plus" data-iconpos="left" value="Submit" type="submit">
+                            </form>
+                    </div><!-- /page [% category.id %] -->
+                    [% END %]
+            </div>
+            <div data-role="fieldcontain"> <!-- schedule form -->
+                <form id="schedule">
+                    <div id="dowpicker" data-role="fieldcontain">
+                        <fieldset data-role="controlgroup" data-type="vertical" data-mini="true">
+                            <legend>
+                                Choose:
+                            </legend>
+                            <input id="checkbox1" name="dowpicker" value="1" type="checkbox">
+                            <label for="checkbox1">
+                                Monday
+                            </label>
+                            <input id="checkbox2" name="dowpicker" value="2" type="checkbox">
+                            <label for="checkbox2">
+                                Tuesday
+                            </label>
+                            <input id="checkbox3" name="dowpicker" value="3" type="checkbox">
+                            <label for="checkbox3">
+                                Wednesday
+                            </label>
+                            <input id="checkbox4" name="dowpicker" value="4" type="checkbox">
+                            <label for="checkbox4">
+                                Thursday
+                            </label>
+                            <input id="checkbox5" name="dowpicker" value="5" type="checkbox">
+                            <label for="checkbox5">
+                                Friday
+                            </label>
+                            <input id="checkbox6" name="dowpicker" value="6" type="checkbox">
+                            <label for="checkbox6">
+                                Saturday
+                            </label>
+                            <input id="checkbox7" name="dowpicker" value="7" type="checkbox">
+                            <label for="checkbox7">
+                                Sunday
+                            </label>
+                        </fieldset>
+                    </div>
+                    <div data-role="fieldcontain">
+                        <label for="duration">Duration per Station</label>
+                        <input name="duration" id="duration" type="date" data-mini="true" data-role="datebox" 
+                        data-options='{"mode": "durationbox", "overrideDurationOrder":["h","i","s"] }'>
+                    </div>
+                    <div data-role="fieldcontain">
+                        <label for="starttime">Start Time</label>
+                        <input name="starttime" id="starttime" type="date" data-mini="true" data-role="datebox"
+                            data-options='{"mode": "timebox", "overrideTimeFormat": 24}'>
+                    </div>
+                    <div data-role="fieldcontain">
+                        <fieldset data-role="controlgroup">
+                            <label for="nameinput">
+                                Schedule Name
+                            </label>
+                            <input name="name" id="nameinput" placeholder="" value="" type="text">
+                        </fieldset>
+                    </div>
+                    <div data-role="fieldcontain">
+                        <input data-icon="plus" data-iconpos="left" value="Submit" data-mini="true" type="submit">
+                    </div>
+                </form>
+            </div><!-- schedule form -->
         </div><!-- /content -->
         
         <div data-role="footer" data-theme="d">
                 <h4></h4>
         </div><!-- /footer -->
 </div><!-- /page two -->
-
-
-[% FOREACH category IN categories %] 
-<div data-role="page" id="[% category.id %]">
-
-        <div data-role="header">
-		<a href="/" data-icon="home" class="ui-btn-left">Home</a>
-                <h1>[% category.name %]</h1>
-		<a href="/settings" data-ajax="false" data-icon="gear" class="ui-btn-right">Settings</a>
-        </div><!-- /header -->
-        <div data-role="content" >     
-        <form>
-            <div id="station_checkboxes" data-role="fieldcontain">
-                <fieldset data-role="controlgroup" data-type="vertical">
-                        <legend>
-                               Selecet Stations: 
-                        </legend>
-                        [% FOREACH station IN stations %]
-                              [% IF station.categoryid == category.id %]
-                                      <input id="[% station.id %]" name="" type="checkbox">
-                                      <label for="[% station.id %]">
-                                            [% station.category %] - [% station.name %]
-                                      </label>
-                              [% END %]
-                        [% END %]
-               </fieldset>
-           </div>
-           <input id="submit_remove" data-ajax="false" data-theme="d" data-icon="minus" data-iconpos="left" value="Submit" type="submit">
-        <form>
-        </div><!-- /content -->
-        <div data-role="footer" data-theme="d">
-                <h4></h4>
-        </div><!-- /footer -->
-</div><!-- /page [% category.id %] -->
-[% END %]
+ 
