@@ -2,7 +2,6 @@ package NanodeControl::DBsqlite;
 use strict;
 use Dancer ':syntax';
 use DBD::SQLite;
-use NanodeControl::RESTduino;
 use base 'Exporter';
 
 our @EXPORT    = qw(get_station_url get_stations get_categories get_category get_types add_station remove_stations add_category remove_categories);
@@ -145,7 +144,7 @@ sub get_stations {
           categoryid => $categoryid,
           type => $type,
           onoff => 1,
-          state => get_station_state($url)
+          url => $url,
       };
     } else {
       debug("Station Details: $id, $name, $type, $category, $url");
@@ -156,7 +155,7 @@ sub get_stations {
           categoryid => $categoryid,
           type => $type,
           slider => 1,
-          state => get_station_state($url)
+          url => $url,
       };
     }
   }

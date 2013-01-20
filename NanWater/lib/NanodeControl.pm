@@ -35,9 +35,13 @@ get '/settings' => sub {
 
 # Schedule
 get '/schedule' => sub {
+  my @categories = get_categories();
+  my @stations = get_stations("All"); 
 
   template 'schedule', {
         title  => "Nanode Control - Schedule",
+        stations => \@stations,
+        categories => \@categories,
   }, { layout => 'schedule' };
 };
 
@@ -130,7 +134,12 @@ post '/removecategory' => sub {
 # Station Control
 get '/stations/:category' => sub {
   my $category = params->{category};
-  my @stations = get_stations($category); 
+  my @stations = get_stations($category);
+  my $number = 0;
+  foreach my $station (@stations) {
+    $stations[$number]->{state} = get_station_state($stations[$number]->{url});
+    $number++;
+  }   
   my $categoryname = "";
   unless ($category eq 'All') {
     $categoryname = get_category($category);
