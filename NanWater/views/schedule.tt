@@ -9,7 +9,12 @@
         </div><!-- /header -->
 
         <div data-role="content">      
-       <!-- Home -->
+        <div id="categories" data-role="fieldcontain">
+                [% FOREACH category IN categories %] 
+                <p><a href="#[% category.id %]" data-ajax="false" data-role="button">[% category.name %]</a></p>
+                [% END %]
+        <div data-role="fieldcontain">
+        </div><!-- /content -->
             <form>
                 <div id="dowpicker" data-role="fieldcontain">
                     <fieldset data-role="controlgroup" data-type="vertical" data-mini="true">
@@ -22,7 +27,7 @@
                         </label>
                         <input id="checkbox2" name="dowpicker" value="2" type="checkbox">
                         <label for="checkbox2">
-                            Tueday
+                            Tuesday
                         </label>
                         <input id="checkbox3" name="dowpicker" value="3" type="checkbox">
                         <label for="checkbox3">
@@ -68,3 +73,36 @@
 </div><!-- /page two -->
 
 
+[% FOREACH category IN categories %] 
+<div data-role="page" id="[% category.id %]">
+
+        <div data-role="header">
+		<a href="/" data-icon="home" class="ui-btn-left">Home</a>
+                <h1>[% category.name %]</h1>
+		<a href="/settings" data-ajax="false" data-icon="gear" class="ui-btn-right">Settings</a>
+        </div><!-- /header -->
+        <div data-role="content" >     
+        <form>
+            <div id="station_checkboxes" data-role="fieldcontain">
+                <fieldset data-role="controlgroup" data-type="vertical">
+                        <legend>
+                               Selecet Stations: 
+                        </legend>
+                        [% FOREACH station IN stations %]
+                              [% IF station.categoryid == category.id %]
+                                      <input id="[% station.id %]" name="" type="checkbox">
+                                      <label for="[% station.id %]">
+                                            [% station.category %] - [% station.name %]
+                                      </label>
+                              [% END %]
+                        [% END %]
+               </fieldset>
+           </div>
+           <input id="submit_remove" data-ajax="false" data-theme="d" data-icon="minus" data-iconpos="left" value="Submit" type="submit">
+        <form>
+        </div><!-- /content -->
+        <div data-role="footer" data-theme="d">
+                <h4></h4>
+        </div><!-- /footer -->
+</div><!-- /page [% category.id %] -->
+[% END %]
