@@ -46,7 +46,7 @@ get '/schedule' => sub {
 post '/addschedule' => sub {
   my $data = from_json(request->body);
   debug("Schedule: ", $data);
-  sleep(1);
+  add_schedule($data);
   return qq({"result":"success"});
 };
 

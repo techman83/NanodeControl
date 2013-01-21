@@ -4,7 +4,7 @@ use Dancer ':syntax';
 use DBD::SQLite;
 use base 'Exporter';
 
-our @EXPORT    = qw(get_station_url get_stations get_categories get_category get_types add_station remove_stations add_category remove_categories);
+our @EXPORT    = qw(add_schedule get_schedules enable_schedule disable_schedule get_station_url get_stations get_categories get_category get_types add_station remove_stations add_category remove_categories);
 
 # DB connection
 sub connect_db {
@@ -191,5 +191,18 @@ sub get_station_url {
   my $url = $sth->fetchrow_array; 
   return $url;
 };
+
+## Schedules
+# Add a schedule
+sub add_schedule {
+  my ($schedule) = @_;
+  # Example Data {'days' => ['1','3','5','7'],'duration' => '0 Day, 00:05:00','name' => 'Schedule 1','starttime' => '19:11','stations' => ['10001']}
+  # Schedule name,starttime,dow
+  # Scheduled stations scheduleid,stationid,duration
+  # DB Plan, insert into schedule, select last_insert_rowid() from schedules, insert stations possibly foreach loop... will research for most efficient method.
+
+  debug($schedule->{days}); #seems passing object is possible!
+  return;
+}
 
 1
