@@ -2,6 +2,7 @@ package NanodeControl::RESTduino;
 use strict;
 use NanodeControl::PIcontrol;
 use LWP::Simple qw(get);
+use JSON::Parse qw(valid_json);
 use Dancer qw(:syntax !get);
 use base 'Exporter';
 
@@ -17,11 +18,19 @@ sub get_station_state {
     return $result;
   } else {
     my $state = get($url);
-    my $data = from_json($state);
-    my $pinid = (keys $data)[0];
-    my $result = $data->{"$pinid"};
-    debug("State: $state Result: $result");
-    return $result;
+    if ( ! defined $state ){
+      debug("Failed: state undefined");
+      return "failure";
+    } elsif (valid_json($state)) {
+      my $data = from_json($state);
+      my $pinid = (keys $data)[0];
+      my $result = $data->{"$pinid"};
+      debug("State: $state Result: $result");
+      return $result;
+    } else {
+      debug("Failed: $state");
+      return "failure";
+    }
   }
 }
 
