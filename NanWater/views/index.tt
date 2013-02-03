@@ -2,9 +2,9 @@
 <div data-role="page" id="home">
 
         <div data-role="header">
-		<a href="/" data-icon="home" class="ui-btn-left">Home</a>
+    <a href="/" data-icon="home" class="ui-btn-left">Home</a>
                 <h1>[% title %]</h1>
-		<a href="/settings" data-ajax="false" data-icon="gear" class="ui-btn-right">Settings</a>
+    <a href="/settings" data-ajax="false" data-icon="gear" class="ui-btn-right">Settings</a>
         </div><!-- /header -->
         <div data-role="content" >     
                 <p><a href="/stations/All" data-ajax="false" data-role="button">All</a></p>

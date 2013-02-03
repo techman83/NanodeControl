@@ -326,7 +326,8 @@ $(document).on('pageinit', function(e){
         				var status = '';
                                         switch (data.result) {
                                                 case 'success':
-                        				console.log("Success:" + data.result); 
+                        				console.log("Success:" + data.result);
+                                console.log(data.message);
                                                         $("#error_heading").text('Success'); 
                                                         $("#error_content").text('Schedule added and enabled successfully.');
                                                         $("#lnkInfo").click();

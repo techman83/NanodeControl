@@ -27,3 +27,26 @@ engines:
     start_tag: '[%'
     end_tag:   '%]'
 
+messages:
+  category:
+    undefined:
+      title:  'UNDEFINED'
+      message:  'Category name has been left blank.'
+    none_selected:
+      title:  'None Seleceted'
+      message:  'A Category has not been seleceted.'
+    associated:
+      title:  'Station Associated'
+      message:  'At least one station is still associated with the category'
+  station:
+    success:
+      title:  'Success'
+      message: 'Station Added Successfully.'
+    undefined:
+      title:  'UNDEFINED'
+      message:  'A field has been left blank. All fields are required.'
+  schedule:
+    success:
+      title:  'Success'
+      message:  'Schedule added and enabled successfully.'
+

@@ -7,6 +7,7 @@ use NanodeControl::PIcontrol;
 set serializer => 'JSON';
 
 our $VERSION = '0.1';
+our $messages = config->{messages};
 
 get '/test' => sub {
   template 'test', {
@@ -45,9 +46,12 @@ get '/schedule' => sub {
 
 post '/addschedule' => sub {
   my $data = from_json(request->body);
-  debug("Schedule: ", $data);
-  add_schedule($data);
-  return qq({"result":"success"});
+  debug("Schedule: ", $data, $messages->{schedule}{success});
+  #add_schedule($data);
+  my $result = $messages->{schedule}{success};
+  $result->{result} = 'success';
+  to_json($result);
+  return $result;
 };
 
 # Add Station
@@ -67,10 +71,14 @@ post '/addstation' => sub {
   debug("Add station: ", $data);
   unless ($data->{stationname} eq "" || $data->{stationurl} eq "" || $data->{stationtype} eq "" || $data->{stationcategory} eq "") {
     my $add = add_station($data->{stationname},$data->{stationurl},$data->{stationtype},$data->{stationcategory});
-    debug($add);
+    my $result = $messages->{station}{success};
+    $result->{result} = 'success';
+    debug($add,$result);
     return qq({"result":"success"});
   } else {
-    return qq({"result":"failure","error":"undefined"});
+    my $result = $messages->{station}{undefined};
+    $result->{result} = 'failure';
+    return $result;
   }
 };
 
