@@ -1,20 +1,122 @@
+var timeout = 15000;
+var data = new Object();
+
 $(document).on('pageshow',function(event, ui){
-        if (event.target.id == 'control') {
-                // set initial states
-                $('select').each(function() {
-                        if($(this).hasClass('state-255')) {
-                                console.log(this.id + ' 255');
-                                $('#' + this.id).val('255').slider("refresh");
-                        } else {
-                                console.log(this.id + ' 0');
-                                $('#' + this.id).val('0').slider("refresh");
-                        }
-                }); // togglebox foreach
-        }
+  if (event.target.id == 'control') {
+    // set initial states
+    $('select').each(function() {
+      if($(this).hasClass('state-255')) {
+        console.log(this.id + ' 255');
+        $('#' + this.id).val('255').slider("refresh");
+      } else {
+        console.log(this.id + ' 0');
+        $('#' + this.id).val('0').slider("refresh");
+      }
+    }); // togglebox foreach
+  }
 });
 
+function messagepop(data) {
+  if ( data.result != "success" ) {
+    $("#popup_header").attr("data-theme","a").removeClass("ui-bar-b").addClass("ui-bar-a");
+  }
+  $("#error_heading").text(data.title);
+  $("#error_content").text(data.message);
+  $("#lnkInfo").click();
+}
+
+function submit (data) {
+  $.mobile.showPageLoadingMsg(); 
+  console.log($(this));
+  var jsondata = { data: data };
+  $.ajax({
+    type: "POST",
+    url: data.url,
+    data: JSON.stringify(jsondata),
+    dataType: "json",
+    //async: false,
+    timeout: timeout, // in milliseconds
+    success: function(result) {
+      // process data here
+      var status = '';
+      switch (result.result) {
+        case 'success':
+          $.mobile.hidePageLoadingMsg();
+          console.log("Success:" + result.result);
+          if (data.successpop) {
+            messagepop(result);
+          } else {
+            location.reload();
+          }
+          status = '#';
+          break;
+        case 'failure':
+          console.log("Failure:" + data.error);
+          messagepop(data);
+          break;
+        default:
+                $('div.fullscreen').show();
+                $('div.' + data.result).show().empty().append(data.msg);
+      }
+      
+      $.mobile.hidePageLoadingMsg();
+    },
+    error: function(request, status, err) {
+      if (status == "timeout") {
+              console.log('timeout'); 
+              data.result = 'timeout';
+              data.title = 'TIMEOUT';
+              data.message = 'Request timed out, please refresh your browser.';
+              console.log('data'); 
+              messagepop(data);
+              $.mobile.hidePageLoadingMsg();
+      }
+    }
+  });
+} // function submit
+
+// Schedule
 $(document).on('pageinit', function(e){
-        var timeout = 15000;
+  if (e.target.id == 'schedule') {
+    console.log("Schedule");
+    $("form[id='schedule']").submit(function(event) {
+      event.stopPropagation();
+      event.preventDefault();
+      data.days = [];
+      $(":checkbox:checked[id^='checkbox']").each(function() { 
+           data.days.push($(this).val());
+      });
+      data.stations = [];
+      $(":checkbox:checked[id^='station-']").each(function() { 
+           data.stations.push($(this).attr("name"));
+      });
+      data.name = $('[name=name]').val();
+      data.duration = $('[name=duration]').val();
+      data.starttime = $('[name=starttime]').val();
+      data.url = '/addschedule';
+      data.successpop = 1;
+      console.log("Submit: " + data);
+      submit(data);
+    });
+     
+    // Set station popups
+    $("form[id^='station_select-']").submit(function(event) {
+      event.stopPropagation();
+      event.preventDefault();
+      $("#" + this.id).popup("close")
+    });
+  }
+});
+
+
+// Categories
+//$(document).on('pageinit', function(e){
+//  if (e.target.id == 'schedule') {
+//
+//  }
+//});
+
+$(document).on('pageinit', function(e){
         if (e.target.id == 'categories') {
                 console.log("Add/Remove Categories"); 
                 // toggle actions        
@@ -22,68 +124,6 @@ $(document).on('pageinit', function(e){
                         console.log("Submit"); 
                         event.stopPropagation();
                         event.preventDefault();
-                        function submit (data, action, url) {
-                                $.mobile.showPageLoadingMsg(); 
-                                console.log($(this));
-                                var jsondata = { data: data };
-                                $.ajax({
-                                        type: "POST",
-                                        url: url,
-                                        data: JSON.stringify(jsondata),
-                                        dataType: "json",
-                                        //async: false,
-                                        timeout: timeout, // in milliseconds
-                                        success: function(data) {
-                                                // process data here
-        					var status = '';
-                                                switch (data.result) {
-                                                        case 'success':
-                                				console.log("Success:" + data.result); 
-                                                	        $.mobile.hidePageLoadingMsg();
-        		                                        location.reload();
-                                                                status = '#';
-                                                                break;
-                                                        case 'failure':
-                                				console.log("Failure:" + data.error);
-                                                                  if ( data.error == "undefined") {
-                                                                    $("#popup_header").attr("data-theme","a").removeClass("ui-bar-b").addClass("ui-bar-a");
-                                                                    $("#error_heading").text('UNDEFINED');
-                                                                    $("#error_content").text('Category name has been left blank.');
-                                                                    $("#lnkInfo").click();
-                                                                  };
-                                                                  if ( data.error == "none_seleceted") {
-                                                                    $("#popup_header").attr("data-theme","a").removeClass("ui-bar-b").addClass("ui-bar-a");
-                                                                    $("#error_heading").text('None Seleceted');
-                                                                    $("#error_content").text('A Category has not been seleceted.') 
-                                                                    $("#lnkInfo").click();
-                                                                  };
-                                                                  if ( data.error == "station_associated") {
-                                                                    $("#popup_header").attr("data-theme","a").removeClass("ui-bar-b").addClass("ui-bar-a");
-                                                                    $("#error_heading").text('Station Associated'); 
-                                                                    $("#error_content").text('At least one station is still associated with the category "' + data.category + '".') 
-                                                                    $("#lnkInfo").click();
-                                                                  };
-                                                                break;
-                                                        default:
-                                                                $('div.fullscreen').show();
-                                                                $('div.' + data.result).show().empty().append(data.msg);
-                                                }
-        
-                                                $.mobile.hidePageLoadingMsg();
-                                        },
-                                        error: function(request, status, err) {
-                                                if (status == "timeout") {
-                                			console.log('timeout'); 
-                                                        $("#popup_header").attr("data-theme","a").removeClass("ui-bar-b").addClass("ui-bar-a");
-                                                        $("#error_heading").text('TIMEOUT');
-                                                        $("#error_content").text('Request timed out, please refresh your browser.');
-                                                        $("#lnkInfo").click();
-                                			console.log('click');
-                                                	$.mobile.hidePageLoadingMsg();
-                                                }
-                                        }
-                                });
-                        } // function submit
                         switch ($(this).attr('id')) {
                           case 'removecategory':
                               var categories = [];
@@ -126,16 +166,16 @@ $(document).on('pageinit', function(e){
                                         timeout: timeout, // in milliseconds
                                         success: function(data) {
                                                 // process data here
-        					var status = '';
+                                                var status = '';
                                                 switch (data.result) {
                                                         case 'success':
-                                				console.log("Success:" + data.result);
-                                                	        $.mobile.hidePageLoadingMsg();
-        		                                        location.reload();
+                                                                console.log("Success:" + data.result);
+                                                                $.mobile.hidePageLoadingMsg();
+                                                                location.reload();
                                                                 status = '#';
                                                                 break;
                                                         case 'failure':
-                                				console.log("Failure:" + data.result); 
+                                                                console.log("Failure:" + data.result); 
                                                                 break;
                                                         default:
                                                                 $('div.fullscreen').show();
@@ -146,13 +186,13 @@ $(document).on('pageinit', function(e){
                                         },
                                         error: function(request, status, err) {
                                                 if (status == "timeout") {
-                                			console.log('timeout'); 
+                                                        console.log('timeout'); 
                                                         $("#popup_header").attr("data-theme","a").removeClass("ui-bar-b").addClass("ui-bar-a");
                                                         $("#error_heading").text('TIMEOUT');
                                                         $("#error_content").text('Request timed out, please refresh your browser.');
                                                         $("#lnkInfo").click();
-                                			console.log('click');
-                                                	$.mobile.hidePageLoadingMsg();
+                                                        console.log('click');
+                                                        $.mobile.hidePageLoadingMsg();
                                                 }
                                         }
                                 });
@@ -164,10 +204,10 @@ $(document).on('pageinit', function(e){
                         });
                         submit(stations);
                 }); // togglebox click
-        	$('#error_popup').live('pagehide',function(event) {
-        		location.reload();
+                $('#error_popup').live('pagehide',function(event) {
+                        location.reload();
                         return false;
-        	});
+                });
         } // e.target.id == 'add'
         if (e.target.id == 'addstation') {
                 console.log("Add Station"); 
@@ -189,23 +229,23 @@ $(document).on('pageinit', function(e){
                                         timeout: timeout, // in milliseconds
                                         success: function(data) {
                                                 // process data here
-        					var status = '';
+                                                var status = '';
                                                 switch (data.result) {
                                                         case 'success':
-                                				console.log("Success:" + data.result); 
+                                                                console.log("Success:" + data); 
                                                                 $("#error_heading").text('Success') 
                                                                 $("#error_content").text('Station Added Successfully.') 
                                                                 $("#lnkInfo").click();
                                                                 status = '#';
                                                                 break;
                                                         case 'failure':
-                                				console.log("Failure:" + data.error);
+                                                                console.log("Failure:" + data.error);
                                                                 if ( data.error == "undefined" ) {
                                                                   $("#error_heading").text('UNDEFINED') 
                                                                   $("#error_content").text('A field has been left blank. All fields are required.') 
                                                                   $("#lnkInfo").click();
                                                                 }
-                                                	        $.mobile.hidePageLoadingMsg();
+                                                                $.mobile.hidePageLoadingMsg();
                                                                 break;
                                                         default:
                                                                 $('div.fullscreen').show();
@@ -216,13 +256,13 @@ $(document).on('pageinit', function(e){
                                         },
                                         error: function(request, status, err) {
                                                 if (status == "timeout") {
-                                			console.log('timeout'); 
+                                                        console.log('timeout'); 
                                                         $("#popup_header").attr("data-theme","a").removeClass("ui-bar-b").addClass("ui-bar-a");
                                                         $("#error_heading").text('TIMEOUT');
                                                         $("#error_content").text('Request timed out, please refresh your browser.');
                                                         $("#lnkInfo").click();
-                                			console.log('click');
-                                                	$.mobile.hidePageLoadingMsg();
+                                                        console.log('click');
+                                                        $.mobile.hidePageLoadingMsg();
                                                 }
                                         }
                                 });
@@ -233,10 +273,10 @@ $(document).on('pageinit', function(e){
                         console.log("Type: " + $('[name=type]').val());
                         submit($('[name=name]').val(), $('[name=stationurl]').val(), $('[name=category]').val(), $('[name=type]').val());
                 }); // togglebox click
-        	$('#error_popup').live('pagehide',function(event) {
-        		location.reload();
+                $('#error_popup').live('pagehide',function(event) {
+                        location.reload();
                         return false;
-        	});
+                });
         } // e.target.id == 'add'
         if (e.target.id == 'control') {
                 // $(document).ready(function(){ <- This here does not work in jquery mobile. You will encounter hours of frustration until you learn this!
@@ -257,14 +297,14 @@ $(document).on('pageinit', function(e){
                                         timeout: timeout, // in milliseconds
                                         success: function(data) {
                                                 // process data here
-        					var status = '';
+                                                var status = '';
                                                 switch (data.result) {
                                                         case 'success':
-                                				console.log("Success:" + data.result); 
+                                                                console.log("Success:" + data.result); 
                                                                 status = '#' + attr;
                                                                 break;
                                                         case 'failure':
-                                				console.log("Failure:" + data.result); 
+                                                                console.log("Failure:" + data.result); 
                                                                 break;
                                                         default:
                                                                 $('div.fullscreen').show();
@@ -275,13 +315,13 @@ $(document).on('pageinit', function(e){
                                         },
                                         error: function(request, status, err) {
                                                 if (status == "timeout") {
-                                			console.log('timeout'); 
+                                                        console.log('timeout'); 
                                                         $("#popup_header").attr("data-theme","a").removeClass("ui-bar-b").addClass("ui-bar-a");
                                                         $("#error_heading").text('TIMEOUT');
                                                         $("#error_content").text('Request timed out, please refresh your browser.');
                                                         $("#lnkInfo").click();
-                                			console.log('click');
-                                                	$.mobile.hidePageLoadingMsg();
+                                                        console.log('click');
+                                                        $.mobile.hidePageLoadingMsg();
                                                 }
                                         }
                                 });
@@ -303,85 +343,60 @@ $(document).on('pageinit', function(e){
                                 submit(id, val);
                         }, delay));
                 }); // togglebox click
-        	$('#error_popup').live('pagehide',function(event) {
-        		location.reload();
-        	});
+                $('#error_popup').live('pagehide',function(event) {
+                        location.reload();
+                });
         } // e.target.id == 'control'
-        if (e.target.id == "schedule" ) {
-                console.log("Station Schedule");
-
-                // Submit function
-                function submit (name, duration, starttime, days, stations) {
-                        $.mobile.showPageLoadingMsg(); 
-                        var jsondata = { name: name, duration: duration, starttime: starttime, days: days, stations: stations };
-                        $.ajax({
-                                type: "POST",
-                                url: "/addschedule",
-                                data: JSON.stringify(jsondata),
-                                dataType: "json",
-                                //async: false,
-                                timeout: timeout, // in milliseconds
-                                success: function(data) {
-                                        // process data here
-        				var status = '';
-                                        switch (data.result) {
-                                                case 'success':
-                        				console.log("Success:" + data.result);
-                                console.log(data.message);
-                                                        $("#error_heading").text('Success'); 
-                                                        $("#error_content").text('Schedule added and enabled successfully.');
-                                                        $("#lnkInfo").click();
-                                			console.log('click');
-                                                        status = '#';
-                                                        break;
-                                                case 'failure':
-                        				console.log("Failure:" + data.result); 
-                                                        break;
-                                                default:
-                                                        $('div.fullscreen').show();
-                                                        $('div.' + data.result).show().empty().append(data.msg);
-                                        }
-        
-                                        $.mobile.hidePageLoadingMsg();
-                                },
-                                error: function(request, status, err) {
-                                        if (status == "timeout") {
-                        			console.log('timeout'); 
-                                                $("#popup_header").attr("data-theme","a").removeClass("ui-bar-b").addClass("ui-bar-a");
-                                                $("#error_heading").text('TIMEOUT');
-                                                $("#error_content").text('Request timed out, please refresh your browser.');
-                                                $("#lnkInfo").click();
-                        			console.log('click');
-                                        	$.mobile.hidePageLoadingMsg();
-                                        }
-                                }
-                        });
-                } // function submit
-
-                // Schedule
-                $("form[id='schedule']").submit(function(event) {
-                        event.stopPropagation();
-                        event.preventDefault();
-                        var days = [];
-                        $(":checkbox:checked[id^='checkbox']").each(function() { 
-                             days.push($(this).val());
-                        });
-                        var stations = [];
-                        $(":checkbox:checked[id^='station-']").each(function() { 
-                             stations.push($(this).attr("name"));
-                        });
-                        var name = $('[name=name]').val();
-                        var duration = $('[name=duration]').val();
-                        var starttime = $('[name=starttime]').val();
-                        console.log("Submit: " + name + ", " + duration + ", " + starttime + ", [" + days + "], [" + stations + "]");
-                        submit(name, duration, starttime, days, stations);
-                });
-                 
-                // Set station popups
-                $("form[id^='station_select-']").submit(function(event) {
-                        event.stopPropagation();
-                        event.preventDefault();
-                        $("#" + this.id).popup("close")
-                });
-        } // e.target.id == 'category-+'
+//        if (e.target.id == "schedule" ) {
+//                console.log("Station Schedule");
+//
+//                // Submit function
+//                function submit (name, duration, starttime, days, stations) {
+//                        $.mobile.showPageLoadingMsg(); 
+//                        var jsondata = { name: name, duration: duration, starttime: starttime, days: days, stations: stations };
+//                        $.ajax({
+//                                type: "POST",
+//                                url: "/addschedule",
+//                                data: JSON.stringify(jsondata),
+//                                dataType: "json",
+//                                //async: false,
+//                                timeout: timeout, // in milliseconds
+//                                success: function(data) {
+//                                        // process data here
+//                                        var status = '';
+//                                        switch (data.result) {
+//                                                case 'success':
+//                                                        console.log("Success:" + data.result);
+//                                console.log(data.message);
+//                                                        $("#error_heading").text('Success'); 
+//                                                        $("#error_content").text('Schedule added and enabled successfully.');
+//                                                        $("#lnkInfo").click();
+//                                                        console.log('click');
+//                                                        status = '#';
+//                                                        break;
+//                                                case 'failure':
+//                                                        console.log("Failure:" + data.result); 
+//                                                        break;
+//                                                default:
+//                                                        $('div.fullscreen').show();
+//                                                        $('div.' + data.result).show().empty().append(data.msg);
+//                                        }
+//        
+//                                        $.mobile.hidePageLoadingMsg();
+//                                },
+//                                error: function(request, status, err) {
+//                                        if (status == "timeout") {
+//                                                console.log('timeout'); 
+//                                                $("#popup_header").attr("data-theme","a").removeClass("ui-bar-b").addClass("ui-bar-a");
+//                                                $("#error_heading").text('TIMEOUT');
+//                                                $("#error_content").text('Request timed out, please refresh your browser.');
+//                                                $("#lnkInfo").click();
+//                                                console.log('click');
+//                                                $.mobile.hidePageLoadingMsg();
+//                                        }
+//                                }
+//                        });
+//                } // function submit
+//
+//        } // e.target.id == 'category-+'
 }); // document.ready

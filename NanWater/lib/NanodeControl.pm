@@ -51,6 +51,7 @@ post '/addschedule' => sub {
   my $result = $messages->{schedule}{success};
   $result->{result} = 'success';
   to_json($result);
+  debug("Schedule: ", $result);
   return $result;
 };
 
