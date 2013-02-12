@@ -112,30 +112,31 @@ get '/categories' => sub {
 post '/addcategory' => sub {
   my $data = from_json(request->body);
   debug("Add Category: ", $data);
-  unless ($data->{data} eq "") {
-    add_category($data->{data});
+  #unless ($data->{data} eq "") {
+  #  add_category($data->{data});
+  #  return qq({"result":"success"});
+  #} else {
+  #  return qq({"result":"failure", "error":"undefined"});
+  #}
     return qq({"result":"success"});
-  } else {
-    return qq({"result":"failure", "error":"undefined"});
-  }
 };
 
 post '/removecategory' => sub {
   my $data = from_json(request->body);
-  debug("Remove Category: ", $data);
-  if ( defined $data->{data}[0] ) {
-    my $result = remove_categories(@{$data->{data}});
-    if ( $result eq "success" ) {
-      debug("Category remove: ", $result);
-      return qq({"result":"success"});
-    } else {
-      debug("Category still associated: ", $result);
-      my $category = get_category($result);
-      return qq({"result":"failure", "error":"station_associated", "category":"$category"});
-    }
-  } else {
-    return qq({"result":"failure", "error":"none_seleceted"});
-  }
+  debug("Remove Category: ", $data->{categories});
+  #if ( defined $data->{categories}[0] ) {
+  #  my $result = remove_categories(@{$data->{categories}});
+  #  if ( $result eq "success" ) {
+  #    debug("Category remove: ", $result);
+  #    return qq({"result":"success"});
+  #  } else {
+  #    debug("Category still associated: ", $result);
+  #    my $category = get_category($result);
+  #    return qq({"result":"failure", "error":"station_associated", "category":"$category"});
+  #  }
+  #} else {
+  #  return qq({"result":"failure", "error":"none_seleceted"});
+  #}
   return qq({"result":"success"});
 };
 

@@ -110,41 +110,38 @@ $(document).on('pageinit', function(e){
 
 
 // Categories
-//$(document).on('pageinit', function(e){
-//  if (e.target.id == 'schedule') {
-//
-//  }
-//});
+$(document).on('pageinit', function(e){
+  if (e.target.id == 'categories') {
+    console.log("Categories"); 
+    $('form').submit(function(event) {
+      console.log("Submit"); 
+      event.stopPropagation();
+      event.preventDefault();
+      switch ($(this).attr('id')) {
+        case 'removecategory':
+          data.categories = [];
+          $(":checkbox:checked").each(function() { 
+                 console.log("Remove Category: " + $(this).attr("id"));
+                 data.categories.push($(this).attr("id"));
+          });
+          data.url = '/removecategory';
+          submit(data);
+          break;
+        case 'addcategory':
+          console.log($('[name=name]').val());
+          data.url = '/addcategory';
+          data.categoryname = ($('[name=name]').val());
+          submit(data);
+          break;
+        default:
+            // some sort error handling here
+      }
+      console.log($(this).attr('id'));
+    }); // togglebox click
+  }
+});
 
 $(document).on('pageinit', function(e){
-        if (e.target.id == 'categories') {
-                console.log("Add/Remove Categories"); 
-                // toggle actions        
-                $('form').submit(function(event) {
-                        console.log("Submit"); 
-                        event.stopPropagation();
-                        event.preventDefault();
-                        switch ($(this).attr('id')) {
-                          case 'removecategory':
-                              var categories = [];
-                              $(":checkbox:checked").each(function() { 
-                                     console.log("Remove Category: " + $(this).attr("id"));
-                                     categories.push($(this).attr("id"));
-                              });
-                              submit(categories, "remove", "/removecategory");
-                              break;
-                          case 'addcategory':
-                              console.log($('[name=name]').val());
-                              submit($('[name=name]').val(),"add","/addcategory")
-                              break;
-                          default:
-                              // some sort error handling here
-                        }
-
-                        console.log($(this).attr('id'));
-
-                }); // togglebox click
-            }; // categories
         if (e.target.id == 'removestation') {
                 console.log("Remove Station"); 
                 // toggle actions        
