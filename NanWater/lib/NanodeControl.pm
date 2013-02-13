@@ -123,21 +123,29 @@ post '/addcategory' => sub {
 
 post '/removecategory' => sub {
   my $data = from_json(request->body);
-  debug("Remove Category: ", $data->{categories});
-  #if ( defined $data->{categories}[0] ) {
-  #  my $result = remove_categories(@{$data->{categories}});
-  #  if ( $result eq "success" ) {
-  #    debug("Category remove: ", $result);
-  #    return qq({"result":"success"});
-  #  } else {
-  #    debug("Category still associated: ", $result);
-  #    my $category = get_category($result);
-  #    return qq({"result":"failure", "error":"station_associated", "category":"$category"});
-  #  }
-  #} else {
-  #  return qq({"result":"failure", "error":"none_seleceted"});
-  #}
-  return qq({"result":"success"});
+  debug("Remove Category: ", $data);
+
+  ## This needs some pondering, it doesn't look like it gracefully handles removing multiple categories ##
+  if ( defined $data->{categories}[0] ) {
+    my $removecat = remove_categories(@{$data->{categories}});
+
+    ## make this a switch statement, the double nested if is hard to read and will make expansion later on difficult.
+    if ( $removecat eq "success" ) {
+      debug("Category remove: ", $removecat);
+      return qq({"result":"success"});
+    } else {
+      debug("Category still associated: ", $removecat);
+      my $category = get_category($removecat);
+      return qq({"result":"failure", "error":"station_associated", "category":"$category"});
+    }
+  } else {
+    return qq({"result":"failure", "error":"none_seleceted"});
+  }
+  ## code for replacing the hard coded error messages above. 
+  $result->{result} = 'success';
+  to_json($result);
+  debug("Schedule: ", $result);
+  return $result;
 };
 
 # Station Control
