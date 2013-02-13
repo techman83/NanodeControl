@@ -28,11 +28,11 @@ function messagepop(data) {
 function submit (data) {
   $.mobile.showPageLoadingMsg(); 
   console.log($(this));
-  var jsondata = { data: data };
+  data;
   $.ajax({
     type: "POST",
     url: data.url,
-    data: JSON.stringify(jsondata),
+    data: JSON.stringify(data),
     dataType: "json",
     //async: false,
     timeout: timeout, // in milliseconds
