@@ -1,5 +1,4 @@
 var timeout = 15000;
-var data = new Object();
 
 $(document).on('pageshow',function(event, ui){
   if (event.target.id == 'control') {
@@ -16,6 +15,7 @@ $(document).on('pageshow',function(event, ui){
   }
 });
 
+// Pop message from returned JSON object
 function messagepop(data) {
   if ( data.result != "success" ) {
     $("#popup_header").attr("data-theme","a").removeClass("ui-bar-b").addClass("ui-bar-a");
@@ -25,6 +25,7 @@ function messagepop(data) {
   $("#lnkInfo").click();
 }
 
+// Custom submit function
 function submit (data) {
   $.mobile.showPageLoadingMsg(); 
   console.log($(this));
@@ -51,8 +52,8 @@ function submit (data) {
           status = '#';
           break;
         case 'failure':
-          console.log("Failure:" + data.error);
-          messagepop(data);
+          console.log("Failure:" + result.error);
+          messagepop(result);
           break;
         default:
                 $('div.fullscreen').show();
@@ -78,40 +79,42 @@ function submit (data) {
 // Schedule
 $(document).on('pageinit', function(e){
   if (e.target.id == 'schedule') {
+    var schedule = new Object();
     console.log("Schedule");
     $("form[id='schedule']").submit(function(event) {
       event.stopPropagation();
       event.preventDefault();
-      data.days = [];
+      schedule.days = [];
       $(":checkbox:checked[id^='checkbox']").each(function() { 
-           data.days.push($(this).val());
+           schedule.days.push($(this).val());
       });
-      data.stations = [];
+      schedule.stations = [];
       $(":checkbox:checked[id^='station-']").each(function() { 
-           data.stations.push($(this).attr("name"));
+           schedule.stations.push($(this).attr("name"));
       });
-      data.name = $('[name=name]').val();
-      data.duration = $('[name=duration]').val();
-      data.starttime = $('[name=starttime]').val();
-      data.url = '/addschedule';
-      data.successpop = 1;
-      console.log("Submit: " + data);
-      submit(data);
+      schedule.name = $('[name=name]').val();
+      schedule.duration = $('[name=duration]').val();
+      schedule.starttime = $('[name=starttime]').val();
+      schedule.url = '/addschedule';
+      schedule.successpop = 1;
+      console.log("Submit: " + schedule);
+      submit(schedule);
     });
      
-    // Set station popups
+    // Close station popup instead of submit.
     $("form[id^='station_select-']").submit(function(event) {
       event.stopPropagation();
       event.preventDefault();
       $("#" + this.id).popup("close")
     });
   }
-});
+}); // Schedule
 
 
 // Categories
 $(document).on('pageinit', function(e){
   if (e.target.id == 'categories') {
+    var categories = new Object();
     console.log("Categories"); 
     $('form').submit(function(event) {
       console.log("Submit"); 
@@ -119,99 +122,72 @@ $(document).on('pageinit', function(e){
       event.preventDefault();
       switch ($(this).attr('id')) {
         case 'removecategory':
-          data.categories = [];
+          categories.categories = [];
           $(":checkbox:checked").each(function() { 
-                 console.log("Remove Category: " + $(this).attr("id"));
-                 data.categories.push($(this).attr("id"));
+            console.log("Remove Category: " + $(this).attr("id"));
+            categories.categories.push($(this).attr("id"));
           });
-          data.url = '/removecategory';
-          submit(data);
+          categories.url = '/removecategory';
+          submit(categories);
           break;
         case 'addcategory':
           console.log($('[name=name]').val());
-          data.url = '/addcategory';
-          data.categoryname = ($('[name=name]').val());
-          submit(data);
+          categories.url = '/addcategory';
+          categories.categoryname = ($('[name=name]').val());
+          submit(categories);
           break;
         default:
             // some sort error handling here
       }
       console.log($(this).attr('id'));
-    }); // togglebox click
+    }); // Categories submit
   }
-});
+}); // Categories
+
+// Add station
+$(document).on('pageinit', function(e){
+  if (e.target.id == 'addstation') {
+    var addstation = new Object();
+    console.log("Add Station"); 
+    $('form').submit(function(event) {
+      event.stopPropagation();
+      event.preventDefault();
+
+      // addstation object
+      addstation.stationname = $('[name=name]').val();
+      addstation.stationurl = $('[name=stationurl]').val();
+      addstation.stationcategory = $('[name=category]').val();
+      addstation.stationtype = $('[name=type]').val();
+      addstation.successpop = 1;
+      addstation.url = '/addstation';
+      
+      console.log("Add Station: " + addstation);
+      submit(addstation);
+    }); // submit
+  } 
+}); // Add station
+
+// Remove stations
+$(document).on('pageinit', function(e){
+  if (e.target.id == 'removestation') {
+    console.log("Remove Station"); 
+    var removestations = new Object();
+    $('form').submit(function(event) {
+      console.log("Submit"); 
+      event.stopPropagation();
+      event.preventDefault();
+      removestations.stations = [];
+      removestations.url = "/removestations";
+      $(":checkbox:checked").each(function() { 
+              console.log("Remove Station: " + $(this).attr("id"));
+              removestations.stations.push($(this).attr("id"));
+      });
+      submit(removestations);
+    }); // function submit
+  }; // remove station submit 
+}); // Remove stations
 
 $(document).on('pageinit', function(e){
-        if (e.target.id == 'removestation') {
-                console.log("Remove Station"); 
-                // toggle actions        
-                $('form').submit(function(event) {
-                        console.log("Submit"); 
-                        event.stopPropagation();
-                        event.preventDefault();
-                        function submit (ids) {
-                                $.mobile.showPageLoadingMsg(); 
-                                console.log($(this)); 
-                                var jsondata = { stations: ids };
-                                
-                                $.ajax({
-                                        type: "POST",
-                                        url: "/removestations",
-                                        data: JSON.stringify(jsondata),
-                                        dataType: "json",
-                                        //async: false,
-                                        timeout: timeout, // in milliseconds
-                                        success: function(data) {
-                                                // process data here
-                                                var status = '';
-                                                switch (data.result) {
-                                                        case 'success':
-                                                                console.log("Success:" + data.result);
-                                                                $.mobile.hidePageLoadingMsg();
-                                                                location.reload();
-                                                                status = '#';
-                                                                break;
-                                                        case 'failure':
-                                                                console.log("Failure:" + data.result); 
-                                                                break;
-                                                        default:
-                                                                $('div.fullscreen').show();
-                                                                $('div.' + data.result).show().empty().append(data.msg);
-                                                }
-        
-                                                $.mobile.hidePageLoadingMsg();
-                                        },
-                                        error: function(request, status, err) {
-                                                if (status == "timeout") {
-                                                        console.log('timeout'); 
-                                                        $("#popup_header").attr("data-theme","a").removeClass("ui-bar-b").addClass("ui-bar-a");
-                                                        $("#error_heading").text('TIMEOUT');
-                                                        $("#error_content").text('Request timed out, please refresh your browser.');
-                                                        $("#lnkInfo").click();
-                                                        console.log('click');
-                                                        $.mobile.hidePageLoadingMsg();
-                                                }
-                                        }
-                                });
-                        } // function submit
-                        var stations = [];
-                        $(":checkbox:checked").each(function() { 
-                                console.log("Remove Station: " + $(this).attr("id"));
-                                stations.push($(this).attr("id"));
-                        });
-                        submit(stations);
-                }); // togglebox click
-                $('#error_popup').live('pagehide',function(event) {
-                        location.reload();
-                        return false;
-                });
-        } // e.target.id == 'add'
-        if (e.target.id == 'addstation') {
-                console.log("Add Station"); 
-                // toggle actions        
-                $('form').submit(function(event) {
-                        event.stopPropagation();
-                        event.preventDefault();
                         function submit (name, url, category, type) {
                                 $.mobile.showPageLoadingMsg(); 
                                 console.log($(this)); 
@@ -264,17 +240,6 @@ $(document).on('pageinit', function(e){
                                         }
                                 });
                         } // function submit
-                        console.log("Name: " + $('[name=name]').val());
-                        console.log("Url: " + $('[name=stationurl]').val());
-                        console.log("Category: " + $('[name=category]').val());
-                        console.log("Type: " + $('[name=type]').val());
-                        submit($('[name=name]').val(), $('[name=stationurl]').val(), $('[name=category]').val(), $('[name=type]').val());
-                }); // togglebox click
-                $('#error_popup').live('pagehide',function(event) {
-                        location.reload();
-                        return false;
-                });
-        } // e.target.id == 'add'
         if (e.target.id == 'control') {
                 // $(document).ready(function(){ <- This here does not work in jquery mobile. You will encounter hours of frustration until you learn this!
         
