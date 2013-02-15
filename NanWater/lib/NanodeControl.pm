@@ -70,12 +70,16 @@ get '/addstation' => sub {
 post '/addstation' => sub {
   my $data = from_json(request->body);
   debug("Add station: ", $data);
+
   unless ($data->{stationname} eq "" || $data->{stationurl} eq "" || $data->{stationtype} eq "" || $data->{stationcategory} eq "") {
     my $add = add_station($data->{stationname},$data->{stationurl},$data->{stationtype},$data->{stationcategory});
-    my $result = $messages->{station}{success};
-    $result->{result} = 'success';
-    debug($add,$result);
-    return qq({"result":"success"});
+    my $result = { result => 'success',
+                   title => $messages->{station}{success}{title},
+                   message => $messages->{station}{success}{message},
+                 };
+    to_json($result);
+    debug("Add Station: ", $result);
+    return $result;
   } else {
     my $result = $messages->{station}{undefined};
     $result->{result} = 'failure';
@@ -112,40 +116,55 @@ get '/categories' => sub {
 post '/addcategory' => sub {
   my $data = from_json(request->body);
   debug("Add Category: ", $data);
-  #unless ($data->{data} eq "") {
-  #  add_category($data->{data});
-  #  return qq({"result":"success"});
-  #} else {
-  #  return qq({"result":"failure", "error":"undefined"});
-  #}
+  unless ($data->{categoryname} eq "") {
+    add_category($data->{categoryname});
     return qq({"result":"success"});
+  } else {
+    my $result = { result => 'failure',
+                   title => $messages->{category}{undefined}{title},
+                   message => $messages->{category}{undefined}{message},
+                   error => 'undefined',
+                 };
+    to_json($result);
+    debug("Remove Category: ", $result);
+    return $result;
+  }
 };
 
 post '/removecategory' => sub {
   my $data = from_json(request->body);
   debug("Remove Category: ", $data);
 
-  ## This needs some pondering, it doesn't look like it gracefully handles removing multiple categories ##
+  ## Probably worth making the DB class OO and return an object here, handling mutliple category failures would be possible! ##
   if ( defined $data->{categories}[0] ) {
     my $removecat = remove_categories(@{$data->{categories}});
 
-    ## make this a switch statement, the double nested if is hard to read and will make expansion later on difficult.
+    ## Once DB class is OO, turn this into a switch statement for easier expansion.
     if ( $removecat eq "success" ) {
       debug("Category remove: ", $removecat);
       return qq({"result":"success"});
     } else {
       debug("Category still associated: ", $removecat);
       my $category = get_category($removecat);
-      return qq({"result":"failure", "error":"station_associated", "category":"$category"});
+      my $result = { result => 'failure',
+                     title => $messages->{category}{associated}{title},
+                     message => $messages->{category}{associated}{message} . '"' . $category . '"' . ".",
+                     error => 'station_associated',
+                   };
+      to_json($result);
+      debug("Remove Category: ", $result);
+      return $result;
     }
   } else {
-    return qq({"result":"failure", "error":"none_seleceted"});
+    my $result = { result => 'failure',
+                   title => $messages->{category}{none_selected}{title},
+                   message => $messages->{category}{none_selected}{message},
+                   error => 'none_selected',
+                 };
+    to_json($result);
+    debug("Remove Category: ", $result);
+    return $result;
   }
-  ## code for replacing the hard coded error messages above. 
-  $result->{result} = 'success';
-  to_json($result);
-  debug("Schedule: ", $result);
-  return $result;
 };
 
 # Station Control
