@@ -37,7 +37,7 @@ messages:
       message:  'A Category has not been seleceted.'
     associated:
       title:  'Station Associated'
-      message:  'At least one station is still associated with the category'
+      message:  'At least one station is still associated with the category '
   station:
     success:
       title:  'Success'
