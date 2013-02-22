@@ -47,7 +47,7 @@ get '/schedule' => sub {
 post '/addschedule' => sub {
   my $data = from_json(request->body);
   debug("Schedule: ", $data, $messages->{schedule}{success});
-  #add_schedule($data);
+  add_schedule($data);
   my $result = $messages->{schedule}{success};
   $result->{result} = 'success';
   to_json($result);
@@ -193,14 +193,20 @@ get '/stations/:category' => sub {
 
 post '/stations/:id' => sub {
   my $station = from_json(request->body);
-  $station->{url} =  get_station_url($station->{station});
+  $station->{url} =  get_station_url($station->{id});
   debug("Control Station: ", $station);
-  my $result = set_station_state($station->{url},$station->{act},$station->{station}); # improve this, should be able to pass the whole object to the class... just not done it before!
-  debug("result: $result");
-  if ($result eq "success") {
+  my $controlresult = set_station_state($station->{url},$station->{value},$station->{id}); # improve this, should be able to pass the whole object to the class... just not done it before! (That's kind of a lie... being lazy here)
+  debug("Control result: $controlresult");
+  if ($controlresult eq "success") {
     return qq({"result":"success"});
   } else {
-    return qq({"result":"failed"});
+    my $result = { result => 'failure',
+                   title => $messages->{control}{failure}{title},
+                   message => $messages->{control}{failure}{message},
+                 };
+    to_json($result);
+    debug("Control station: ", $result);
+    return $result;
   }
 };
 
