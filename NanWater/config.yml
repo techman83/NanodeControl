@@ -49,4 +49,8 @@ messages:
     success:
       title:  'Success'
       message:  'Schedule added and enabled successfully.'
+  control:
+    failure:
+      title:  'Failure'
+      message: 'Failed to control the station, please refresh the page'
 
