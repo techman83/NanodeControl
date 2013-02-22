@@ -46,6 +46,8 @@ function submit (data) {
           console.log("Success:" + result.result);
           if (data.successpop) {
             messagepop(result);
+          } else if  (data.noreload) {
+            // prevent reload
           } else {
             location.reload();
           }
@@ -75,6 +77,41 @@ function submit (data) {
     }
   });
 } // function submit
+
+// Control stations
+$(document).on('pageinit', function(e){
+  if (e.target.id == 'control') {
+    console.log("Control Stations"); 
+    var controlstations = new Object();
+
+    // On/Off controls
+    $('select').change(function() {
+      controlstations.id = this.id;
+      controlstations.value = this.value;
+      controlstations.url = "/stations/" + this.id;
+      controlstations.noreload = 1;
+      submit(controlstations);
+    }); // On/Of controls
+
+    // Slider controls
+    $('input').change(function() {
+      controlstations.id = $(this).attr("id");
+      controlstations.val = $(this).val();
+      var $this = $(this);
+      var delay = 2000; // 2 seconds delay after last input
+      controlstations.url = "/stations/" + this.id;
+      controlstations.noreload = 1;
+
+      clearTimeout($this.data('timer'));
+      $this.data('timer', setTimeout(function(){
+      $this.removeData('timer');
+        console.log("Set id: " + controlstations.id);
+        console.log("Set val: " + controlstations.val);
+        submit(controlstations);
+      }, delay));
+    }); // Slider controls.
+  } // e.target.id == 'control'
+}); // Control stations
 
 // Schedule
 $(document).on('pageinit', function(e){
@@ -170,7 +207,7 @@ $(document).on('pageinit', function(e){
 // Remove stations
 $(document).on('pageinit', function(e){
   if (e.target.id == 'removestation') {
-    console.log("Remove Station"); 
+    console.log("Remove Stations"); 
     var removestations = new Object();
     $('form').submit(function(event) {
       console.log("Submit"); 
@@ -187,178 +224,3 @@ $(document).on('pageinit', function(e){
   }; // remove station submit 
 }); // Remove stations
 
-$(document).on('pageinit', function(e){
-                        function submit (name, url, category, type) {
-                                $.mobile.showPageLoadingMsg(); 
-                                console.log($(this)); 
-                                var jsondata = { "stationname": name, "stationurl": url, "stationcategory": category, "stationtype": type };
-                                $.ajax({
-                                        type: "POST",
-                                        url: "/addstation",
-                                        contentType: 'application/json',
-                                        dataType: "json",
-                                        data: JSON.stringify(jsondata),
-                                        //async: false,
-                                        timeout: timeout, // in milliseconds
-                                        success: function(data) {
-                                                // process data here
-                                                var status = '';
-                                                switch (data.result) {
-                                                        case 'success':
-                                                                console.log("Success:" + data); 
-                                                                $("#error_heading").text('Success') 
-                                                                $("#error_content").text('Station Added Successfully.') 
-                                                                $("#lnkInfo").click();
-                                                                status = '#';
-                                                                break;
-                                                        case 'failure':
-                                                                console.log("Failure:" + data.error);
-                                                                if ( data.error == "undefined" ) {
-                                                                  $("#error_heading").text('UNDEFINED') 
-                                                                  $("#error_content").text('A field has been left blank. All fields are required.') 
-                                                                  $("#lnkInfo").click();
-                                                                }
-                                                                $.mobile.hidePageLoadingMsg();
-                                                                break;
-                                                        default:
-                                                                $('div.fullscreen').show();
-                                                                $('div.' + data.result).show().empty().append(data.msg);
-                                                }
-        
-                                                $.mobile.hidePageLoadingMsg();
-                                        },
-                                        error: function(request, status, err) {
-                                                if (status == "timeout") {
-                                                        console.log('timeout'); 
-                                                        $("#popup_header").attr("data-theme","a").removeClass("ui-bar-b").addClass("ui-bar-a");
-                                                        $("#error_heading").text('TIMEOUT');
-                                                        $("#error_content").text('Request timed out, please refresh your browser.');
-                                                        $("#lnkInfo").click();
-                                                        console.log('click');
-                                                        $.mobile.hidePageLoadingMsg();
-                                                }
-                                        }
-                                });
-                        } // function submit
-        if (e.target.id == 'control') {
-                // $(document).ready(function(){ <- This here does not work in jquery mobile. You will encounter hours of frustration until you learn this!
-        
-                // toggle actions
-                        function submit (id, attr) {
-                                $.mobile.showPageLoadingMsg(); 
-                                $('#' + id).find('div.success,div.failure').stop(true,true).clearQueue();
-                                $('#' + id).find('div.success,div.failure').hide();
-                                console.log($(this)); 
-                                var jsondata = { station: id, act: attr };
-                                $.ajax({
-                                        type: "POST",
-                                        url: "/stations/:" + id,
-                                        data: JSON.stringify(jsondata),
-                                        dataType: "json",
-                                        //async: false,
-                                        timeout: timeout, // in milliseconds
-                                        success: function(data) {
-                                                // process data here
-                                                var status = '';
-                                                switch (data.result) {
-                                                        case 'success':
-                                                                console.log("Success:" + data.result); 
-                                                                status = '#' + attr;
-                                                                break;
-                                                        case 'failure':
-                                                                console.log("Failure:" + data.result); 
-                                                                break;
-                                                        default:
-                                                                $('div.fullscreen').show();
-                                                                $('div.' + data.result).show().empty().append(data.msg);
-                                                }
-        
-                                                $.mobile.hidePageLoadingMsg();
-                                        },
-                                        error: function(request, status, err) {
-                                                if (status == "timeout") {
-                                                        console.log('timeout'); 
-                                                        $("#popup_header").attr("data-theme","a").removeClass("ui-bar-b").addClass("ui-bar-a");
-                                                        $("#error_heading").text('TIMEOUT');
-                                                        $("#error_content").text('Request timed out, please refresh your browser.');
-                                                        $("#lnkInfo").click();
-                                                        console.log('click');
-                                                        $.mobile.hidePageLoadingMsg();
-                                                }
-                                        }
-                                });
-                        } // function submit
-                $('select').change(function() {
-                        submit(this.id, this.value);
-                }); // togglebox click
-                $('input').change(function() {
-                        var id = $(this).attr("id");
-                        var val = $(this).val();
-                        var $this = $(this);
-                        var delay = 2000; // 2 seconds delay after last input
-
-                        clearTimeout($this.data('timer'));
-                        $this.data('timer', setTimeout(function(){
-                        $this.removeData('timer');
-                                console.log("Set id: " + id);
-                                console.log("Set val: " + val);
-                                submit(id, val);
-                        }, delay));
-                }); // togglebox click
-                $('#error_popup').live('pagehide',function(event) {
-                        location.reload();
-                });
-        } // e.target.id == 'control'
-//        if (e.target.id == "schedule" ) {
-//                console.log("Station Schedule");
-//
-//                // Submit function
-//                function submit (name, duration, starttime, days, stations) {
-//                        $.mobile.showPageLoadingMsg(); 
-//                        var jsondata = { name: name, duration: duration, starttime: starttime, days: days, stations: stations };
-//                        $.ajax({
-//                                type: "POST",
-//                                url: "/addschedule",
-//                                data: JSON.stringify(jsondata),
-//                                dataType: "json",
-//                                //async: false,
-//                                timeout: timeout, // in milliseconds
-//                                success: function(data) {
-//                                        // process data here
-//                                        var status = '';
-//                                        switch (data.result) {
-//                                                case 'success':
-//                                                        console.log("Success:" + data.result);
-//                                console.log(data.message);
-//                                                        $("#error_heading").text('Success'); 
-//                                                        $("#error_content").text('Schedule added and enabled successfully.');
-//                                                        $("#lnkInfo").click();
-//                                                        console.log('click');
-//                                                        status = '#';
-//                                                        break;
-//                                                case 'failure':
-//                                                        console.log("Failure:" + data.result); 
-//                                                        break;
-//                                                default:
-//                                                        $('div.fullscreen').show();
-//                                                        $('div.' + data.result).show().empty().append(data.msg);
-//                                        }
-//        
-//                                        $.mobile.hidePageLoadingMsg();
-//                                },
-//                                error: function(request, status, err) {
-//                                        if (status == "timeout") {
-//                                                console.log('timeout'); 
-//                                                $("#popup_header").attr("data-theme","a").removeClass("ui-bar-b").addClass("ui-bar-a");
-//                                                $("#error_heading").text('TIMEOUT');
-//                                                $("#error_content").text('Request timed out, please refresh your browser.');
-//                                                $("#lnkInfo").click();
-//                                                console.log('click');
-//                                                $.mobile.hidePageLoadingMsg();
-//                                        }
-//                                }
-//                        });
-//                } // function submit
-//
-//        } // e.target.id == 'category-+'
-}); // document.ready
