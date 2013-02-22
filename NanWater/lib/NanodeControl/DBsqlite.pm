@@ -180,15 +180,16 @@ sub remove_stations {
 # Returns a stations URL
 sub get_station_url {
   my ($stationid) = @_;
+  debug("Getting station URL for station  $stationid");  
   my $dbh = connect_db();
   my $sth = $dbh->prepare(q{
       SELECT url
       FROM stations
       WHERE id = ? AND deleted = 0
   });
-  
   $sth->execute($stationid);
-  my $url = $sth->fetchrow_array; 
+  my ($url) = $sth->fetchrow_array; 
+  debug("Station URL: $url");  
   return $url;
 };
 
@@ -196,13 +197,33 @@ sub get_station_url {
 # Add a schedule
 sub add_schedule {
   my ($schedule) = @_;
-  # Example Data {'days' => ['1','3','5','7'],'duration' => '0 Day, 00:05:00','name' => 'Schedule 1','starttime' => '19:11','stations' => ['10001']}
-  # Schedule name,starttime,dow
-  # Scheduled stations scheduleid,stationid,duration
-  # DB Plan, insert into schedule, select last_insert_rowid() from schedules, insert stations possibly foreach loop... will research for most efficient method.
+  my $dbh = connect_db();
+  my $sth = $dbh->prepare(q{
+      INSERT INTO schedules
+      (name,starttime,dow)
+      VALUES (?, ?, ?)
+  });
+  my $days = join(",", @{$schedule->{days}}); 
+  my $add = $sth->execute($schedule->{name},$schedule->{starttime},$days);
+  $sth = $dbh->prepare(q{
+      SELECT id
+      FROM schedules
+      WHERE rowid = last_insert_rowid()
+  });
+  $sth->execute;
+  my ($scheduleid) = $sth->fetchrow_array;
 
-  debug($schedule->{days}); #seems passing object is possible!
-  return;
+  foreach my $station (@{$schedule->{stations}}) {
+    $sth = $dbh->prepare(q{
+        INSERT INTO scheduled_stations
+        (scheduleid,stationid,duration)
+        VALUES (?, ?, ?)
+    });
+    $sth->execute($scheduleid,$station,$schedule->{duration});
+  };
+   
+  debug("Result: $add - Schedule ID: $scheduleid");
+  return $add;
 }
 
 1
