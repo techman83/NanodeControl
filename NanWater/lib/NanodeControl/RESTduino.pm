@@ -44,10 +44,13 @@ sub set_station_state {
   }
 
   my $result = get_station_state($url);
-  if ( $state == $result) {
-    return "success: $result";
+  debug("State: $state - Result: $result");
+  if ( $result eq "failure" ) {
+    return "failed";
+  } elsif ( $state == $result) {
+    return "success";
   } else {
-    return "failed: $result";
+    return "failed";
   }
 }
 
