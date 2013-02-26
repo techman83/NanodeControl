@@ -149,7 +149,7 @@ loop()
 {
   word len = ether.packetReceive() ;
   word pos = ether.packetLoop(len) ;
-  int pin, val ;
+  int pin, val, inValue ;
    
   if (pos) {
     bfill = ether.tcpOffset() ;
@@ -157,12 +157,23 @@ loop()
     Serial.println(data) ;
     switch (cmdparse(data, pin, val)) {
     case CODE_READ:
-        pinMode(pin, INPUT) ;
-        bfill.emit_p(PSTR(
+        inValue = digitalRead(pin) ;
+        Serial.println(inValue);
+        if(inValue == 0){
+          bfill.emit_p(PSTR(
           "$F"
           "{\"$S\" : \"$D\",\"$S\" : \"$S\"}"),
           responseHeader,
-          "pin", pin, "value", val ? "HIGH" : "LOW") ;
+          "pin", pin, "value", "LOW" ) ;
+        }
+              
+        if(inValue == 1){
+          bfill.emit_p(PSTR(
+          "$F"
+          "{\"$S\" : \"$D\",\"$S\" : \"$S\"}"),
+          responseHeader,
+          "pin", pin, "value", "HIGH" ) ;
+        }
         break ;
     case CODE_WRITE:
         pinMode(pin, OUTPUT) ;
