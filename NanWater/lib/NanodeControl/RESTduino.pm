@@ -23,8 +23,7 @@ sub get_station_state {
       return "failure";
     } elsif (valid_json($state)) {
       my $data = from_json($state);
-      my $pinid = (keys $data)[0];
-      my $result = $data->{"$pinid"};
+      my $result = $data->{value};
       debug("State: $state Result: $result");
       return $result;
     } else {
@@ -44,11 +43,11 @@ sub set_station_state {
   }
 
   my $result = get_station_state($url);
-  debug("State: $state - Result: $result");
+  debug("State: $state->{value} - Result: $result->{value}");
   if ( $result eq "failure" ) {
     return "failed";
-  } elsif ( $state == $result) {
-    return "success";
+  } elsif ( $state->{value} eq $result->{value}) {
+   return "success";
   } else {
     return "failed";
   }
