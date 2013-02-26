@@ -221,7 +221,7 @@ get '/pigpio/:gpio' => sub {
   my $gpio = params->{gpio};
   debug("Get gpio $gpio state");
   my $state = get_pigpio_state($gpio);
-  my $result = qq({"$gpio":"$state"});
+  my $result = qq({"pin":"$gpio""value":"$state"});
   debug($result);
   return $result;
 };
