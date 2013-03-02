@@ -52,6 +52,19 @@
                                 [% END %]
                             </select>
                         </div>
+                        <div data-role="fieldcontain">
+                            <label for="typeselect">
+                                High/Low Reverse:
+                            </label>
+                            <select id="typeselect" name="reverse" data-theme="c">
+                                <option value="0">
+                                    Off
+                                </option>
+                                <option value="1">
+                                    On
+                                </option>
+                            </select>
+                        </div>
                         <input id="add_submit" data-ajax="false" data-theme="d" data-icon="plus" data-iconpos="left" value="Submit" type="submit">
                 </form>      
         </div><!-- /content -->

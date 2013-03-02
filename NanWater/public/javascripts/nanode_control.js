@@ -4,12 +4,12 @@ $(document).on('pageshow',function(event, ui){
   if (event.target.id == 'control') {
     // set initial states
     $('select').each(function() {
-      if($(this).hasClass('state-255')) {
-        console.log(this.id + ' 255');
-        $('#' + this.id).val('255').slider("refresh");
+      if($(this).hasClass('state-HIGH')) {
+        console.log(this.id + ' HIGH');
+        $('#' + this.id).val('HIGH').slider("refresh");
       } else {
-        console.log(this.id + ' 0');
-        $('#' + this.id).val('0').slider("refresh");
+        console.log(this.id + ' LOW');
+        $('#' + this.id).val('LOW').slider("refresh");
       }
     }); // togglebox foreach
   }
@@ -195,6 +195,8 @@ $(document).on('pageinit', function(e){
       addstation.stationurl = $('[name=stationurl]').val();
       addstation.stationcategory = $('[name=category]').val();
       addstation.stationtype = $('[name=type]').val();
+      addstation.stationtype = $('[name=type]').val();
+      addstation.stationreverse = $('[name=reverse]').val();
       addstation.successpop = 1;
       addstation.url = '/addstation';
       

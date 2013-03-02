@@ -35,6 +35,7 @@ sub get_station_state {
 
 sub set_station_state {
   my ($url,$state,) = @_;
+  debug("Set station $url/$state");
   unless ($url =~ /http/) {
     set_pigpio_state($url,$state);
   } else {
@@ -43,10 +44,10 @@ sub set_station_state {
   }
 
   my $result = get_station_state($url);
-  debug("State: $state->{value} - Result: $result->{value}");
+  debug("State: $state - Result: $result");
   if ( $result eq "failure" ) {
     return "failed";
-  } elsif ( $state->{value} eq $result->{value}) {
+  } elsif ( $state eq $result) {
    return "success";
   } else {
     return "failed";

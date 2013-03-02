@@ -71,8 +71,8 @@ post '/addstation' => sub {
   my $data = from_json(request->body);
   debug("Add station: ", $data);
 
-  unless ($data->{stationname} eq "" || $data->{stationurl} eq "" || $data->{stationtype} eq "" || $data->{stationcategory} eq "") {
-    my $add = add_station($data->{stationname},$data->{stationurl},$data->{stationtype},$data->{stationcategory});
+  unless ($data->{stationname} eq "" || $data->{stationurl} eq "") {
+    my $add = add_station($data->{stationname},$data->{stationurl},$data->{stationtype},$data->{stationcategory},$data->{stationreverse});
     my $result = { result => 'success',
                    title => $messages->{station}{success}{title},
                    message => $messages->{station}{success}{message},
@@ -174,6 +174,12 @@ get '/stations/:category' => sub {
   my $number = 0;
   foreach my $station (@stations) {
     $stations[$number]->{state} = get_station_state($stations[$number]->{url});
+    # After recieving the relay boards I noted that when using an external power source on them HIGH was considered off and LOW was considered on. Made sense when I looked at the circuit diagram.
+    if ($stations[$number]->{reversed} == 1 && $stations[$number]->{state} eq 'LOW') {
+      $stations[$number]->{state} = 'HIGH';
+    } elsif ($stations[$number]->{reversed} == 1 && $stations[$number]->{state} eq 'HIGH') {
+      $stations[$number]->{state} = 'LOW';
+    }
     $number++;
   }   
   my $categoryname = "";
@@ -192,10 +198,16 @@ get '/stations/:category' => sub {
 };
 
 post '/stations/:id' => sub {
-  my $station = from_json(request->body);
-  $station->{url} =  get_station_url($station->{id});
-  debug("Control Station: ", $station);
-  my $controlresult = set_station_state($station->{url},$station->{value},$station->{id}); # improve this, should be able to pass the whole object to the class... just not done it before! (That's kind of a lie... being lazy here)
+  my $control = from_json(request->body);
+  my $station =  get_station($control->{id});
+  # After recieving the relay boards I noted that when using an external power source on them HIGH was considered off and LOW was considered on. Made sense when I looked at the circuit diagram.
+  if ($station->{reversed} == 1 && $control->{value} eq 'LOW') {
+    $control->{value} = 'HIGH';
+  } elsif ($station->{reversed} == 1 && $control->{value} eq 'HIGH') {
+    $control->{value} = 'LOW';
+  }
+  debug("Control Station: ", $station, $control);
+  my $controlresult = set_station_state($station->{url},$control->{value},$station->{id}); # improve this, should be able to pass the whole object to the class... just not done it before! (That's kind of a lie... being lazy here)
   debug("Control result: $controlresult");
   if ($controlresult eq "success") {
     return qq({"result":"success"});

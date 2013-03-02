@@ -4,7 +4,7 @@ use Dancer ':syntax';
 use DBD::SQLite;
 use base 'Exporter';
 
-our @EXPORT    = qw(add_schedule get_schedules enable_schedule disable_schedule get_station_url get_stations get_categories get_category get_types add_station remove_stations add_category remove_categories);
+our @EXPORT    = qw(add_schedule get_schedules enable_schedule disable_schedule get_station get_stations get_categories get_category get_types add_station remove_stations add_category remove_categories);
 
 # DB connection
 sub connect_db {
@@ -114,7 +114,7 @@ sub get_stations {
   my $sth = ""; 
   unless ($category eq 'All') {
     $sth = $dbh->prepare(q{
-        SELECT s.id, s.name, s.category, s.type, c.name, s.url
+        SELECT s.id, s.name, s.category, s.type, c.name, s.url, s.reversed
         FROM stations s 
         LEFT OUTER JOIN categories c 
         ON s.category = c.id
@@ -124,7 +124,7 @@ sub get_stations {
     $sth->execute($category);
   } else {
     $sth = $dbh->prepare(q{
-        SELECT s.id, s.name, s.category, s.type, c.name, s.url
+        SELECT s.id, s.name, s.category, s.type, c.name, s.url, s.reversed
         FROM stations s 
         LEFT OUTER JOIN categories c 
         ON s.category = c.id
@@ -134,8 +134,8 @@ sub get_stations {
     $sth->execute();
   }
   my @stations;
-  while (my ($id,$name,$categoryid,$type,$category,$url) = $sth->fetchrow_array) {
-    debug("Station Details: $id, $name, $type, $category, $url");
+  while (my ($id,$name,$categoryid,$type,$category,$url,$reversed) = $sth->fetchrow_array) {
+    debug("Station Details: $id, $name, $type, $category, $url, $reversed");
     push @stations, {
         id => $id,
         name => $name,
@@ -143,6 +143,7 @@ sub get_stations {
         categoryid => $categoryid,
         type => $type,
         url => $url,
+        reversed => $reversed,
     };
   }
   return @stations;
@@ -150,15 +151,15 @@ sub get_stations {
 
 # Add a station
 sub add_station {
-  my ($name,$url,$type,$category) = @_;
+  my ($name,$url,$type,$category,$reversed) = @_;
   my $dbh = connect_db();
   my $sth = $dbh->prepare(q{
       INSERT INTO stations
-      (name,category,type,url)
-      VALUES (?, ?, ?, ?)
+      (name,category,type,url,reversed)
+      VALUES (?, ?, ?, ?, ?)
   });
   
-  my $add = $sth->execute($name,$category,$type,$url);
+  my $add = $sth->execute($name,$category,$type,$url,$reversed);
   return $add;
 };
 
@@ -177,20 +178,21 @@ sub remove_stations {
   return;
 };
 
-# Returns a stations URL
-sub get_station_url {
+# Returns a stations details 
+sub get_station {
   my ($stationid) = @_;
-  debug("Getting station URL for station  $stationid");  
+  debug("Getting station details for station  $stationid");  
   my $dbh = connect_db();
   my $sth = $dbh->prepare(q{
-      SELECT url
+      SELECT url, reversed
       FROM stations
       WHERE id = ? AND deleted = 0
   });
   $sth->execute($stationid);
-  my ($url) = $sth->fetchrow_array; 
-  debug("Station URL: $url");  
-  return $url;
+  my $station;
+  ($station->{url},$station->{reversed}) = $sth->fetchrow_array; 
+  debug("Station details: ", $station);  
+  return $station;
 };
 
 ## Schedules
