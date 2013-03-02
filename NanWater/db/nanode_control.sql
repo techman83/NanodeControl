@@ -10,8 +10,8 @@ INSERT INTO "schedules" VALUES(10001,'Example Schedule','20:00:00','1,3,5',0,1,0
 DROP TABLE IF EXISTS "settings";
 CREATE TABLE "settings" ("id" INTEGER PRIMARY KEY  AUTOINCREMENT  NOT NULL  UNIQUE , "name" VARCHAR, "value" VARCHAR);
 DROP TABLE IF EXISTS "stations";
-CREATE TABLE "stations" ("id" INTEGER PRIMARY KEY  AUTOINCREMENT  NOT NULL  UNIQUE ,"name" VARCHAR,"category" INTEGER,"type" INTEGER,"url" VARCHAR,"deleted" INTEGER DEFAULT (0));
-INSERT INTO "stations" VALUES(10001,'Example Station',10001,10001,'http://stationip_or_url/1',0);
+CREATE TABLE "stations" ("id" INTEGER PRIMARY KEY  NOT NULL ,"name" VARCHAR,"category" INTEGER,"type" INTEGER,"url" VARCHAR,"reversed" INTEGER DEFAULT (0) , "deleted" INTEGER DEFAULT 0);
+INSERT INTO "stations" VALUES(10001,'Example Station',10001,10001,'http://stationip_or_url/1',0,0);
 DROP TABLE IF EXISTS "type";
 CREATE TABLE "type" ("id" INTEGER PRIMARY KEY  AUTOINCREMENT  NOT NULL  UNIQUE ,"name" VARCHAR,"deleted" INTEGER DEFAULT (0) );
 INSERT INTO "type" VALUES(10001,'On/Off',0);
