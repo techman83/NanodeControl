@@ -1,5 +1,23 @@
 var timeout = 15000;
 
+// Schedule Enable/Disable slider
+$(document).on('pageshow',function(event, ui){
+  if (event.target.id == 'schedules') {
+    console.log("Schedules"); 
+    // set initial states
+    $(':checkbox').each(function() {
+      if($(this).hasClass('enabled-1')) {
+        console.log(this.id + ' Enabled');
+        $('#' + this.id).attr("checked",true).checkboxradio("refresh"); ;
+      } else {
+        console.log(this.id + ' Disabled');
+        $('#' + this.id).attr("checked",false).checkboxradio("refresh"); ;
+      }
+    }); // togglebox foreach
+  }
+});
+
+// Station On/Off Slider
 $(document).on('pageshow',function(event, ui){
   if (event.target.id == 'control') {
     // set initial states
@@ -115,7 +133,7 @@ $(document).on('pageinit', function(e){
 
 // Schedule
 $(document).on('pageinit', function(e){
-  if (e.target.id == 'schedule') {
+  if (e.target.id == 'addschedule') {
     var schedule = new Object();
     console.log("Schedule");
     $("form[id='schedule']").submit(function(event) {

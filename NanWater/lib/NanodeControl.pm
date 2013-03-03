@@ -32,16 +32,37 @@ get '/settings' => sub {
   };
 };
 
-# Schedule
-get '/schedule' => sub {
+## Schedules
+# Schedules
+get '/schedules' => sub {
+  my @schedules = get_schedules();
+
+  template 'schedules', {
+        title  => "Nanode Control - Schedules",
+        schedules => \@schedules,
+  };
+};
+
+# Remove Schedules
+get '/removeschedules' => sub {
+  my @schedules = get_schedules();
+
+  template 'removeschedules', {
+        title  => "Nanode Control - Remove Schedules",
+        schedules => \@schedules,
+  };
+};
+
+# Add a schedule
+get '/addschedule' => sub {
   my @categories = get_categories();
   my @stations = get_stations("All"); 
 
-  template 'schedule', {
-        title  => "Nanode Control - Schedule",
+  template 'addschedule', {
+        title  => "Nanode Control - Add Schedule",
         stations => \@stations,
         categories => \@categories,
-  }, { layout => 'schedule' };
+  }, { layout => 'addschedule' };
 };
 
 post '/addschedule' => sub {

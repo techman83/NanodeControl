@@ -1,0 +1,32 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd" />
+<!-- Start of first page: #one -->
+<div data-role="page" id="schedules">
+  <div data-role="header">
+    <a href="/" data-icon="home" class="ui-btn-left">Home</a>
+      <h1>[% title %]</h1>
+    <a href="/settings" data-ajax="false" data-icon="gear" class="ui-btn-right">Settings</a>
+  </div><!-- /header -->
+  
+  <div data-role="content" >      
+    <h2>Enable/Disable Schedules</h2><hr>
+    <form id="schedule">
+      <div id="schedule_checkboxes" data-role="fieldcontain">
+        <fieldset data-role="controlgroup" data-type="vertical">
+          [% FOREACH schedule IN schedules %]
+            <input class="enabled-[% schedule.enabled %]" id="[% schedule.id %]" name="" type="checkbox">
+            <label for="[% schedule.id %]">
+                  [% schedule.name %]
+            </label>
+          [% END %]
+        </fieldset>
+      </div>
+      <input id="submit_remove" data-ajax="false" data-theme="d" data-icon="minus" data-iconpos="left" value="Submit" type="submit">
+    </form>
+    <h2>Add/Remove Schedules</h2><hr>
+      <p><a href="/addschedule" data-ajax="false" data-role="button">Add Schedule</a></p>       
+      <p><a href="/removeschedules" data-ajax="false" data-role="button">Remove Schedule(s)</a></p>       
+  </div><!-- /content -->
+  <div data-role="footer" data-theme="d">
+    <h4></h4>
+  </div><!-- /footer -->
+</div><!-- /page one -->

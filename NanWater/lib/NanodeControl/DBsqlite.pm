@@ -228,4 +228,25 @@ sub add_schedule {
   return $add;
 }
 
+sub get_schedules {
+  my $dbh = connect_db();
+  my $sth = $dbh->prepare(q{
+      SELECT id, name, enabled
+      FROM schedules
+      WHERE deleted = 0
+      ORDER BY id ASC
+  });
+  
+  $sth->execute();
+  my @schedules;
+  while (my ($id,$name,$enabled) = $sth->fetchrow_array) {
+      push @schedules, {
+          id => $id,
+          name => $name,
+          enabled => $enabled
+      };
+  }
+  debug("Schedules: ", @schedules);
+  return @schedules;
+}
 1
