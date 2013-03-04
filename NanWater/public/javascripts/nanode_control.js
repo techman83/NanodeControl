@@ -131,7 +131,7 @@ $(document).on('pageinit', function(e){
   } // e.target.id == 'control'
 }); // Control stations
 
-// Schedule
+// Add Schedule
 $(document).on('pageinit', function(e){
   if (e.target.id == 'addschedule') {
     var schedule = new Object();
@@ -163,8 +163,33 @@ $(document).on('pageinit', function(e){
       $("#" + this.id).popup("close")
     });
   }
-}); // Schedule
+}); // Add Schedule
 
+// Schedules
+$(document).on('pageinit', function(e){
+  if (e.target.id == 'schedules') {
+    var schedules = new Object();
+    console.log("Schedules"); 
+    $('form').submit(function(event) {
+      console.log("Submit"); 
+      event.stopPropagation();
+      event.preventDefault();
+
+      schedules.enabled = [];
+      $(":checkbox:checked").each(function() { 
+        console.log("Enable Schedule: " + $(this).attr("id"));
+        schedules.enabled.push($(this).attr("id"));
+      });
+      schedules.disabled = [];
+      $(":checkbox:not(:checked)").each(function() { 
+        console.log("Disable Schedule: " + $(this).attr("id"));
+        schedules.disabled.push($(this).attr("id"));
+      });
+      schedules.url = '/schedule';
+      submit(schedules);
+    });
+  }
+}); // Schedules
 
 // Categories
 $(document).on('pageinit', function(e){

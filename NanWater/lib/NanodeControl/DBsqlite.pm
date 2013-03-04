@@ -3,13 +3,14 @@ use strict;
 use Dancer ':syntax';
 use DBD::SQLite;
 use base 'Exporter';
+my $appdir = config->{appdir};
 
-our @EXPORT    = qw(add_schedule get_schedules enable_schedule disable_schedule get_station get_stations get_categories get_category get_types add_station remove_stations add_category remove_categories);
+our @EXPORT    = qw(add_schedule get_schedule get_schedule_state get_schedules enable_schedule disable_schedule get_station get_stations get_categories get_category get_types add_station remove_stations add_category remove_categories);
 
 # DB connection
 sub connect_db {
   my $dbh = DBI->connect(
-      "dbi:SQLite:dbname=db/nanode_control.sqlite",undef,undef,
+      "dbi:SQLite:dbname=$appdir/db/nanode_control.sqlite",undef,undef,
       { RaiseError => 1, AutoCommit => 1 }
   ); # Probably better to set the dbname in the settings. Will figure out how to pull that in.
   return $dbh;
@@ -225,7 +226,7 @@ sub add_schedule {
   };
    
   debug("Result: $add - Schedule ID: $scheduleid");
-  return $add;
+  return $scheduleid;
 }
 
 sub get_schedules {
@@ -249,4 +250,66 @@ sub get_schedules {
   debug("Schedules: ", @schedules);
   return @schedules;
 }
+
+# Returns a stations details 
+sub get_schedule {
+  my ($scheduleid) = @_;
+  debug("Getting schedule details for schedule $scheduleid");  
+  my $dbh = connect_db();
+  my $sth = $dbh->prepare(q{
+      SELECT id, name, dow, starttime
+      FROM schedules
+      WHERE deleted = 0 AND id = ?
+      ORDER BY id ASC
+  });
+  $sth->execute($scheduleid);
+  my $schedule;
+  ($schedule->{id},$schedule->{name},$schedule->{days},$schedule->{starttime}) = $sth->fetchrow_array; 
+  ($schedule->{hours}, $schedule->{minutes}) = split(/:/, $schedule->{starttime});
+  debug("Schedule details: ", $schedule);
+  return $schedule;
+};
+
+sub get_schedule_state {
+  my ($scheduleid) = @_;
+  debug("Getting state for schedule $scheduleid");  
+  my $dbh = connect_db();
+  my $sth = $dbh->prepare(q{
+      SELECT enabled
+      FROM schedules
+      WHERE deleted = 0 AND id = ?
+      ORDER BY id ASC
+  });
+  $sth->execute($scheduleid);
+  my ($state) = $sth->fetchrow_array;
+  debug("Schedule State: ", $state);
+  return $state;
+}
+
+sub disable_schedule {
+  my ($scheduleid) = @_;
+  debug("Disable schedule $scheduleid");  
+  my $dbh = connect_db();
+  my $sth = $dbh->prepare(q{
+      UPDATE schedules
+      SET enabled = 0
+      WHERE id = ?
+  });
+  $sth->execute($scheduleid);
+  return;
+}
+
+sub enable_schedule {
+  my ($scheduleid) = @_;
+  debug("Enable schedule $scheduleid");  
+  my $dbh = connect_db();
+  my $sth = $dbh->prepare(q{
+      UPDATE schedules
+      SET enabled = 1
+      WHERE id = ?
+  });
+  $sth->execute($scheduleid);
+  return;
+}
+
 1

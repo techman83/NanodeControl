@@ -4,6 +4,7 @@ use Data::Dumper;
 use NanodeControl::DBsqlite;
 use NanodeControl::RESTduino;
 use NanodeControl::PIcontrol;
+use NanodeControl::Schedule;
 set serializer => 'JSON';
 
 our $VERSION = '0.1';
@@ -43,6 +44,26 @@ get '/schedules' => sub {
   };
 };
 
+post '/schedule' => sub {
+  my $data = from_json(request->body);
+  debug("Schedule: ", $data);
+  
+  foreach my $enable (@{$data->{enabled}}) {
+    if ( get_schedule_state($enable) == 0 ) {
+      enable_schedule($enable);
+      add_cron($enable);
+    }
+  }
+
+  foreach my $disable (@{$data->{disabled}}) {
+    if ( get_schedule_state($disable) == 1 ) {
+      disable_schedule($disable);
+      remove_cron($disable);
+    }
+  }
+  return qq({"result":"success"});
+};
+
 # Remove Schedules
 get '/removeschedules' => sub {
   my @schedules = get_schedules();
@@ -51,6 +72,12 @@ get '/removeschedules' => sub {
         title  => "Nanode Control - Remove Schedules",
         schedules => \@schedules,
   };
+};
+
+post '/removeschedules' => sub {
+  my $data = from_json(request->body);
+
+  return qq({"result":"success"});
 };
 
 # Add a schedule
@@ -68,7 +95,8 @@ get '/addschedule' => sub {
 post '/addschedule' => sub {
   my $data = from_json(request->body);
   debug("Schedule: ", $data, $messages->{schedule}{success});
-  add_schedule($data);
+  my $scheduleid = add_schedule($data);
+  add_cron($scheduleid);
   my $result = $messages->{schedule}{success};
   $result->{result} = 'success';
   to_json($result);
