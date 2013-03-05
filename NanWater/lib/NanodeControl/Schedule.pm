@@ -16,7 +16,7 @@ sub add_cron {
   my $event = new Config::Crontab::Event( -minute  => $schedule->{minutes},
                                           -hour    => $schedule->{hours},
                                           -dow     => $schedule->{days},
-                                          -command => "$appdir/bin/runschedule.pl $schedule->{id}");
+                                          -command => "$appdir/bin/runschedule.pl --schedule=$schedule->{id}");
   my $block = new Config::Crontab::Block;
   $block->last($event);
   $ct->last($block);

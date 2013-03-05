@@ -5,7 +5,7 @@ use DBD::SQLite;
 use base 'Exporter';
 my $appdir = config->{appdir};
 
-our @EXPORT    = qw(add_schedule get_schedule get_schedule_state get_schedules enable_schedule disable_schedule get_station get_stations get_categories get_category get_types add_station remove_stations add_category remove_categories);
+our @EXPORT    = qw(add_schedule get_schedule get_schedule_state get_schedules get_scheduled_stations enable_schedule disable_schedule get_station get_stations get_categories get_category get_types add_station remove_stations add_category remove_categories);
 
 # DB connection
 sub connect_db {
@@ -310,6 +310,29 @@ sub enable_schedule {
   });
   $sth->execute($scheduleid);
   return;
+}
+
+sub get_scheduled_stations {
+  my ($scheduleid) = @_;
+  my $dbh = connect_db();
+  my $sth = $dbh->prepare(q{
+      SELECT stationid, duration, runorder
+      FROM scheduled_stations
+      WHERE deleted = 0 and scheduleid = ?
+      ORDER BY runorder DESC
+  });
+  
+  $sth->execute($scheduleid);
+  my @stations;
+  while (my ($id,$duration,$runorder) = $sth->fetchrow_array) {
+      push @stations, {
+          id => $id,
+          duration => $duration,
+          runorder => $runorder
+      };
+  }
+  debug("Schedule Stations: ", @stations);
+  return @stations;
 }
 
 1

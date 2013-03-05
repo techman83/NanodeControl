@@ -2,7 +2,7 @@ DROP TABLE IF EXISTS "categories";
 CREATE TABLE "categories" ("id" INTEGER PRIMARY KEY  AUTOINCREMENT  NOT NULL  UNIQUE ,"name" VARCHAR,"deleted" INTEGER DEFAULT (0) );
 INSERT INTO "categories" VALUES(10001,'Example Category',0);
 DROP TABLE IF EXISTS "scheduled_stations";
-CREATE TABLE "scheduled_stations" ("id" INTEGER PRIMARY KEY  AUTOINCREMENT  NOT NULL  UNIQUE , "scheduleid" INTEGER, "stationid" INTEGER, "duration" INTEGER, "order" INTEGER, "deleted" INTEGER DEFAULT (0) );
+CREATE TABLE "scheduled_stations" ("id" INTEGER PRIMARY KEY  NOT NULL ,"scheduleid" INTEGER,"stationid" INTEGER,"duration" INTEGER,"runorder" INTEGER,"deleted" INTEGER DEFAULT (0) );
 INSERT INTO "scheduled_stations" VALUES(10001,10001,10001,500,1,0);
 DROP TABLE IF EXISTS "schedules";
 CREATE TABLE "schedules" ("id" INTEGER PRIMARY KEY  AUTOINCREMENT  NOT NULL  UNIQUE , "name" VARCHAR, "starttime" DATETIME, "dow" VARCHAR, "raincheck" INTEGER DEFAULT (0), "enabled" INTEGER DEFAULT (1), "deleted" INTEGER DEFAULT (0) );
