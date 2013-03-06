@@ -1,8 +1,11 @@
 package NanodeControl::Run;
 use strict;
-use Dancer qw(:syntax);
+use Dancer qw(:syntax !get);
 use NanodeControl::DBsqlite;
-use LWP::Simple;
+use NanodeControl::RESTduino;
+use NanodeControl::ToSeconds;
+use LWP::Simple qw(get);
+use Data::Dumper;
 use base 'Exporter';
 
 our @EXPORT = qw(run_schedule);
@@ -11,21 +14,25 @@ sub run_schedule {
   my ($scheduleid) = @_;
   my @stations = get_scheduled_stations($scheduleid);
 
-  foreach $station (@stations) {
+  foreach my $station (@stations) {
+    my $duration = $station->{duration};
     my $station =  get_station($station->{id});
+    print Dumper($station);
 
-    if ($station->{reversed} == 1 {
-      set_stations_state($station->{url},"LOW")
+    if ($station->{reversed} == 1) {
+      set_station_state($station->{url},"LOW")
     } else {
-      set_stations_state($station->{url},"HIGH");
+      set_station_state($station->{url},"HIGH");
     }
+    
+    $duration = to_seconds($duration);
+    print "$duration"; 
+    sleep($duration);
 
-    sleep($station->{duration});
-
-    if ($station->{reversed} == 1 {
-      set_stations_state($station->{url},"HIGH")
+    if ($station->{reversed} == 1) {
+      set_station_state($station->{url},"HIGH")
     } else {
-      set_stations_state($station->{url},"LOW");
+      set_station_state($station->{url},"LOW");
     }
   }
 }
