@@ -32,7 +32,7 @@ sub remove_cron {
   my @event = $ct->select( -type       => 'event',
                            -command_re => "(?:$scheduleid)");
   debug("Event: ", @event);
-  my $block = $ct->block(@event[0]);
+  my $block = $ct->block($event[0]);
   debug("Block: ", $block);
   $ct->remove($block);
   $ct->write;
