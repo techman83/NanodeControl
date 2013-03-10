@@ -1,0 +1,9 @@
+#!/bin/sh
+
+path=/usr/local/NanodeControl
+
+# if your application is not installed in @INC path:
+export PERL5LIB="$path/lib"
+
+exec 2>&1 \
+su www-data -c "/usr/local/bin/plackup -E production -s Starman --workers=2 -l /tmp/nanode.sock -a $path/bin/app.pl"

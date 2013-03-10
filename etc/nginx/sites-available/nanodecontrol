@@ -1,0 +1,26 @@
+upstream backendurl {
+    server unix:/tmp/nanode.sock;
+}
+
+server {
+  listen       80;
+
+  access_log /usr/local/NanodeControl/logs/nanode.log;
+  error_log  /usr/local/NanodeControl/logs/nanode.log info; 
+
+  root /usr/local/NanodeControl/public;
+  location / {
+    try_files $uri @proxy;
+    access_log off;
+    expires max;
+  }
+
+  location @proxy {
+        proxy_set_header Host $http_host;
+        proxy_set_header X-Forwarded-Host $host;
+        proxy_set_header X-Real-IP $remote_addr;
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+        proxy_pass       http://backendurl;
+  }
+
+}

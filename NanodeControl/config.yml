@@ -4,7 +4,7 @@
 
 # Your application's name
 appname: "Nanode Control"
-appdir: "/home/leon/git/nanodecontrol/NanodeControl"
+appdir: "/usr/local/NanodeControl"
 
 # The default layout to use for your application (located in
 # views/layouts/main.tt)
