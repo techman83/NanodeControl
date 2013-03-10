@@ -7,6 +7,12 @@ by Leon Wright, 2013, techman83@gmail.com
 This web app is designed to be flexible and controllable from any device, from a 
 PC to a Smartphone. The intention is for it to also be hosted by a Raspberry pi.
 
+It partners with the Nanode devices:
+http://wickeddevice.com/index.php?main_page=product_info&products_id=102
+
+and Nanode Remote:
+https://github.com/techman83/NanodeRemote
+
 I've not written any web apps before, so this was quite a learning experience!
 
 Installation instructions need further fleshing out along with this readme. However 
