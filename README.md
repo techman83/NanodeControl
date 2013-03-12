@@ -20,3 +20,5 @@ several people have asked me to get it up on github, so here it is :)
 
 All parts of the project are licensed under the GNU Affero General Public License 
 v3.0 unless otherwise specified.
+
+[![githalytics.com alpha](https://cruel-carlota.pagodabox.com/92a86f5587919c6b5857f1e240742656 "githalytics.com")](http://githalytics.com/techman83/NanodeControl)
