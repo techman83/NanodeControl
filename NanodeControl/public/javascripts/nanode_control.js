@@ -152,6 +152,7 @@ $(document).on('pageinit', function(e){
       schedule.starttime = $('[name=starttime]').val();
       schedule.url = '/addschedule';
       schedule.successpop = 1;
+      schedule.master = $("#masterselect option:selected").val();
       console.log("Submit: " + schedule);
       submit(schedule);
     });
@@ -160,11 +161,23 @@ $(document).on('pageinit', function(e){
     $("form[id^='station_select-']").submit(function(event) {
       event.stopPropagation();
       event.preventDefault();
+      console.log("Popup Submit");
+      var id,name;
+      $("#masterselect").empty();
+      $('#masterselect').append( new Option("None","0") );
+      $(":checkbox:checked[id^='station-']").each(function() { 
+          id = $(this).attr("name");
+          name = $('label[for="'+ $(this).attr('id') +'"]').attr("name");
+          console.log("ID: " + id);
+          console.log("Name: " + name);
+          $('#masterselect').append( new Option(name,id) );
+      });
+      $('#masterselct').selectmenu('refresh', true);
       $("#" + this.id).popup("close")
     });
   }
 }); // Add Schedule
-
+    
 // Schedules
 $(document).on('pageinit', function(e){
   if (e.target.id == 'schedules') {

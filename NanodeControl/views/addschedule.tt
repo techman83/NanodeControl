@@ -23,7 +23,7 @@
                                             [% FOREACH station IN stations %]
                                                   [% IF station.categoryid == category.id %]
                                                           <input id="station-[% station.id %]" name="[% station.id %]" type="checkbox">
-                                                          <label for="station-[% station.id %]">
+                                                          <label for="station-[% station.id %]" name="[% station.name %]">
                                                                 [% station.name %]
                                                           </label>
                                                   [% END %]
@@ -81,6 +81,16 @@
                         <label for="starttime">Start Time</label>
                         <input name="starttime" id="starttime" type="date" data-mini="true" data-role="datebox"
                             data-options='{"mode": "timebox", "overrideTimeFormat": 24}'>
+                    </div>
+                    <div data-role="fieldcontain">
+                        <label for="typeselect">
+                            Master Relay:
+                        </label>
+                        <select id="masterselect" name="master" data-theme="c" data-mini="true">
+                            <option value="0">
+                               None 
+                            </option>
+                        </select>
                     </div>
                     <div data-role="fieldcontain">
                         <fieldset data-role="controlgroup">

@@ -203,11 +203,11 @@ sub add_schedule {
   my $dbh = connect_db();
   my $sth = $dbh->prepare(q{
       INSERT INTO schedules
-      (name,starttime,dow)
-      VALUES (?, ?, ?)
+      (name,starttime,dow,master)
+      VALUES (?, ?, ?, ?)
   });
   my $days = join(",", @{$schedule->{days}}); 
-  my $add = $sth->execute($schedule->{name},$schedule->{starttime},$days);
+  my $add = $sth->execute($schedule->{name},$schedule->{starttime},$days,$schedule->{master});
   $sth = $dbh->prepare(q{
       SELECT id
       FROM schedules
@@ -257,14 +257,14 @@ sub get_schedule {
   debug("Getting schedule details for schedule $scheduleid");  
   my $dbh = connect_db();
   my $sth = $dbh->prepare(q{
-      SELECT id, name, dow, starttime
+      SELECT id, name, dow, starttime, master
       FROM schedules
       WHERE deleted = 0 AND id = ?
       ORDER BY id ASC
   });
   $sth->execute($scheduleid);
   my $schedule;
-  ($schedule->{id},$schedule->{name},$schedule->{days},$schedule->{starttime}) = $sth->fetchrow_array; 
+  ($schedule->{id},$schedule->{name},$schedule->{days},$schedule->{starttime},$schedule->{master}) = $sth->fetchrow_array; 
   ($schedule->{hours}, $schedule->{minutes}) = split(/:/, $schedule->{starttime});
   debug("Schedule details: ", $schedule);
   return $schedule;
