@@ -13,7 +13,7 @@
             <div id="station_checkboxes" data-role="fieldcontain">
                 <fieldset data-role="controlgroup" data-type="vertical">
                         <legend>
-                               Remove Seleceted Stations: 
+                               Remove Selected Stations: 
                         </legend>
                         [% FOREACH station IN stations %]
                         <input id="[% station.id %]" name="" type="checkbox">
