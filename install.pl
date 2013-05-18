@@ -1,5 +1,6 @@
 #!/usr/bin/perl
 use strict;
+use Data::Dumper;
 
 if ( $> > 0 ) {
   print "This installer must be run as root \n";
@@ -14,15 +15,15 @@ $self->{gpio_init} = "set_pi_gpios.sh";
 
 # Gather install information
 $self->{pi} = &Prompt("Are you installing on a Pi? (y/n) ","y");
-lc($$self->{pi});
+lc($self->{pi});
 
 if ( $self->{pi} eq "n" ) {
-  my $self->{distro} = &Prompt("Is this distro debian/ubuntu based? (y/n) ", "y");
+  $self->{distro} = &Prompt("Is this distro debian/ubuntu based? (y/n) ", "y");
   lc($self->{distro});
 } else {
-  my $self->{wiringpi} = &Prompt("Would you like me to install WiringPi (will include git-core)? (y/n) ", "y");
+  $self->{wiringpi} = &Prompt("Would you like me to install WiringPi (will include git-core)? (y/n) ", "y");
   lc($self->{wiringpi});
-  my $self->{pipins} = &Prompt("Would you like the Pi Pins configured low on boot? (y/n) ", "y");  
+  $self->{pipins} = &Prompt("Would you like the Pi Pins configured low on boot? (y/n) ", "y");  
   lc($self->{pipins});
 }
 
@@ -43,15 +44,15 @@ unless (-d $self->{installpath}) {
   print Dumper($self);
   nanode($self);
 
-  if ($self->{nginx} = "y") {
+  if ($self->{nginx} eq "y") {
     nginx($self);
   }
   
-  if ($self->{dtools} = "y") {
+  if ($self->{dtools} eq "y") {
     daemontools($self);
   }
   
-  if ($self->{pi} = "y") {
+  if ($self->{pi} eq "y") {
     wiringpi($self);
   }
 
@@ -76,6 +77,7 @@ sub Prompt { # inspired from here: http://alvinalexander.com/perl/edu/articles/p
   if ("$default") {
     return $_ ? $_ : $default;    # return $_ if it has a value
   } else {
+    print "$_ \n";
     return $_;
   }
 }
@@ -93,7 +95,7 @@ cd wiringPi
 EOF
 
   open (SCRIPT, '>>/wiringpi.sh');
-  print SCRIPT $scrit;
+  print SCRIPT $script;
   close (SCRIPT); 
   system("/bin/sh /tmp/wiringpi.sh");
 
@@ -192,7 +194,10 @@ EOF
   print NGINXCONF $nginxconf;
   close (NGINXCONF); 
   symlink('/etc/nginx/sites-available/nanodecontrol','/etc/nginx/sites-enabled/nanodecontrol') or die print "$!\n";
-
+  if ($self->{port} == 80) {
+    unlink('/etc/nginx/sites-enabled/default');
+  }
+  system('/etc/init.d/nginx restart');
   return;
 }
 
@@ -213,10 +218,10 @@ exec 2>&1 \
 su www-data -c "/usr/local/bin/plackup -E production -s Starman --workers=2 -l /tmp/nanode.sock -a \$path/bin/app.pl"
 EOF
 
-  open (DTCONF, '>>/etc/nginx/sites-available/nanodecontrol');
+  mkdir "/etc/service/nanode";
+  open (DTCONF, '>>/etc/service/nanode/run');
   print DTCONF $dtconf;
   close (DTCONF); 
-  symlink('/etc/nginx/sites-available/nanodecontrol','/etc/nginx/sites-enabled/nanodecontrol') or die print "$!\n";
 
   system("svc -u /etc/service/nanode");
   
@@ -226,11 +231,11 @@ EOF
 sub aptget  { # Need to ponder a better method, this doesn't account for failures.
   my ($self,$packages) = @_;
 
-  unless (defined $self->{apt-updated}) {
+  unless (defined $self->{apt_updated}) {
     print "Updating apt....";
     system("apt-get update");
     print "Done.\n";
-    $self->{apt-updated} = 1;
+    $self->{apt_updated} = 1;
   }
 
   print "Installing: $packages....";
