@@ -93,7 +93,7 @@ cd wiringPi
 EOF
 
   open (SCRIPT, '>>/wiringpi.sh');
-  print SCRIPT $dtconf;
+  print SCRIPT $scrit;
   close (SCRIPT); 
   system("/bin/sh /tmp/wiringpi.sh");
 
