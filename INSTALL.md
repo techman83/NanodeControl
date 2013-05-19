@@ -1,3 +1,14 @@
+RASPBERRY PI/Debian based Distro Installation:
+
+Run ./install.pl
+
+It should take care of all installation requirements and configuration.
+
+Browse to http://host:port when finished.
+
+NOTE: Installing on the Pi takes considerable time (DBD takes ~30mins to compile/test). Coffee/Beverage of choice recommended.
+
+FOR MANUAL INSTALL:
 These install instructions need fleshing out, however I'll include enough
 to at least get you up and running.
 
