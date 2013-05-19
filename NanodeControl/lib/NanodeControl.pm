@@ -108,7 +108,20 @@ get '/removeschedules' => sub {
 
 post '/removeschedules' => sub {
   my $data = from_json(request->body);
-
+  debug("Remove Schedules: ", $data);
+  
+  foreach my $disable (@{$data->{schedules}}) {
+    my $result = remove_cron($disable);
+    if ($result eq "success") {
+      remove_schedule($disable);
+    } else {
+      $result = $messages->{cron}{fail_remove};
+      $result->{message} = $result->{message}.$disable;
+      $result->{result} = 'failure';
+      to_json($result);
+      return $result;
+    }
+  }
   return qq({"result":"success"});
 };
 

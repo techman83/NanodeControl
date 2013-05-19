@@ -178,6 +178,26 @@ $(document).on('pageinit', function(e){
   }
 }); // Add Schedule
     
+// Remove schedules
+$(document).on('pageinit', function(e){
+  if (e.target.id == 'removeschedules') {
+    console.log("Remove Stations"); 
+    var removeschedules = new Object();
+    $('form').submit(function(event) {
+      console.log("Submit"); 
+      event.stopPropagation();
+      event.preventDefault();
+      removeschedules.schedules = [];
+      removeschedules.url = "/removeschedules";
+      $(":checkbox:checked").each(function() { 
+              console.log("Remove Schedule: " + $(this).attr("id"));
+              removeschedules.schedules.push($(this).attr("id"));
+      });
+      submit(removeschedules);
+    }); // function submit
+  }; // remove schedule submit 
+}); // Remove schedules
+
 // Schedules
 $(document).on('pageinit', function(e){
   if (e.target.id == 'schedules') {

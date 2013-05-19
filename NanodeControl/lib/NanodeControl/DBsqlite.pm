@@ -5,7 +5,23 @@ use DBD::SQLite;
 use base 'Exporter';
 my $appdir = config->{appdir};
 
-our @EXPORT    = qw(add_schedule get_schedule get_schedule_state get_schedules get_scheduled_stations enable_schedule disable_schedule get_station get_stations get_categories get_category get_types add_station remove_stations add_category remove_categories);
+our @EXPORT    = qw(add_schedule
+                    get_schedule
+                    get_schedule_state
+                    get_schedules
+                    get_scheduled_stations
+                    enable_schedule
+                    disable_schedule
+                    remove_schedule
+                    get_station
+                    get_stations
+                    get_categories
+                    get_category
+                    get_types
+                    add_station
+                    remove_stations
+                    add_category
+                    remove_categories);
 
 # DB connection
 sub connect_db {
@@ -293,6 +309,19 @@ sub disable_schedule {
   my $sth = $dbh->prepare(q{
       UPDATE schedules
       SET enabled = 0
+      WHERE id = ?
+  });
+  $sth->execute($scheduleid);
+  return;
+}
+
+sub remove_schedule {
+  my ($scheduleid) = @_;
+  debug("Removing schedule $scheduleid");  
+  my $dbh = connect_db();
+  my $sth = $dbh->prepare(q{
+      UPDATE schedules
+      SET deleted = 1 
       WHERE id = ?
   });
   $sth->execute($scheduleid);
