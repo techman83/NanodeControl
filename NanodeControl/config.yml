@@ -50,6 +50,9 @@ messages:
     success:
       title:  'Success'
       message:  'Schedule added and enabled successfully.'
+    failure:
+      title:  'Failure'
+      message:  'Schedule added but could not be enabled.'
   control:
     failure:
       title:  'Failure'

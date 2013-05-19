@@ -141,12 +141,21 @@ post '/addschedule' => sub {
   my $data = from_json(request->body);
   debug("Schedule: ", $data, $messages->{schedule}{success});
   my $scheduleid = add_schedule($data);
-  add_cron($scheduleid);
-  my $result = $messages->{schedule}{success};
-  $result->{result} = 'success';
-  to_json($result);
-  debug("Schedule: ", $result);
-  return $result;
+  my $result = add_cron($scheduleid);
+  
+  if ($result eq "success") {
+    $result = $messages->{schedule}{success};
+    $result->{result} = 'success';
+    to_json($result);
+    debug("Schedule: ", $result);
+    return $result;
+  } else {
+    $result = $messages->{schedule}{failure};
+    $result->{result} = 'failure';
+    to_json($result);
+    debug("Schedule: ", $result);
+    return $result;
+  }
 };
 
 # Add Station
