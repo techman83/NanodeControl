@@ -1,6 +1,6 @@
 #!/usr/bin/perl
 use strict;
-use Data::Dumper;
+#use Data::Dumper;
 
 if ( $> > 0 ) {
   print "This installer must be run as root \n";
@@ -28,21 +28,28 @@ if ( $self->{pi} eq "n" ) {
 }
 
 if ( $self->{distro} eq "y" || $self->{pi} eq "y" ) {
-  my $self->{nginx} = &Prompt("Would you like me to attempt to install/configure nginx? (y/n)", "y");
+  $self->{nginx} = &Prompt("Would you like me to attempt to install/configure nginx? (y/n)", "y");
   lc($self->{nginx});
   if ( $self->{nginx} eq "y" ) {
-    my $self->{port} &Prompt("Set webserver port to 8080? (change to 80 if you are sure no other webserver is running", "8080");
+    $self->{port} = &Prompt("Set webserver port to 8080? (change to 80 if you are sure no other webserver is running)", "8080");
   }
-  my $self->{dtools} = &Prompt("Would you like me to attempt to install/configure daemontools (runs NanodeControl service)? (y/n)", "y");
+  $self->{dtools} = &Prompt("Would you like me to attempt to install/configure daemontools (runs NanodeControl service)? (y/n)", "y");
   lc($self->{dtools});
 }
 
-my $self->{installpath} = &Prompt("Install path", "/usr/local/NanodeControl");
+$self->{installpath} = &Prompt("Install path", "/usr/local/NanodeControl");
+
+$self->{perl} = &Prompt("Install cpanm + required perl modules? (y/n)", "y");
+
+#print Dumper($self);
 
 # Run install
 unless (-d $self->{installpath}) {
-  print Dumper($self);
   nanode($self);
+
+  if ($self->{perl} eq "y") {
+    install_modules($self);
+  }
 
   if ($self->{nginx} eq "y") {
     nginx($self);
@@ -52,7 +59,7 @@ unless (-d $self->{installpath}) {
     daemontools($self);
   }
   
-  if ($self->{pi} eq "y") {
+  if ($self->{wiringpi} eq "y") {
     wiringpi($self);
   }
 
@@ -77,9 +84,16 @@ sub Prompt { # inspired from here: http://alvinalexander.com/perl/edu/articles/p
   if ("$default") {
     return $_ ? $_ : $default;    # return $_ if it has a value
   } else {
-    print "$_ \n";
     return $_;
   }
+}
+
+sub install_modules {
+  system("curl -L http://cpanmin.us | perl - App::cpanminus");
+  system("cpanm -S Dancer::Template::TemplateToolkit Template LWP::Simple Plack::Handler::FCGI Plack::Runner JSON::Parse JSON DBD::SQLite YAML Dancer Config::Crontab");
+  # Starman test fail, but it installs and works correctly. Need to diagnose
+  system("cpanm -nS Plack::Handler::Starman");
+  return;
 }
 
 sub wiringpi { # Need to ponder a better method, this doesn't account for failures.
@@ -94,7 +108,7 @@ cd wiringPi
 ./build
 EOF
 
-  open (SCRIPT, '>>/wiringpi.sh');
+  open (SCRIPT, '>>/tmp/wiringpi.sh');
   print SCRIPT $script;
   close (SCRIPT); 
   system("/bin/sh /tmp/wiringpi.sh");
@@ -159,7 +173,7 @@ EOF
 sub nginx {
   my ($self) = @_;
 
-  aptget($self,"nginx");
+  $self = aptget($self,"nginx");
 
   my $nginxconf = <<EOF;
 upstream backendurl {
@@ -204,7 +218,7 @@ EOF
 sub daemontools {
   my ($self) = @_;
 
-  aptget($self,"daemontools daemontools-run");
+  $self = aptget($self,"daemontools daemontools-run");
 
   my $dtconf = <<EOF;
 #!/bin/sh
@@ -223,7 +237,11 @@ EOF
   print DTCONF $dtconf;
   close (DTCONF); 
 
-  system("svc -u /etc/service/nanode");
+  my $mode = 0775;   
+  chmod $mode, "/etc/service/nanode/run"; 
+  
+  # Pretty sure daemon tools will automatically pick up and run the service.
+  #system("svc -u /etc/service/nanode");
   
   return;
 }
@@ -242,7 +260,7 @@ sub aptget  { # Need to ponder a better method, this doesn't account for failure
   system("apt-get -y install $packages");
   print "Done \n";
 
-  return;
+  return $self;
 }
 
 sub nanode {
