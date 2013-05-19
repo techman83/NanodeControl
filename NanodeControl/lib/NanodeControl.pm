@@ -63,18 +63,34 @@ get '/schedules' => sub {
 post '/schedule' => sub {
   my $data = from_json(request->body);
   debug("Schedule: ", $data);
-  
+
   foreach my $enable (@{$data->{enabled}}) {
     if ( get_schedule_state($enable) == 0 ) {
-      enable_schedule($enable);
-      add_cron($enable);
+      my $result = add_cron($enable);
+      if ($result eq "success") {
+        enable_schedule($enable);
+        debug("Cron added successfully");
+      } else {
+        debug("Cron add failed");
+        $result = $messages->{cron}{fail_add};
+        $result->{message} = $result->{message}.$enable;
+        $result->{result} = 'failure';
+        return $result;
+      }
     }
   }
 
   foreach my $disable (@{$data->{disabled}}) {
     if ( get_schedule_state($disable) == 1 ) {
-      disable_schedule($disable);
-      remove_cron($disable);
+      my $result = remove_cron($disable);
+      if ($result eq "success") {
+        disable_schedule($disable);
+      } else {
+        $result = $messages->{cron}{fail_remove};
+        $result->{message} = $result->{message}.$disable;
+        $result->{result} = 'failure';
+        return $result;
+      }
     }
   }
   return qq({"result":"success"});

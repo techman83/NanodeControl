@@ -12,7 +12,11 @@ sub add_cron {
   my ($scheduleid) = @_;
   debug("Enabling Cron: ", $scheduleid);
   my $schedule = get_schedule($scheduleid);
+
+  # Read cron
   my $ct = new Config::Crontab; $ct->read;
+  
+  # Write new entry
   my $event = new Config::Crontab::Event( -minute  => $schedule->{minutes},
                                           -hour    => $schedule->{hours},
                                           -dow     => $schedule->{days},
@@ -22,7 +26,20 @@ sub add_cron {
   $ct->last($block);
   $ct->write;
   debug("Cron Enable: ", $ct);
-  return;
+
+  # Check it got written
+  $ct->read;
+  my @event = $ct->select( -type       => 'event',
+                           -command_re => "(?:$scheduleid)");
+  debug("Event: ", @event);
+
+  if (defined $event[0]->{_active}) {
+    debug("Cron: Success");
+    return "success";
+  } else {
+    debug("Cron: Failure");
+    return "failure";
+  }
 }
 
 sub remove_cron {
@@ -37,7 +54,20 @@ sub remove_cron {
   $ct->remove($block);
   $ct->write;
   debug("Cron Disable: ", $ct);
-  return;
+  
+  # Check it got written
+  $ct->read;
+  my @event = $ct->select( -type       => 'event',
+                           -command_re => "(?:$scheduleid)");
+  debug("Event: ", @event);
+
+  unless (defined $event[0]->{_active}) {
+    debug("Cron: Success");
+    return "success";
+  } else {
+    debug("Cron: Failure");
+    return "failure";
+  }
 }
 
 sub get_cron {

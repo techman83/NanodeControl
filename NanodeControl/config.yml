@@ -54,4 +54,11 @@ messages:
     failure:
       title:  'Failure'
       message: 'Failed to control the station, please refresh the page'
+  cron:
+    fail_add:
+      title:  'Failure'
+      message: 'Failed to enable the cron schedule for Station: '
+    fail_remove:
+      title:  'Failure'
+      message: 'Failed to disable the cron schedule for Station: '
 
