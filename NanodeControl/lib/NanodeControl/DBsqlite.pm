@@ -5,6 +5,11 @@ use DBD::SQLite;
 use base 'Exporter';
 my $appdir = config->{appdir};
 
+unless ( defined $appdir ) {
+   use FindBin qw($Bin);
+   $appdir = "$Bin/..";
+}
+
 our @EXPORT    = qw(add_schedule
                     get_schedule
                     get_schedule_state
