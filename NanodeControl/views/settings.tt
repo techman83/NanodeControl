@@ -2,20 +2,21 @@
 <!-- Start of first page: #one -->
 <div data-role="page" id="settings">
 
-        <div data-role="header">
-		<a href="/" data-icon="home" class="ui-btn-left">Home</a>
-                <h1>[% title %]</h1>
-		<a href="#settings" data-ajax="false" data-icon="gear" class="ui-btn-right">Settings</a>
-        </div><!-- /header -->
-
-        <div data-role="content" >      
-                <p><a href="/schedules" data-ajax="false" data-role="button">Schedules</a></p>       
-                <p><a href="/categories" data-ajax="false" data-role="button">Categories</a></p>       
-                <p><a href="/addstation" data-ajax="false" data-role="button">Add Stations</a></p>
-                <p><a href="/removestations" data-ajax="false" data-role="button">Remove Stations</a></p>
-        </div><!-- /content -->
-        
-        <div data-role="footer" data-theme="d">
-                <h4></h4>
-        </div><!-- /footer -->
+  <div data-role="header">
+    <a href="/" data-icon="home" class="ui-btn-left">Home</a>
+      <h1>[% title %]</h1>
+    <a href="#settings" data-ajax="false" data-icon="gear" class="ui-btn-right">Settings</a>
+  </div><!-- /header -->
+  
+  <div data-role="content" >      
+    <p><a href="/Utilities" data-ajax="false" data-role="button">Utilities</a></p>
+    <p><a href="/schedules" data-ajax="false" data-role="button">Schedules</a></p>       
+    <p><a href="/categories" data-ajax="false" data-role="button">Categories</a></p>       
+    <p><a href="/addstation" data-ajax="false" data-role="button">Add Stations</a></p>
+    <p><a href="/removestations" data-ajax="false" data-role="button">Remove Stations</a></p>
+  </div><!-- /content -->
+  
+  <div data-role="footer" data-theme="d">
+    <h4></h4>
+  </div><!-- /footer -->
 </div><!-- /page one -->
