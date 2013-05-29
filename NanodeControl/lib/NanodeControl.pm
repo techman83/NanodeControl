@@ -325,6 +325,16 @@ post '/stations/:id' => sub {
   }
 };
 
+# Utilities
+get '/utilities' => sub {
+  my @stations = get_stations("All"); 
+  template 'utilities', {
+        title  => "Nanode Control - Utilities",
+        stations => \@stations,
+  };
+};
+
+# Control Local Pi Pin
 get '/pigpio/:gpio/:state' => sub {
   my $gpio = params->{gpio};
   my $state = params->{state};
@@ -332,6 +342,8 @@ get '/pigpio/:gpio/:state' => sub {
   set_pigpio_state($gpio,$state);
   return qq({"result":"success"});
 };
+
+# Return state in rest like format
 get '/pigpio/:gpio' => sub {
   my $gpio = params->{gpio};
   debug("Get gpio $gpio state");

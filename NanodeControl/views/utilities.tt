@@ -5,22 +5,25 @@
   <div data-role="header">
     <a href="/" data-icon="home" class="ui-btn-left">Home</a>
       <h1>[% title %]</h1>
-    <a href="#settings" data-ajax="false" data-icon="gear" class="ui-btn-right">Settings</a>
+    <a href="/settings" data-ajax="false" data-icon="gear" class="ui-btn-right">Settings</a>
   </div><!-- /header -->
   
   <div data-role="content" >      
-    <p><a href="#valvefinder" data-ajax="false" data-role="button">Add Stations</a></p>
+    <p><a href="#valvefinder" data-role="button">Valve Finder</a></p>
   </div><!-- /content -->
   
   <div data-role="footer" data-theme="d">
     <h4></h4>
   </div><!-- /footer -->
+</div><!-- /page one -->
 
 <!-- Valve Finder -->
 <div data-role="page" id="valvefinder">
 
-  <div id="popup_header" data-role="header" data-theme="b">
+  <div data-role="header">
+    <a href="/" data-icon="home" class="ui-btn-left">Home</a>
     <h1>Valve Finder</h1>
+    <a href="/settings" data-ajax="false" data-icon="gear" class="ui-btn-right">Settings</a>
   </div><!-- /header -->
   <div data-role="content" data-theme="d">  
     <form>
@@ -38,11 +41,10 @@
         </fieldset>
       </div>
       <input id="submit_remove" data-ajax="false" data-theme="d" data-icon="minus" data-iconpos="left" value="Submit" type="submit">
-    <form>
+    </form>
   </div><!-- /content -->
   
   <div data-role="footer">
           &nbsp;
   </div><!-- /footer -->
-</div><!-- /page popup -->
-</div><!-- /page one -->
+</div><!-- /valvefinder -->

@@ -9,7 +9,7 @@
   </div><!-- /header -->
   
   <div data-role="content" >      
-    <p><a href="/Utilities" data-ajax="false" data-role="button">Utilities</a></p>
+    <p><a href="/utilities" data-ajax="false" data-role="button">Utilities</a></p>
     <p><a href="/schedules" data-ajax="false" data-role="button">Schedules</a></p>       
     <p><a href="/categories" data-ajax="false" data-role="button">Categories</a></p>       
     <p><a href="/addstation" data-ajax="false" data-role="button">Add Stations</a></p>
