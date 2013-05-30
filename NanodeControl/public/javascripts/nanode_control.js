@@ -43,6 +43,22 @@ function messagepop(data) {
   $("#lnkInfo").click();
 }
 
+// Single Value Checkbox Form
+function uncheck_station (id) {
+  console.log("Function Uncheck Station: " + id);
+  id;
+  $(":checkbox:checked[id^='finder-']").each(function() {
+    console.log("Testing: " + this.id);
+    if (id == this.id) {
+      console.log("Checked: " + id);
+    } else {
+      console.log("Selected: " + id);
+      console.log("Unchecking: " + this.id);
+      $('#' + this.id).attr("checked",false).checkboxradio("refresh"); ;
+    }
+  });
+}
+
 // Custom submit function
 function submit (data) {
   $.mobile.showPageLoadingMsg(); 
