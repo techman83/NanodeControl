@@ -327,11 +327,22 @@ post '/stations/:id' => sub {
 
 # Utilities
 get '/utilities' => sub {
-  my @stations = get_stations("All"); 
+  my @stations = get_stations("All");
+  
+  # use if/else for running finder
   template 'utilities', {
         title  => "Nanode Control - Utilities",
         stations => \@stations,
   };
+};
+
+# Valve Finder
+post '/valvefinder' => sub {
+  my $data = from_json(request->body);
+  debug("Find Valve: ", $data);
+  # logic if somehow multiple valves come in
+  # use if/else for running finder
+  return qq({"result":"success"});
 };
 
 # Control Local Pi Pin

@@ -43,22 +43,6 @@ function messagepop(data) {
   $("#lnkInfo").click();
 }
 
-// Single Value Checkbox Form
-function uncheck_station (id) {
-  console.log("Function Uncheck Station: " + id);
-  id;
-  $(":checkbox:checked[id^='finder-']").each(function() {
-    console.log("Testing: " + this.id);
-    if (id == this.id) {
-      console.log("Checked: " + id);
-    } else {
-      console.log("Selected: " + id);
-      console.log("Unchecking: " + this.id);
-      $('#' + this.id).attr("checked",false).checkboxradio("refresh"); ;
-    }
-  });
-}
-
 // Custom submit function
 function submit (data) {
   $.mobile.showPageLoadingMsg(); 
@@ -111,6 +95,52 @@ function submit (data) {
     }
   });
 } // function submit
+
+// Control for page specific JS
+$(document).on('pageinit', function(e){
+  switch (e.target.id) {
+    case 'utilities':
+      page_utilities();
+    }
+}); // Control Pages
+
+// utilities function
+function page_utilities () {
+  console.log("Utilities");
+  var utilities = new Object();
+
+  // Look for designation in template for running finder
+
+  // Valve finder submit
+  $("form[id='valve_finder']").submit(function(event) {
+    event.stopPropagation();
+    event.preventDefault();
+    console.log("Submit"); 
+    utilities.valves = [];
+    $(":checkbox:checked[id^='finder-']").each(function() { 
+         utilities.valves.push($(this).attr('id'));
+         utilities.url = '/valvefinder';
+    });
+    submit(utilities);
+  });
+
+} // utilities function
+
+// Single Value Checkbox Form
+function uncheck_station (id) {
+  console.log("Function Uncheck Station: " + id);
+  id;
+  $(":checkbox:checked[id^='finder-']").each(function() {
+    console.log("Testing: " + this.id);
+    if (id == this.id) {
+      console.log("Checked: " + id);
+    } else {
+      console.log("Selected: " + id);
+      console.log("Unchecking: " + this.id);
+      $('#' + this.id).attr("checked",false).checkboxradio("refresh"); ;
+    }
+  });
+}
 
 // Control stations
 $(document).on('pageinit', function(e){
