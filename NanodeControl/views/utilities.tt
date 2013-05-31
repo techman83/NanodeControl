@@ -25,23 +25,25 @@
     <h1>Valve Finder</h1>
     <a href="/settings" data-ajax="false" data-icon="gear" class="ui-btn-right">Settings</a>
   </div><!-- /header -->
-  <div data-role="content" data-theme="d">  
-    <form id="valve_finder">
-      <div id="station_checkboxes" data-role="fieldcontain">
-        <fieldset data-role="controlgroup" data-type="vertical">
-          <legend>
-                 Chose a Station: 
-          </legend>
-          [% FOREACH station IN stations %]
-          <input id="finder-[% station.id %]" name="" type="checkbox" onClick="uncheck_station('finder-[% station.id %]')">
-          <label for="finder-[% station.id %]">
-                [% station.category %] - [% station.name %]
-          </label>
-          [% END %]
-        </fieldset>
-      </div>
-      <input id="submit_valvefinder" data-ajax="false" data-theme="d" data-icon="minus" data-iconpos="left" value="Submit" type="submit">
-    </form>
+  <div data-role="content" data-theme="d"> 
+    <div id="valve_finder_div" class="running">
+      <form id="valve_finder">
+        <div id="station_checkboxes" data-role="fieldcontain">
+          <fieldset data-role="controlgroup" data-type="vertical">
+            <legend>
+                   Chose a Station: 
+            </legend>
+            [% FOREACH station IN stations %]
+            <input id="finder-[% station.id %]" name="" type="checkbox" onClick="uncheck_station('finder-[% station.id %]')">
+            <label for="finder-[% station.id %]">
+                  [% station.category %] - [% station.name %]
+            </label>
+            [% END %]
+          </fieldset>
+        </div>
+        <input id="submit_valvefinder" data-ajax="false" data-theme="d" data-icon="minus" data-iconpos="left" value="Submit" type="submit">
+      </form>
+    </div> <!-- /valve_finder -->
   </div><!-- /content -->
   
   <div data-role="footer">

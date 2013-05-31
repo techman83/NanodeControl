@@ -107,6 +107,11 @@ $(document).on('pageinit', function(e){
 // utilities function
 function page_utilities () {
   console.log("Utilities");
+  //if ('#valve_finder_div'.hasClass ('running')) {
+  //  $("#valve_finder_div").css("display","none");
+  //  console.log("Hiding form");
+  //}
+
   var utilities = new Object();
 
   // Look for designation in template for running finder
