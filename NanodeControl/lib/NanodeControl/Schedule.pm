@@ -57,7 +57,7 @@ sub remove_cron {
   
   # Check it got written
   $ct->read;
-  my @event = $ct->select( -type       => 'event',
+  @event = $ct->select( -type       => 'event',
                            -command_re => "(?:$scheduleid)");
   debug("Event: ", @event);
 
