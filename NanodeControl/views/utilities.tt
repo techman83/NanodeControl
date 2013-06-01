@@ -26,7 +26,7 @@
     <a href="/settings" data-ajax="false" data-icon="gear" class="ui-btn-right">Settings</a>
   </div><!-- /header -->
   <div data-role="content" data-theme="d"> 
-    <div id="valve_finder_div" class="running">
+    <div id="valve_finder_div" [% IF running %]class="running"[% END %]>
       <form id="valve_finder">
         <div id="station_checkboxes" data-role="fieldcontain">
           <fieldset data-role="controlgroup" data-type="vertical">
@@ -41,9 +41,14 @@
             [% END %]
           </fieldset>
         </div>
-        <input id="submit_valvefinder" data-ajax="false" data-theme="d" data-icon="minus" data-iconpos="left" value="Submit" type="submit">
+        <input id="submit_valvefinder" data-ajax="false" data-theme="d" value="Submit" type="submit">
       </form>
     </div> <!-- /valve_finder -->
+    <div id="finder_running_div" >      
+      <form id="finder_running">
+        <p><input id="submit_running" data-ajax="false" data-theme="d" value="Stop Valve Finder" type="submit"></p>
+      </form>
+    </div><!-- /finder_running -->
   </div><!-- /content -->
   
   <div data-role="footer">

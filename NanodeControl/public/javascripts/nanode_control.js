@@ -101,16 +101,24 @@ $(document).on('pageinit', function(e){
   switch (e.target.id) {
     case 'utilities':
       page_utilities();
+      break;
+    case 'valvefinder':
+      page_utilities();
+      break;
     }
 }); // Control Pages
 
 // utilities function
 function page_utilities () {
   console.log("Utilities");
-  //if ('#valve_finder_div'.hasClass ('running')) {
-  //  $("#valve_finder_div").css("display","none");
-  //  console.log("Hiding form");
-  //}
+  if ($('#valve_finder_div').hasClass('running')) {
+    $("#valve_finder_div").css("display","none");
+    $("#finder_running_div").css("display","visible");
+    console.log("Hiding form");
+  } else {
+    $("#finder_running_div").css("display","none");
+    console.log("Hiding stop");
+  }
 
   var utilities = new Object();
 
@@ -123,9 +131,19 @@ function page_utilities () {
     console.log("Submit"); 
     utilities.valves = [];
     $(":checkbox:checked[id^='finder-']").each(function() { 
-         utilities.valves.push($(this).attr('id'));
-         utilities.url = '/valvefinder';
+      utilities.valves.push($(this).attr('id'));
+      utilities.url = '/valvefinder';
     });
+    submit(utilities);
+  });
+
+  // Stop Valve Finder
+  $("form[id='finder_running']").submit(function(event) {
+    event.stopPropagation();
+    event.preventDefault();
+    console.log("Submit"); 
+    utilities.running = '1';
+    utilities.url = '/valvefinder';
     submit(utilities);
   });
 

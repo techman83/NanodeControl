@@ -16,7 +16,7 @@
 #    along with this program.  If not, see <http://www.gnu.org/licenses/>.
 package NanodeControl;
 use Dancer ':syntax';
-use Data::Dumper;
+use File::Slurp;
 use NanodeControl::DBsqlite;
 use NanodeControl::RESTduino;
 use NanodeControl::PIcontrol;
@@ -25,6 +25,7 @@ set serializer => 'JSON';
 
 our $VERSION = '0.1';
 our $messages = config->{messages};
+our $appdir = config->{appdir};
 
 get '/test' => sub {
   template 'test', {
@@ -329,19 +330,35 @@ post '/stations/:id' => sub {
 get '/utilities' => sub {
   my @stations = get_stations("All");
   
-  # use if/else for running finder
-  template 'utilities', {
-        title  => "Nanode Control - Utilities",
-        stations => \@stations,
-  };
+  if ( -e "$appdir/tmp/ValveFinder.pid" ) {
+    template 'utilities', {
+          title  => "Nanode Control - Utilities",
+          stations => \@stations,
+          running => "1",
+    };
+  } else {
+    template 'utilities', {
+          title  => "Nanode Control - Utilities",
+          stations => \@stations,
+    };
+  }
 };
 
 # Valve Finder
 post '/valvefinder' => sub {
   my $data = from_json(request->body);
   debug("Find Valve: ", $data);
+
   # logic if somehow multiple valves come in
-  # use if/else for running finder
+  if (defined $data->{valves}) {
+    my($finder,$valve) = split('-',$data->{valves}[0]); # this is lazy.. in a hurry this morning
+    debug("Finding Valve: ", $valve);
+    system("$appdir/bin/findvalve.pl $valve &");
+    # Needs some success/failure testing
+  } elsif ( -e "$appdir/tmp/ValveFinder.pid") {
+    my $pid = read_file("$appdir/tmp/ValveFinder.pid");    
+    system("kill -s SIGINT $pid"); # needs some better logic here
+  }
   return qq({"result":"success"});
 };
 
