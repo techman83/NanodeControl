@@ -25,7 +25,10 @@
     <h1>Valve Finder</h1>
     <a href="/settings" data-ajax="false" data-icon="gear" class="ui-btn-right">Settings</a>
   </div><!-- /header -->
-  <div data-role="content" data-theme="d"> 
+  <div data-role="content" data-theme="d">
+    <div>
+    <p>I'm not sure the relays can be triggered fast enough to make this work. Going to buy a chatterbox and compare. Consider this experimental!</p>
+    </div> 
     <div id="valve_finder_div" [% IF running %]class="running"[% END %]>
       <form id="valve_finder">
         <div id="station_checkboxes" data-role="fieldcontain">

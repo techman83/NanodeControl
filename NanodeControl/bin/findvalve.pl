@@ -13,9 +13,13 @@ $SIG{INT} = \&interrupt;
 
 if ($debug) { use Data::Dumper; }
 
-open(PID, "> $appdir/tmp/ValveFinder.pid") || die "could not open '$appdir/ValveFinder.pid' $!";
-print PID "$$";
-close(PID); 
+unless ( -e $appdir/tmp/ValveFinder.pid ) {
+  open(PID, "> $appdir/tmp/ValveFinder.pid") || die "could not open '$appdir/ValveFinder.pid' $!";
+  print PID "$$";
+  close(PID); 
+} else {
+  exit(1);
+}
 
 # We really don't care if the call fails.
 $ua->timeout(1);
