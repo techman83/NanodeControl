@@ -184,7 +184,7 @@ sub get_stations {
 
 # Add a station
 sub add_station {
-  my ($name,$url,$type,$category,$reversed) = @_;
+  my ($data) = @_;
   my $dbh = connect_db();
   my $sth = $dbh->prepare(q{
       INSERT INTO stations
@@ -192,7 +192,13 @@ sub add_station {
       VALUES (?, ?, ?, ?, ?)
   });
   
-  my $add = $sth->execute($name,$category,$type,$url,$reversed);
+  my $add = $sth->execute(
+        $data->{stationname},
+        $data->{stationcategory},
+        $data->{stationtype},
+        $data->{stationurl},
+        $data->{stationreverse});
+
   return $add;
 };
 
@@ -503,6 +509,18 @@ sub export_stations {
 ### Create DB ###
 sub create_db {
   my $dbh = connect_db();
+  create_categories($dbh);
+  create_scheduledstations($dbh);
+  create_schedules($dbh);
+  create_stations($dbh);
+  create_settings($dbh);
+  create_type($dbh);
+  return;
+}
+
+
+sub create_categories {
+  my ($dbh) = @_;
   # Create Categories
   my $sth = $dbh->prepare(q{
       DROP TABLE IF EXISTS "categories"
@@ -519,9 +537,13 @@ sub create_db {
       INSERT INTO "categories" VALUES(10001,'Example Category',0);
   });
   $sth->execute();
+  return;
+}
   
+sub create_scheduledstations {
+  my ($dbh) = @_;
   # Create Scheduled Stations
-  $sth = $dbh->prepare(q{
+  my $sth = $dbh->prepare(q{
       DROP TABLE IF EXISTS "scheduled_stations";
   });
   $sth->execute();
@@ -539,9 +561,13 @@ sub create_db {
       INSERT INTO "scheduled_stations" VALUES(10001,10001,10001,500,1,0);
   });
   $sth->execute();
-  
+  return;
+}
+ 
+sub create_schedules {
+  my ($dbh) = @_;
   # Create Schedules
-  $sth = $dbh->prepare(q{
+  my $sth = $dbh->prepare(q{
       DROP TABLE IF EXISTS "schedules";
   });
   $sth->execute();
@@ -561,9 +587,13 @@ sub create_db {
       INSERT INTO "schedules" VALUES(10001,'Example Schedule','20:00:00','1,3,5',0,1,0,0);
   });
   $sth->execute();
+  return;
+}
   
+sub create_settings {
+  my ($dbh) = @_;
   # Create settings
-  $sth = $dbh->prepare(q{
+  my $sth = $dbh->prepare(q{
       DROP TABLE IF EXISTS "settings";
   });
   $sth->execute();
@@ -579,9 +609,13 @@ sub create_db {
       INSERT INTO "settings" VALUES(10001,'Example','Setting',0);
   });
   $sth->execute();
+  return;
+}
   
+sub create_stations {
+  my ($dbh) = @_;
   # Create stations
-  $sth = $dbh->prepare(q{
+  my $sth = $dbh->prepare(q{
       DROP TABLE IF EXISTS "stations";
   });
   $sth->execute();
@@ -599,9 +633,13 @@ sub create_db {
       INSERT INTO "stations" VALUES(10001,'Example Station',10001,10001,'http://stationip_or_url/1',0,0);
   });
   $sth->execute();
+  return;
+}
   
+sub create_type {
+  my ($dbh) = @_;
   # Create type
-  $sth = $dbh->prepare(q{
+  my $sth = $dbh->prepare(q{
       DROP TABLE IF EXISTS "type";
   });
   $sth->execute();

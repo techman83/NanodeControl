@@ -175,7 +175,7 @@ post '/addstation' => sub {
   debug("Add station: ", $data);
 
   unless ($data->{stationname} eq "" || $data->{stationurl} eq "") {
-    my $add = add_station($data->{stationname},$data->{stationurl},$data->{stationtype},$data->{stationcategory},$data->{stationreverse});
+    my $add = add_station($data);
     my $result = { result => 'success',
                    title => $messages->{station}{success}{title},
                    message => $messages->{station}{success}{message},
