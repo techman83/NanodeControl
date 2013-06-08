@@ -10,7 +10,8 @@ unless ( defined $appdir ) {
    $appdir = "$Bin/..";
 }
 
-our @EXPORT    = qw(add_schedule
+our @EXPORT    = qw(create_db
+                    add_schedule
                     get_schedule
                     get_schedule_state
                     get_schedules
@@ -496,5 +497,130 @@ sub export_stations {
   }
   return @stations;
 };
+
+### Import ###
+
+### Create DB ###
+sub create_db {
+  my $dbh = connect_db();
+  # Create Categories
+  my $sth = $dbh->prepare(q{
+      DROP TABLE IF EXISTS "categories"
+  });
+  $sth->execute();
+  $sth = $dbh->prepare(q{
+      CREATE TABLE "categories" (
+      "id" INTEGER PRIMARY KEY  AUTOINCREMENT  NOT NULL  UNIQUE ,
+      "name" VARCHAR,
+      "deleted" INTEGER DEFAULT (0) )
+  });
+  $sth->execute();
+  $sth = $dbh->prepare(q{
+      INSERT INTO "categories" VALUES(10001,'Example Category',0);
+  });
+  $sth->execute();
+  
+  # Create Scheduled Stations
+  $sth = $dbh->prepare(q{
+      DROP TABLE IF EXISTS "scheduled_stations";
+  });
+  $sth->execute();
+  $sth = $dbh->prepare(q{
+      CREATE TABLE "scheduled_stations" (
+      "id" INTEGER PRIMARY KEY  AUTOINCREMENT  NOT NULL  UNIQUE ,
+      "scheduleid" INTEGER,
+      "stationid" INTEGER,
+      "duration" INTEGER,
+      "runorder" INTEGER INTEGER DEFAULT (0),
+      "deleted" INTEGER DEFAULT (0) );
+  });
+  $sth->execute();
+  $sth = $dbh->prepare(q{
+      INSERT INTO "scheduled_stations" VALUES(10001,10001,10001,500,1,0);
+  });
+  $sth->execute();
+  
+  # Create Schedules
+  $sth = $dbh->prepare(q{
+      DROP TABLE IF EXISTS "schedules";
+  });
+  $sth->execute();
+  $sth = $dbh->prepare(q{
+      CREATE TABLE "schedules" (
+      "id" INTEGER PRIMARY KEY  AUTOINCREMENT  NOT NULL  UNIQUE,
+      "name" VARCHAR,
+      "starttime" DATETIME,
+      "dow" VARCHAR,
+      "raincheck" INTEGER DEFAULT (0) ,
+      "enabled" INTEGER DEFAULT (1) ,
+      "master" INTEGER DEFAULT (0) , 
+      "deleted" INTEGER DEFAULT 0);
+  });
+  $sth->execute();
+  $sth = $dbh->prepare(q{
+      INSERT INTO "schedules" VALUES(10001,'Example Schedule','20:00:00','1,3,5',0,1,0,0);
+  });
+  $sth->execute();
+  
+  # Create settings
+  $sth = $dbh->prepare(q{
+      DROP TABLE IF EXISTS "settings";
+  });
+  $sth->execute();
+  $sth = $dbh->prepare(q{
+      CREATE TABLE "settings" (
+      "id" INTEGER PRIMARY KEY  AUTOINCREMENT  NOT NULL  UNIQUE , 
+      "name" VARCHAR, 
+      "value" VARCHAR,
+      "deleted" INTEGER DEFAULT (0) )
+  });
+  $sth->execute();
+  $sth = $dbh->prepare(q{
+      INSERT INTO "settings" VALUES(10001,'Example','Setting',0);
+  });
+  $sth->execute();
+  
+  # Create stations
+  $sth = $dbh->prepare(q{
+      DROP TABLE IF EXISTS "stations";
+  });
+  $sth->execute();
+  $sth = $dbh->prepare(q{
+      CREATE TABLE "stations" (
+      "id" INTEGER PRIMARY KEY  AUTOINCREMENT  NOT NULL  UNIQUE ,
+      "name" VARCHAR,"category" INTEGER,
+      "type" INTEGER,
+      "url" VARCHAR,
+      "reversed" INTEGER DEFAULT (0) , 
+      "deleted" INTEGER DEFAULT 0);
+  });
+  $sth->execute();
+  $sth = $dbh->prepare(q{
+      INSERT INTO "stations" VALUES(10001,'Example Station',10001,10001,'http://stationip_or_url/1',0,0);
+  });
+  $sth->execute();
+  
+  # Create type
+  $sth = $dbh->prepare(q{
+      DROP TABLE IF EXISTS "type";
+  });
+  $sth->execute();
+  $sth = $dbh->prepare(q{
+      CREATE TABLE "type" (
+      "id" INTEGER PRIMARY KEY  AUTOINCREMENT  NOT NULL  UNIQUE ,
+      "name" VARCHAR,"deleted" INTEGER DEFAULT (0) );
+  });
+  $sth->execute();
+  $sth = $dbh->prepare(q{
+      INSERT INTO "type" VALUES(10001,'On/Off',0);
+  });
+  $sth->execute();
+  $sth = $dbh->prepare(q{
+      INSERT INTO "type" VALUES(10002,'Slider',0);
+  });
+
+  $sth->execute();
+  return;
+}
 
 1
