@@ -64,4 +64,7 @@ messages:
     fail_remove:
       title:  'Failure'
       message: 'Failed to disable the cron schedule for Station: '
-
+  export:
+    failure:
+      title:  'Failure'
+      message: 'The requested export does not exist or zip failed: '

@@ -16,7 +16,6 @@
 #    along with this program.  If not, see <http://www.gnu.org/licenses/>.
 package NanodeControl;
 use Dancer ':syntax';
-use File::Slurp;
 use NanodeControl::DBsqlite;
 use NanodeControl::RESTduino;
 use NanodeControl::PIcontrol;
@@ -346,6 +345,7 @@ get '/utilities' => sub {
 
 # Valve Finder
 post '/valvefinder' => sub {
+  use File::Slurp;
   my $data = from_json(request->body);
   debug("Find Valve: ", $data);
 
@@ -379,6 +379,32 @@ get '/pigpio/:gpio' => sub {
   my $result = qq({"pin":"$gpio""value":"$state"});
   debug($result);
   return $result;
+};
+
+get '/export/:data' => sub {
+  use NanodeControl::ImportExport;
+  my $data = params->{data};
+  debug("Export $data");
+  
+  # Get exported data
+  my $export = nanode_export($data);
+  
+  # Return data or failure
+  if ($export->{result} eq 'csv') {
+    return send_file( \$export->{data}, content_type => 'text/csv',
+                                filename     => "$data.csv" );    
+  } elsif ($export->{result} eq 'zip') {
+    debug($export->{data});
+    return send_file( $export->{data}, content_type => 'application/zip',
+                                       system_path => 1,
+                                       filename     => "NanodeExport.zip" );
+  } else { 
+    my $result = { result => 'failure',
+                   title => $messages->{export}{failure}{title},
+                   message => $messages->{export}{failure}{message}.$export->{data},
+                 };
+    return $result;
+  }   
 };
 
 true;

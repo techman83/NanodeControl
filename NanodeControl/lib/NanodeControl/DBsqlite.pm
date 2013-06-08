@@ -26,14 +26,24 @@ our @EXPORT    = qw(add_schedule
                     add_station
                     remove_stations
                     add_category
-                    remove_categories);
+                    remove_categories
+                    export_categories
+                    export_settings
+                    export_schedules
+                    export_scheduledstations
+                    export_stations
+                    import_categories
+                    import_settings
+                    import_schedules
+                    import_scheduledstations
+                    import_stations);
 
 # DB connection
 sub connect_db {
   my $dbh = DBI->connect(
       "dbi:SQLite:dbname=$appdir/db/nanode_control.sqlite",undef,undef,
       { RaiseError => 1, AutoCommit => 1 }
-  ); # Probably better to set the dbname in the settings. Will figure out how to pull that in.
+  );
   return $dbh;
 }
 
@@ -368,5 +378,123 @@ sub get_scheduled_stations {
   debug("Schedule Stations: ", @stations);
   return @stations;
 }
+
+### Export ###
+# Returns categories in an array
+sub export_categories {
+  my $dbh = connect_db();
+  my $sth = $dbh->prepare(q{
+      SELECT id, name, deleted
+      FROM categories
+      ORDER BY id ASC
+  });
+  
+  $sth->execute();
+  my @categories;
+  while (my ($id,$name,$deleted) = $sth->fetchrow_array) {
+      push @categories, {
+          id => $id,
+          name => $name,
+          deleted => $deleted
+      };
+  }
+  return @categories;
+};
+
+# Returns settings in an array
+sub export_settings {
+  my $dbh = connect_db();
+  my $sth = $dbh->prepare(q{
+      SELECT id, name, value 
+      FROM settings
+      ORDER BY id ASC
+  });
+  
+  $sth->execute();
+  my @settings;
+  while (my ($id,$name,$value) = $sth->fetchrow_array) {
+      push @settings, {
+          id => $id,
+          name => $name,
+          value => $value
+      };
+  }
+  return @settings;
+};
+
+# Returns schedules in an array
+sub export_schedules {
+  my $dbh = connect_db();
+  my $sth = $dbh->prepare(q{
+      SELECT id, name, starttime, dow, raincheck, enabled, master, deleted 
+      FROM schedules
+      ORDER BY id ASC
+  });
+  
+  $sth->execute();
+  my @schedules;
+  while (my ($id,$name,$starttime,$dow,$raincheck,$enabled,$master,$deleted) = $sth->fetchrow_array) {
+      push @schedules, {
+          id => $id,
+          name => $name,
+          starttime => $starttime,
+          dow => $dow,
+          raincheck => $raincheck,
+          enabled => $enabled,
+          master => $master,
+          deleted => $deleted
+      };
+  }
+  return @schedules;
+};
+
+# Returns scheduled stations in an array
+sub export_scheduledstations {
+  my $dbh = connect_db();
+  my $sth = $dbh->prepare(q{
+      SELECT id, scheduleid, stationid, duration, runorder, deleted
+      FROM scheduled_stations
+      ORDER BY id ASC
+  });
+  
+  $sth->execute();
+  my @scheduledstations;
+  while (my ($id,$scheduleid,$stationid,$duration,$runorder,$deleted) = $sth->fetchrow_array) {
+      push @scheduledstations, {
+          id => $id,
+          scheduleid => $scheduleid,
+          stationid => $stationid,
+          duration => $duration,
+          runorder => $runorder,
+          deleted => $deleted
+      };
+  }
+  return @scheduledstations;
+};
+
+# Returns stations in an array
+sub export_stations {
+  my $dbh = connect_db();
+  my $sth = $dbh->prepare(q{
+      SELECT id, name, category, type, url, reversed, deleted
+      FROM stations 
+      ORDER BY id ASC
+  });
+  
+  $sth->execute();
+  my @stations;
+  while (my ($id,$name,$category,$type,$url,$reversed,$deleted) = $sth->fetchrow_array) {
+      push @stations, {
+          id => $id,
+          name => $name,
+          category => $category,
+          type => $type,
+          url => $url,
+          reversed => $reversed,
+          deleted => $deleted
+      };
+  }
+  return @stations;
+};
 
 1
