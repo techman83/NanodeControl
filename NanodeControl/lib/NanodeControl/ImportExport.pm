@@ -8,7 +8,7 @@ use Archive::Zip qw( :ERROR_CODES :CONSTANTS );
 use base 'Exporter';
 my $appdir = config->{appdir};
 
-our @EXPORT = qw(nanode_export nanode_import);
+our @EXPORT = qw(nanode_export nanode_import import_check);
 our @types = qw(stations schedules scheduled_stations settings categories);
 our $valid_types = qw{^(stations|schedules|scheduled_stations|settings|categories)$};
 our %exportsubs = (stations => \&export_stations, 
@@ -16,6 +16,11 @@ our %exportsubs = (stations => \&export_stations,
                 scheduled_stations => \&export_scheduledstations,
                 settings => \&export_settings,
                 categories => \&export_categories );
+our %importsubs = (stations => \&import_stations, 
+                schedules => \&import_schedules,
+                scheduled_stations => \&import_scheduledstations,
+                settings => \&import_settings,
+                categories => \&import_categories );
 
 sub nanode_export {
   my ($export) = @_;
@@ -56,3 +61,11 @@ sub nanode_export {
     return $result;
   }
 }
+
+sub nanode_import {
+  my ($import) = @_;
+  debug("Begin export: $export");
+
+}
+
+1

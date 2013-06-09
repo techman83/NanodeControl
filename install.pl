@@ -90,7 +90,7 @@ sub Prompt { # inspired from here: http://alvinalexander.com/perl/edu/articles/p
 
 sub install_modules {
   system("curl -L http://cpanmin.us | perl - App::cpanminus");
-  system("cpanm -S Dancer::Template::TemplateToolkit Template LWP::Simple Plack::Handler::FCGI Plack::Runner JSON::Parse JSON DBD::SQLite YAML Dancer Config::Crontab");
+  system("cpanm -S Dancer::Template::TemplateToolkit Template LWP::Simple Plack::Handler::FCGI Plack::Runner JSON::Parse JSON DBD::SQLite YAML Dancer Config::Crontab Text::CSV::Slurp Archive::Zip");
   # Starman test fail, but it installs and works correctly. Need to diagnose
   system("cpanm -nS Plack::Handler::Starman");
   return;

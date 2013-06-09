@@ -407,4 +407,16 @@ get '/export/:data' => sub {
   }   
 };
 
+post '/import/:data' => sub {
+  use NanodeControl::ImportExport;
+  my $all_uploads = request->uploads;
+
+#  my $file = upload('file_input_foo');
+#  my $mime = Dancer::MIME->instance();
+#  my $type = params->{data};
+#  my $filetype = $mime->name_or_type($file);
+#  debug("import $type, $mime, $filetype");
+  debug("import $uploads");
+  return "{'result':'success'}";
+};
 true;
