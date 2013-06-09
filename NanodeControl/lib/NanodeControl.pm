@@ -416,7 +416,7 @@ post '/import/:data' => sub {
 #  my $type = params->{data};
 #  my $filetype = $mime->name_or_type($file);
 #  debug("import $type, $mime, $filetype");
-  debug("import $uploads");
+  debug("import $all_uploads");
   return "{'result':'success'}";
 };
 true;

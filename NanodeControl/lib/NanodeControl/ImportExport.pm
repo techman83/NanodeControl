@@ -64,7 +64,7 @@ sub nanode_export {
 
 sub nanode_import {
   my ($import) = @_;
-  debug("Begin export: $export");
+  debug("Begin export: $import");
 
 }
 
