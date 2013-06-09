@@ -417,7 +417,7 @@ get '/export/:data' => sub {
   }   
 };
 
-post '/import/:data' => sub {
+post '/import' => sub {
   use NanodeControl::ImportExport;
   my $all_uploads = request->uploads;
 

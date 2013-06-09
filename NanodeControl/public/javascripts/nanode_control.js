@@ -105,6 +105,9 @@ $(document).on('pageinit', function(e){
     case 'valvefinder':
       page_utilities();
       break;
+    case 'importexport':
+      page_importexport();
+      break;
     }
 }); // Control Pages
 
@@ -121,8 +124,6 @@ function page_utilities () {
   }
 
   var utilities = new Object();
-
-  // Look for designation in template for running finder
 
   // Valve finder submit
   $("form[id='valve_finder']").submit(function(event) {
@@ -165,6 +166,31 @@ function uncheck_station (id) {
   });
 }
 
+
+// import/export function
+function page_importexport () {
+  console.log("Import/Export");
+  $('#exportselct').selectmenu('refresh', true);
+  var importexport = new Object();
+
+  $('select').change(function() {
+    console.log("Changing download to: " + this.value);
+    $("#exporthref").attr('href', "/export/" + this.value);
+  });
+
+  $('#file').change(function() {
+    console.log("Upload: " + this.files[0]);
+    importexport.data = this.files[0];
+  });
+
+  $("form[id='import']").submit(function(event) {
+    console.log("Submit"); 
+    event.stopPropagation();
+    event.preventDefault();
+    importexport.url = '/import';
+    submit(importexport);
+  });
+}
 // Control stations
 $(document).on('pageinit', function(e){
   if (e.target.id == 'control') {
