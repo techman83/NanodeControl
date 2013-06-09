@@ -9,7 +9,7 @@ use base 'Exporter';
 my $appdir = config->{appdir};
 
 our @EXPORT = qw(nanode_export nanode_import import_check);
-our @types = qw(stations schedules scheduled_stations settings categories);
+our @types = @{config->{exporttypes}};
 our $valid_types = qw{^(stations|schedules|scheduled_stations|settings|categories)$};
 our %exportsubs = (stations => \&export_stations, 
                 schedules => \&export_schedules,

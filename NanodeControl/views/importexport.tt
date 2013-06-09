@@ -1,19 +1,40 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd" />
 <!-- Start of first page: #one -->
-<div data-role="page" id="settings">
+<div data-role="page" id="importexport">
 
   <div data-role="header">
     <a href="/" data-icon="home" class="ui-btn-left">Home</a>
       <h1>[% title %]</h1>
-    <a href="#settings" data-ajax="false" data-icon="gear" class="ui-btn-right">Settings</a>
+    <a href="/settings" data-ajax="false" data-icon="gear" class="ui-btn-right">Settings</a>
   </div><!-- /header -->
   
-  <div data-role="content" >      
-    <p><a href="/utilities" data-ajax="false" data-role="button">Utilities</a></p>
-    <p><a href="/schedules" data-ajax="false" data-role="button">Schedules</a></p>       
-    <p><a href="/categories" data-ajax="false" data-role="button">Categories</a></p>       
-    <p><a href="/addstation" data-ajax="false" data-role="button">Add Stations</a></p>
-    <p><a href="/removestations" data-ajax="false" data-role="button">Remove Stations</a></p>
+  <div data-role="content" >
+    <div class="ui-input-text ui-shadow-inset ui-corner-all ui-btn-shadow ui-body-c">
+      <form id="export">
+        <div data-role="fieldcontain">
+          <label for="categoryselect">
+              Export Configuration:
+          </label>
+          <select id="exportselect" name="export" data-theme="c">
+              [% FOREACH export IN exports %]
+              <option value="[% export %]">
+                  [% export %]
+              </option>
+              [% END %]
+          </select>
+        </div>
+        <input id="export_submit" data-ajax="false" data-theme="d" data-icon="plus" data-iconpos="left" value="Export" type="submit"></input>
+      </form>
+    </div>
+    <div class="ui-input-text ui-shadow-inset ui-corner-all ui-btn-shadow ui-body-c">
+      <form id="import">
+        <label for="file">
+              Import Configuration:
+        </label>
+        <input id="file" class="ui-input-text ui-body-c" type="file" data-clear-btn="true" value="" name="file"></input>
+        <input id="import_submit" data-ajax="false" data-theme="d" data-icon="plus" data-iconpos="left" value="Import" type="submit"></input>
+      </form>
+    </div>
   </div><!-- /content -->
   
   <div data-role="footer" data-theme="d">

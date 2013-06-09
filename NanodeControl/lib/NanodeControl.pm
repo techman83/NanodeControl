@@ -381,6 +381,16 @@ get '/pigpio/:gpio' => sub {
   return $result;
 };
 
+# import/export data 
+get '/importexport' => sub {
+  my @exports = @{config->{exporttypes}};
+  push(@exports, "all");
+  template 'importexport', {
+        title  => "Nanode Control - Import/Export",
+        exports => \@exports,
+  };
+};
+
 get '/export/:data' => sub {
   use NanodeControl::ImportExport;
   my $data = params->{data};
