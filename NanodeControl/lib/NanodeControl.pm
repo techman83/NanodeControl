@@ -381,6 +381,14 @@ get '/pigpio/:gpio' => sub {
   return $result;
 };
 
+# Get Pi Info
+get '/piinfo/' => sub {
+  use NanodeControl::PiInfo;
+  my $data = get_pi_info();
+  debug($data);
+  return $data;
+};
+
 # import/export data 
 get '/importexport' => sub {
   my @exports = @{config->{exporttypes}};
