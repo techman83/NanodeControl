@@ -1,0 +1,25 @@
+#!/bin/bash
+
+SITENAME=nanodecontrol
+DIR=/usr/local/NanodeControl
+APPPATH=bin/app.pl
+USER=www-data
+
+PIDFILE=$DIR/tmp/$SITENAME.pid
+
+case "$1" in 
+  start) 
+    start-stop-daemon --start --chuid $USER --chdir $DIR --exec /usr/local/bin/plackup -- -D -E production -s Starman --workers=2 -l /tmp/nanode.sock -a $DIR/$APPPATH --pid $PIDFILE
+    ;; 
+  stop) 
+    start-stop-daemon --stop --pidfile $PIDFILE 
+    ;; 
+  restart)
+    start-stop-daemon --stop --pidfile $PIDFILE 
+    sleep 2
+    start-stop-daemon --start --chuid $USER --chdir $DIR --exec /usr/local/bin/plackup -- -D -E production -s Starman --workers=2 -l /tmp/nanode.sock -a $DIR/$APPPATH --pid $PIDFILE
+    ;;
+  *) 
+    echo "Usage: $SCRIPTNAME {start|stop}" >&2 exit 3 
+    ;; 
+esac
