@@ -7,6 +7,9 @@ appname: "Nanode Control"
 appdir: "/usr/local/NanodeControl"
 tmpdir: "/usr/local/NanodeControl"
 
+# vcgencmd location
+vcgencmd: "/opt/vc/bin/vcgencmd"
+
 # The default layout to use for your application (located in
 # views/layouts/main.tt)
 layout: "main"
@@ -29,6 +32,7 @@ engines:
     start_tag: '[%'
     end_tag:   '%]'
 
+# Export Types for DB Exporter
 exporttypes:
   - stations
   - schedules 
@@ -36,6 +40,7 @@ exporttypes:
   - settings 
   - categories
 
+# Error/Info messages for frontend.
 messages:
   category:
     undefined:
