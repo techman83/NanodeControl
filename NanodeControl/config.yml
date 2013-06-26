@@ -81,3 +81,7 @@ messages:
     failure:
       title:  'Failure'
       message: 'The requested export does not exist or zip failed: '
+  upload:
+    success:
+      title:  'Success'
+      message: 'File uploaded and processed successfully'

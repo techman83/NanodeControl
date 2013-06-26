@@ -96,6 +96,61 @@ function submit (data) {
   });
 } // function submit
 
+// Custom upload function
+function upload (data) {
+  $.mobile.showPageLoadingMsg(); 
+  console.log($(this));
+  data;
+  $.ajax({
+    type: "POST",
+    url: data.url,
+    cache: false,
+    contentType: false,
+    processData: false,
+    data: data.files,
+    //async: false,
+    timeout: timeout, // in milliseconds
+    success: function(result) {
+      // process data here
+      var status = '';
+      switch (result.result) {
+        case 'success':
+          $.mobile.hidePageLoadingMsg();
+          console.log("Success:" + result.result);
+          if (data.successpop) {
+            messagepop(result);
+          } else if  (data.noreload) {
+            // prevent reload
+          } else {
+            location.reload();
+          }
+          status = '#';
+          break;
+        case 'failure':
+          console.log("Failure:" + result.error);
+          messagepop(result);
+          break;
+        default:
+                $('div.fullscreen').show();
+                $('div.' + data.result).show().empty().append(data.msg);
+      }
+      
+      $.mobile.hidePageLoadingMsg();
+    },
+    error: function(request, status, err) {
+      if (status == "timeout") {
+              console.log('timeout'); 
+              data.result = 'timeout';
+              data.title = 'TIMEOUT';
+              data.message = 'Request timed out, please refresh your browser.';
+              console.log('data'); 
+              messagepop(data);
+              $.mobile.hidePageLoadingMsg();
+      }
+    }
+  });
+} // function upload 
+
 // Control for page specific JS
 $(document).on('pageinit', function(e){
   switch (e.target.id) {
@@ -179,16 +234,21 @@ function page_importexport () {
   });
 
   $('#file').change(function() {
-    console.log("Upload: " + this.files[0]);
-    importexport.data = this.files[0];
+    importexport.files = new FormData();
+    jQuery.each($('#file')[0].files, function(i, file) {
+      importexport.files.append('file-'+i, file);
+      console.log(file);
+    });
   });
 
   $("form[id='import']").submit(function(event) {
     console.log("Submit"); 
     event.stopPropagation();
     event.preventDefault();
+    importexport.data = 1;
+    importexport.successpop = 1;
     importexport.url = '/import';
-    submit(importexport);
+    upload(importexport);
   });
 }
 // Control stations
