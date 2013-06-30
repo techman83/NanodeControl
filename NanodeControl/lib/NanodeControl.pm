@@ -427,6 +427,21 @@ get '/export/:data' => sub {
 
 post '/import' => sub {
   use NanodeControl::ImportExport;
+  my @files = request->upload('files');
+  foreach my $file (@files) {
+    my $upload->{type} = $file->type;
+    $upload->{temp} = $file->tempname;
+    $upload->{filename} = $file->basename;
+    my $result = nanode_import($upload);
+    if ($result->{result} eq 'invalid_type') {
+      my $filename = $result->{filename};
+      my $result = { result => 'failure',
+                     title => $messages->{upload}{typefail}{title},
+                     message => $messages->{upload}{typefail}{message}.$filename,
+                   };
+      return $result;
+    }
+  } 
   my $result = { result => 'success',
                  title => $messages->{upload}{success}{title},
                  message => $messages->{upload}{success}{message},

@@ -505,16 +505,135 @@ sub export_stations {
 };
 
 ### Import ###
+sub import_categories {
+  my ($data) = @_;
+  my @required = qw(id name);
+  my @optional = qw(deleted);
+  debug($data);
+  $data = import_check($data,@required,@optional); # not sure the passing of 2 separate arrays is working...
+
+  # ponder solution here
+  if (defined $data->{result}) {
+    return $data;
+  }
+
+  debug($data);
+  
+  if ($data->{result} eq 'success') {
+    debug("Creating DB: categories");
+    my $dbh = connect_db();
+    create_categories($dbh);
+    my $sth = $dbh->prepare(q{
+        INSERT INTO categories
+        (id,name,deleted)
+        VALUES (?, ?, ?,)
+    });
+    
+    debug("Importing data: $data->{id},$data->{name},$data->{deleted}");
+    $sth->execute($data->{id},$data->{name},$data->{deleted});
+    
+    my $result->{result} = 'success';
+    return $result;
+  } else {
+    return $data;
+  }
+}
+
+sub import_settings {
+  my ($data) = @_;
+  debug($data);
+  my $dbh = connect_db();
+  return 'success';
+}
+
+sub import_schedules {
+  my ($data) = @_;
+  debug($data);
+  my $dbh = connect_db();
+  return 'success';
+}
+
+sub import_scheduledstations {
+  my ($data) = @_;
+  debug($data);
+  my $dbh = connect_db();
+  return 'success';
+}
+
+sub import_stations {
+  my ($data) = @_;
+  debug($data);
+  my $dbh = connect_db();
+  return 'success';
+}
+
+sub import_check {
+  my ($data,@required,@optional) = @_;
+  debug("Checking Fields: "); 
+  debug($data);
+  my $count = 0;
+
+  foreach (@{$data}) {
+    foreach my $required (@required) {
+      debug("Checking required: $required");
+      unless($data->[$count]{"$required"} || $data->[$count]{"$required"} == 0) {
+        my $result->{result} = 'missing_field';
+        $result->{field} = $required;
+        return $result;
+      }
+    }
+
+    foreach my $optional (@optional) {
+      debug("Checking optional: $optional");
+      unless ($data->[$count]{"$optional"} || $data->[$count]{"$optional"} == 0) {
+        $data->[$count]{"$optional"} = 0;
+      }
+    }
+    $count++;
+  }
+  return $data;
+}
 
 ### Create DB ###
 sub create_db {
   my $dbh = connect_db();
+  my $sth;
   create_categories($dbh);
+  $sth = $dbh->prepare(q{
+      INSERT INTO "categories" VALUES(10001,'Example Category',0);
+  });
+  $sth->execute();
+
   create_scheduledstations($dbh);
+  $sth = $dbh->prepare(q{
+      INSERT INTO "scheduled_stations" VALUES(10001,10001,10001,500,1,0);
+  });
+  $sth->execute();
+
   create_schedules($dbh);
+  $sth = $dbh->prepare(q{
+      INSERT INTO "schedules" VALUES(10001,'Example Schedule','20:00:00','1,3,5',0,1,0,0);
+  });
+  $sth->execute();
+
   create_stations($dbh);
+  $sth = $dbh->prepare(q{
+      INSERT INTO "stations" VALUES(10001,'Example Station',10001,10001,'http://stationip_or_url/1',0,0);
+  });
+  $sth->execute();
+
   create_settings($dbh);
+  $sth = $dbh->prepare(q{
+      INSERT INTO "settings" VALUES(10001,'Example','Setting',0);
+  });
+  $sth->execute();
+
   create_type($dbh);
+  $sth = $dbh->prepare(q{
+      INSERT INTO "type" VALUES(10002,'Slider',0);
+  });
+  $sth->execute();
+
   return;
 }
 
@@ -531,10 +650,6 @@ sub create_categories {
       "id" INTEGER PRIMARY KEY  AUTOINCREMENT  NOT NULL  UNIQUE ,
       "name" VARCHAR,
       "deleted" INTEGER DEFAULT (0) )
-  });
-  $sth->execute();
-  $sth = $dbh->prepare(q{
-      INSERT INTO "categories" VALUES(10001,'Example Category',0);
   });
   $sth->execute();
   return;
@@ -555,10 +670,6 @@ sub create_scheduledstations {
       "duration" INTEGER,
       "runorder" INTEGER INTEGER DEFAULT (0),
       "deleted" INTEGER DEFAULT (0) );
-  });
-  $sth->execute();
-  $sth = $dbh->prepare(q{
-      INSERT INTO "scheduled_stations" VALUES(10001,10001,10001,500,1,0);
   });
   $sth->execute();
   return;
@@ -583,10 +694,6 @@ sub create_schedules {
       "deleted" INTEGER DEFAULT 0);
   });
   $sth->execute();
-  $sth = $dbh->prepare(q{
-      INSERT INTO "schedules" VALUES(10001,'Example Schedule','20:00:00','1,3,5',0,1,0,0);
-  });
-  $sth->execute();
   return;
 }
   
@@ -603,10 +710,6 @@ sub create_settings {
       "name" VARCHAR, 
       "value" VARCHAR,
       "deleted" INTEGER DEFAULT (0) )
-  });
-  $sth->execute();
-  $sth = $dbh->prepare(q{
-      INSERT INTO "settings" VALUES(10001,'Example','Setting',0);
   });
   $sth->execute();
   return;
@@ -629,10 +732,6 @@ sub create_stations {
       "deleted" INTEGER DEFAULT 0);
   });
   $sth->execute();
-  $sth = $dbh->prepare(q{
-      INSERT INTO "stations" VALUES(10001,'Example Station',10001,10001,'http://stationip_or_url/1',0,0);
-  });
-  $sth->execute();
   return;
 }
   
@@ -652,11 +751,6 @@ sub create_type {
   $sth = $dbh->prepare(q{
       INSERT INTO "type" VALUES(10001,'On/Off',0);
   });
-  $sth->execute();
-  $sth = $dbh->prepare(q{
-      INSERT INTO "type" VALUES(10002,'Slider',0);
-  });
-
   $sth->execute();
   return;
 }

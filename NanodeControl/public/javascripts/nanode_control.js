@@ -236,7 +236,7 @@ function page_importexport () {
   $('#file').change(function() {
     importexport.files = new FormData();
     jQuery.each($('#file')[0].files, function(i, file) {
-      importexport.files.append('file-'+i, file);
+      importexport.files.append('files', file);
       console.log(file);
     });
   });
