@@ -505,37 +505,50 @@ sub export_stations {
 };
 
 ### Import ###
-sub import_categories {
+sub import_categories { # this works, will ponder turning it it into a more generic sub. The process is the same, just the fields/table names differ
   my ($data) = @_;
   my @required = qw(id name);
   my @optional = qw(deleted);
   debug($data);
-  $data = import_check($data,@required,@optional); # not sure the passing of 2 separate arrays is working...
+  my $result = import_check($data,\@required); 
 
-  # ponder solution here
-  if (defined $data->{result}) {
-    return $data;
-  }
-
-  debug($data);
+  debug($result);
   
-  if ($data->{result} eq 'success') {
+  if ($result->{result} eq 'success') {
     debug("Creating DB: categories");
     my $dbh = connect_db();
+
+    # Create DB
     create_categories($dbh);
-    my $sth = $dbh->prepare(q{
-        INSERT INTO categories
-        (id,name,deleted)
-        VALUES (?, ?, ?,)
-    });
     
-    debug("Importing data: $data->{id},$data->{name},$data->{deleted}");
-    $sth->execute($data->{id},$data->{name},$data->{deleted});
-    
+    foreach my $row (@{$data}) {
+      # Required fields
+      debug($row);
+      my $sth = $dbh->prepare(q{
+          INSERT INTO categories
+          (id,name)
+          VALUES (?, ?)
+      });
+      $sth->execute($row->{id},$row->{name});
+
+      # Optional fields
+      foreach my $field (@optional) {
+        debug("Checking: $field");
+        if (defined $row->{$field}) {
+          debug("$field exists in data, updating record $row->{id}");
+          my $sql = sprintf "UPDATE categories SET %s = %s WHERE id = %s", 
+              $dbh->quote_identifier($field), $dbh->quote($row->{$field}), $dbh->quote($row->{id});
+          debug($sql);
+          $sth = $dbh->prepare($sql);
+          $sth->execute();
+        }
+      }
+    }
+    debug("Categories Imported");    
     my $result->{result} = 'success';
     return $result;
   } else {
-    return $data;
+    return $result;
   }
 }
 
@@ -568,30 +581,31 @@ sub import_stations {
 }
 
 sub import_check {
-  my ($data,@required,@optional) = @_;
+  my ($data,$fields) = @_;
   debug("Checking Fields: "); 
   debug($data);
   my $count = 0;
+  my $result;
+  my @fields = @{$fields};
 
   foreach (@{$data}) {
-    foreach my $required (@required) {
-      debug("Checking required: $required");
-      unless($data->[$count]{"$required"} || $data->[$count]{"$required"} == 0) {
+    foreach my $field (@fields) {
+      debug("Checking required: $field");
+      unless(defined $data->[$count]{"$field"}) {
         my $result->{result} = 'missing_field';
-        $result->{field} = $required;
+        $result->{field} = $field;
         return $result;
-      }
-    }
-
-    foreach my $optional (@optional) {
-      debug("Checking optional: $optional");
-      unless ($data->[$count]{"$optional"} || $data->[$count]{"$optional"} == 0) {
-        $data->[$count]{"$optional"} = 0;
       }
     }
     $count++;
   }
-  return $data;
+  
+  unless(defined $result->{result}) { # If I get this far, it should never be defined. But shouldn't clobber it if it is for some reason
+    debug("Great success!");
+    $result->{result} = 'success'; 
+  }
+
+  return $result;
 }
 
 ### Create DB ###
