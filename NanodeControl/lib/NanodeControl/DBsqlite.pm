@@ -39,6 +39,12 @@ our @EXPORT    = qw(create_db
                     import_scheduledstations
                     import_stations);
 
+our %importsubs = (stations => \&import_stations, 
+                schedules => \&import_schedules,
+                scheduled_stations => \&import_scheduledstations,
+                settings => \&import_settings,
+                categories => \&import_categories );
+
 # DB connection
 sub connect_db {
   my $dbh = DBI->connect(
@@ -505,79 +511,164 @@ sub export_stations {
 };
 
 ### Import ###
-sub import_categories { # this works, will ponder turning it it into a more generic sub. The process is the same, just the fields/table names differ
+sub import_categories {
   my ($data) = @_;
   my @required = qw(id name);
+  my @import = qw(name);
   my @optional = qw(deleted);
-  debug($data);
-  my $result = import_check($data,\@required); 
-
-  debug($result);
   
+  debug($data);
+  my $result = import_check($data,\@required);
+
   if ($result->{result} eq 'success') {
-    debug("Creating DB: categories");
-    my $dbh = connect_db();
-
+    debug("Check passed, importing categories");
+    debug($data);
+    debug("Creating Table: categories");
     # Create DB
+    my $dbh = connect_db();
     create_categories($dbh);
-    
-    foreach my $row (@{$data}) {
-      # Required fields
-      debug($row);
-      my $sth = $dbh->prepare(q{
-          INSERT INTO categories
-          (id,name)
-          VALUES (?, ?)
-      });
-      $sth->execute($row->{id},$row->{name});
+    # Import Data
+    $result = import_table($data,\@import,\@optional,"categories");
+  }
 
-      # Optional fields
+  return $result;
+}
+
+sub import_settings {
+  my ($data) = @_;
+  my @required = qw(id name value);
+  my @import = qw(name value);
+  my @optional;
+  
+  debug($data);
+  my $result = import_check($data,\@required);
+
+  if ($result->{result} eq 'success') {
+    debug("Check passed, importing settings");
+    debug($data);
+    debug("Creating Table: settings");
+    # Create DB
+    my $dbh = connect_db();
+    create_settings($dbh);
+    # Import Data
+    $result = import_table($data,\@import,\@optional,"settings");
+  }
+
+  return $result;
+}
+
+sub import_schedules {
+  my ($data) = @_;
+  my @required = qw(dow id name starttime);
+  my @import = qw(dow name starttime);
+  my @optional = qw(dow enabled master raincheck);
+  
+  debug($data);
+  my $result = import_check($data,\@required);
+
+  if ($result->{result} eq 'success') {
+    debug("Check passed, importing schedules");
+    debug($data);
+    debug("Creating Table: schedules");
+    # Create DB
+    my $dbh = connect_db();
+    create_schedules($dbh);
+    # Import Data
+    $result = import_table($data,\@import,\@optional,"schedules");
+  }
+
+  return $result;
+}
+
+sub import_scheduledstations {
+  my ($data) = @_;
+  my @required = qw(id scheduleid stationid);
+  my @import = qw(scheduleid stationid);
+  my @optional = qw(deleted duration runorder);
+  
+  debug($data);
+  my $result = import_check($data,\@required);
+
+  if ($result->{result} eq 'success') {
+    debug("Check passed, importing scheduled_stations");
+    debug($data);
+    debug("Creating Table: scheduled_stations");
+    # Create DB
+    my $dbh = connect_db();
+    create_scheduledstations($dbh);
+    # Import Data
+    $result = import_table($data,\@import,\@optional,"scheduled_stations");
+  }
+
+  return $result;
+}
+
+sub import_stations {
+  my ($data) = @_;
+  my @required = qw(category id name type url);
+  my @import = qw(category name type url);
+  my @optional = qw(deleted reversed);
+  
+  debug($data);
+  my $result = import_check($data,\@required);
+
+  if ($result->{result} eq 'success') {
+    debug("Check passed, importing stations");
+    debug($data);
+    debug("Creating Table: stations");
+    # Create DB
+    my $dbh = connect_db();
+    create_stations($dbh);
+    # Import Data
+    $result = import_table($data,\@import,\@optional,"stations");
+  }
+
+  return $result;
+}
+
+sub import_table {
+  my ($data,$required,$optional,$table) = @_;
+  my @required = @{$required};
+  my @optional = @{$optional};
+  debug($data);
+
+  my $dbh = connect_db();
+  foreach my $row (@{$data}) {
+    debug($row);
+    # Insert ID
+    my $sql = sprintf "INSERT INTO  %s (id) VALUES (%s)", 
+       $dbh->quote_identifier($table), $dbh->quote($row->{id});
+    my $sth = $dbh->prepare($sql);
+    $sth->execute();
+
+    # Required fields
+    foreach my $rfield (@required) {
+        my $sql = sprintf "UPDATE %s SET %s = %s WHERE id = %s", 
+           $dbh->quote_identifier($table),$dbh->quote_identifier($rfield), $dbh->quote($row->{$rfield}), $dbh->quote($row->{id});
+        debug($sql);
+        $sth = $dbh->prepare($sql);
+        $sth->execute();
+    }
+
+    # Optional fields
+    unless(defined $optional[0]) {
       foreach my $field (@optional) {
         debug("Checking: $field");
         if (defined $row->{$field}) {
           debug("$field exists in data, updating record $row->{id}");
-          my $sql = sprintf "UPDATE categories SET %s = %s WHERE id = %s", 
-              $dbh->quote_identifier($field), $dbh->quote($row->{$field}), $dbh->quote($row->{id});
+          my $sql = sprintf "UPDATE %s SET %s = %s WHERE id = %s", 
+              $dbh->quote_identifier($table),$dbh->quote_identifier($field), $dbh->quote($row->{$field}), $dbh->quote($row->{id});
           debug($sql);
           $sth = $dbh->prepare($sql);
           $sth->execute();
         }
       }
-    }
-    debug("Categories Imported");    
-    my $result->{result} = 'success';
-    return $result;
-  } else {
-    return $result;
+    } 
   }
-}
 
-sub import_settings {
-  my ($data) = @_;
-  debug($data);
-  my $dbh = connect_db();
-  return 'success';
-}
-
-sub import_schedules {
-  my ($data) = @_;
-  debug($data);
-  my $dbh = connect_db();
-  return 'success';
-}
-
-sub import_scheduledstations {
-  my ($data) = @_;
-  debug($data);
-  my $dbh = connect_db();
-  return 'success';
-}
-
-sub import_stations {
-  my ($data) = @_;
-  debug($data);
-  my $dbh = connect_db();
-  return 'success';
+  debug("Imported: $table");    
+  my $result->{result} = 'success';
+  return $result;
 }
 
 sub import_check {
@@ -644,9 +735,11 @@ sub create_db {
 
   create_type($dbh);
   $sth = $dbh->prepare(q{
-      INSERT INTO "type" VALUES(10002,'Slider',0);
+      INSERT INTO "type" VALUES(?,?,?);
   });
-  $sth->execute();
+
+  $sth->execute(10001,'On/Off',0);
+  $sth->execute(10002,'Slider',0);
 
   return;
 }
@@ -739,7 +832,8 @@ sub create_stations {
   $sth = $dbh->prepare(q{
       CREATE TABLE "stations" (
       "id" INTEGER PRIMARY KEY  AUTOINCREMENT  NOT NULL  UNIQUE ,
-      "name" VARCHAR,"category" INTEGER,
+      "name" VARCHAR,
+      "category" INTEGER,
       "type" INTEGER,
       "url" VARCHAR,
       "reversed" INTEGER DEFAULT (0) , 
@@ -759,11 +853,8 @@ sub create_type {
   $sth = $dbh->prepare(q{
       CREATE TABLE "type" (
       "id" INTEGER PRIMARY KEY  AUTOINCREMENT  NOT NULL  UNIQUE ,
-      "name" VARCHAR,"deleted" INTEGER DEFAULT (0) );
-  });
-  $sth->execute();
-  $sth = $dbh->prepare(q{
-      INSERT INTO "type" VALUES(10001,'On/Off',0);
+      "name" VARCHAR,
+      "deleted" INTEGER DEFAULT (0) );
   });
   $sth->execute();
   return;
