@@ -1,11 +1,14 @@
 #!/usr/bin/perl
 use strict;
+use FindBin qw($Bin);
+use lib "$Bin/lib";
+use NanodeInstall::Common;
 #use Data::Dumper;
 
 if ( $> > 0 ) {
   print "This installer must be run as root \n";
   print "     sudo $0 \n";
-#  exit 1; 
+  exit 1; 
 }
 
 my ($self) = {};
@@ -15,31 +18,29 @@ $self->{gpio_init} = "set_pi_gpios.sh";
 
 # Gather install information
 $self->{pi} = &Prompt("Are you installing on a Pi? (y/n) ","y");
-lc($self->{pi});
 
 if ( $self->{pi} eq "n" ) {
   $self->{distro} = &Prompt("Is this distro debian/ubuntu based? (y/n) ", "y");
-  lc($self->{distro});
 } else {
   $self->{wiringpi} = &Prompt("Would you like me to install WiringPi (will include git-core)? (y/n) ", "y");
-  lc($self->{wiringpi});
   $self->{pipins} = &Prompt("Would you like the Pi Pins configured low on boot? (y/n) ", "y");  
-  lc($self->{pipins});
 }
 
 if ( $self->{distro} eq "y" || $self->{pi} eq "y" ) {
   $self->{nginx} = &Prompt("Would you like me to attempt to install/configure nginx? (y/n)", "y");
-  lc($self->{nginx});
   if ( $self->{nginx} eq "y" ) {
     $self->{port} = &Prompt("Set webserver port to 8080? (change to 80 if you are sure no other webserver is running)", "8080");
   }
   $self->{dtools} = &Prompt("Would you like me to attempt to install/configure daemontools (runs NanodeControl service)? (y/n)", "y");
-  lc($self->{dtools});
 }
 
 $self->{installpath} = &Prompt("Install path", "/usr/local/NanodeControl");
 
 $self->{perl} = &Prompt("Install cpanm + required perl modules? (y/n)", "y");
+
+if ($self->{perl} eq "y") {
+  $self->{test_perl} = &Prompt("Enable cpanm tests (testing takes a _long time_ on the pi) (y/n)", "n");
+}
 
 #print Dumper($self);
 
@@ -66,34 +67,6 @@ unless (-d $self->{installpath}) {
 } else {
   print "Possibly already installed at $self->{instalpath} \n";
   exit;
-}
-
-
-sub Prompt { # inspired from here: http://alvinalexander.com/perl/edu/articles/pl010005
-  my ($question,$default) = @_;
-  if ($default) {
-    print $question, "[", $default, "]: ";
-  } else {
-    print $question, ": ";
-  }
-  
-  $| = 1;               # flush
-  $_ = <STDIN>;         # get input
-
-  chomp;
-  if ("$default") {
-    return $_ ? $_ : $default;    # return $_ if it has a value
-  } else {
-    return $_;
-  }
-}
-
-sub install_modules {
-  system("curl -L http://cpanmin.us | perl - App::cpanminus");
-  system("cpanm -S Dancer::Template::TemplateToolkit Template LWP::Simple Plack::Handler::FCGI Plack::Runner JSON::Parse JSON DBD::SQLite YAML Dancer Config::Crontab Text::CSV::Slurp Archive::Zip");
-  # Starman test fail, but it installs and works correctly. Need to diagnose
-  system("cpanm -nS Plack::Handler::Starman");
-  return;
 }
 
 sub wiringpi { # Need to ponder a better method, this doesn't account for failures.
