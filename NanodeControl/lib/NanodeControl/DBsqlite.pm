@@ -47,6 +47,10 @@ our %importsubs = (stations => \&import_stations,
 
 # DB connection
 sub connect_db {
+  my ($dbpath) = @_;
+  if ($dbpath) {
+    $appdir = $dbpath;
+  }
   my $dbh = DBI->connect(
       "dbi:SQLite:dbname=$appdir/db/nanode_control.sqlite",undef,undef,
       { RaiseError => 1, AutoCommit => 1 }
@@ -395,7 +399,14 @@ sub get_scheduled_stations {
 ### Export ###
 # Returns categories in an array
 sub export_categories {
-  my $dbh = connect_db();
+  my ($dbpath) = @_;
+  my $dbh;
+  unless ($dbpath) {
+    $dbh = connect_db();
+  } else {
+    $dbh = connect_db($dbpath);
+  }
+
   my $sth = $dbh->prepare(q{
       SELECT id, name, deleted
       FROM categories
@@ -416,7 +427,14 @@ sub export_categories {
 
 # Returns settings in an array
 sub export_settings {
-  my $dbh = connect_db();
+  my ($dbpath) = @_;
+  my $dbh;
+  unless ($dbpath) {
+    $dbh = connect_db();
+  } else {
+    $dbh = connect_db($dbpath);
+  }
+
   my $sth = $dbh->prepare(q{
       SELECT id, name, value 
       FROM settings
@@ -437,7 +455,14 @@ sub export_settings {
 
 # Returns schedules in an array
 sub export_schedules {
-  my $dbh = connect_db();
+  my ($dbpath) = @_;
+  my $dbh;
+  unless ($dbpath) {
+    $dbh = connect_db();
+  } else {
+    $dbh = connect_db($dbpath);
+  }
+
   my $sth = $dbh->prepare(q{
       SELECT id, name, starttime, dow, raincheck, enabled, master, deleted 
       FROM schedules
@@ -463,7 +488,14 @@ sub export_schedules {
 
 # Returns scheduled stations in an array
 sub export_scheduledstations {
-  my $dbh = connect_db();
+  my ($dbpath) = @_;
+  my $dbh;
+  unless ($dbpath) {
+    $dbh = connect_db();
+  } else {
+    $dbh = connect_db($dbpath);
+  }
+
   my $sth = $dbh->prepare(q{
       SELECT id, scheduleid, stationid, duration, runorder, deleted
       FROM scheduled_stations
@@ -487,7 +519,14 @@ sub export_scheduledstations {
 
 # Returns stations in an array
 sub export_stations {
-  my $dbh = connect_db();
+  my ($dbpath) = @_;
+  my $dbh;
+  unless ($dbpath) {
+    $dbh = connect_db();
+  } else {
+    $dbh = connect_db($dbpath);
+  }
+
   my $sth = $dbh->prepare(q{
       SELECT id, name, category, type, url, reversed, deleted
       FROM stations 

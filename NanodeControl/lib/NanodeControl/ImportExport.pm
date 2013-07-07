@@ -10,10 +10,9 @@ use File::Copy qw(move);
 use File::MimeInfo::Magic;
 use Archive::Zip qw( :ERROR_CODES :CONSTANTS );
 use base 'Exporter';
-my $appdir = config->{appdir};
 
 our @EXPORT = qw(nanode_export nanode_import import_check);
-our @types = @{config->{exporttypes}};
+our @types = qw(stations schedules scheduled_stations settings categories);
 our $valid_types = qw{^(stations|schedules|scheduled_stations|settings|categories)$};
 our %exportsubs = (stations => \&export_stations, 
                 schedules => \&export_schedules,
@@ -27,13 +26,18 @@ our %importsubs = (stations => \&import_stations,
                 categories => \&import_categories );
 
 sub nanode_export {
-  my ($export) = @_;
+  my ($export,$dbpath) = @_;
   debug("Begin export: $export");
   if ($export =~ /^all$/i) {
     my $zip = Archive::Zip->new();
     foreach my $type (@types) {
       info("Exporting $type");
-      my @data = $exportsubs{"$type"}->();
+      my @data;
+      unless($dbpath) {
+        @data = $exportsubs{"$type"}->();
+      } else {
+        @data = $exportsubs{"$type"}->($dbpath);
+      }
       my $csv = Text::CSV::Slurp->create( input => \@data);
       my $string_member = $zip->addString( "$csv", "$type.csv" );
       $string_member->desiredCompressionMethod( COMPRESSION_DEFLATED );
@@ -67,7 +71,7 @@ sub nanode_export {
 }
 
 sub nanode_import {
-  my ($import) = @_;
+  my ($import,$dbpath) = @_;
   my $dest = '/tmp/nanodezip';
   my @files;
 
@@ -112,11 +116,11 @@ sub nanode_import {
     my $data = Text::CSV::Slurp->load(file => $file);
     my $result;
     given ($file) {
-      when (/scheduled_stations/) { $result = $importsubs{"scheduled_stations"}->($data); }
-      when (/stations/)           { $result = $importsubs{"stations"}->($data); }
-      when (/schedules/)          { $result = $importsubs{"schedules"}->($data); }
-      when (/settings/)           { $result = $importsubs{"settings"}->($data); }
-      when (/categories/)         { $result = $importsubs{"categories"}->($data); }
+      when (/scheduled_stations/) { $result = $importsubs{"scheduled_stations"}->($data,$dbpath); }
+      when (/stations/)           { $result = $importsubs{"stations"}->($data,$dbpath); }
+      when (/schedules/)          { $result = $importsubs{"schedules"}->($data,$dbpath); }
+      when (/settings/)           { $result = $importsubs{"settings"}->($data,$dbpath); }
+      when (/categories/)         { $result = $importsubs{"categories"}->($data,$dbpath); }
       default {
         $result->{result} = 'invalid_filename';
         $result->{filename} = $file;
