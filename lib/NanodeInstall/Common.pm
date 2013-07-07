@@ -1,6 +1,7 @@
 package NanodeInstall::Common;
 use base 'Exporter';
 our @EXPORT = qw(Prompt install_modules wiringpi aptget);
+our $modules = "Dancer::Template::TemplateToolkit Template LWP::Simple Plack::Handler::FCGI Plack::Runner JSON::Parse JSON DBD::SQLite YAML Dancer Config::Crontab Text::CSV::Slurp Archive::Zip Plack::Handler::Starman File::Slurp IPC::System::Simple File::MimeInfo::Magic";
 
 sub Prompt { # inspired from here: http://alvinalexander.com/perl/edu/articles/pl010005
   my ($question,$default) = @_;
@@ -28,8 +29,6 @@ sub Prompt { # inspired from here: http://alvinalexander.com/perl/edu/articles/p
 sub install_modules {
   my ($self) = @_;
   system("curl -L http://cpanmin.us | perl - App::cpanminus");
-
-  my $modules = "Dancer::Template::TemplateToolkit Template LWP::Simple Plack::Handler::FCGI Plack::Runner JSON::Parse JSON DBD::SQLite YAML Dancer Config::Crontab Text::CSV::Slurp Archive::Zip Plack::Handler::Starman";
 
   unless ($self->{test_perl} eq 'y') {
     system("cpanm -nS $modules");
