@@ -243,6 +243,7 @@ function page_importexport () {
 
   $("form[id='import']").submit(function(event) {
     console.log("Submit"); 
+    timeout = 60000;
     event.stopPropagation();
     event.preventDefault();
     importexport.data = 1;
@@ -251,6 +252,7 @@ function page_importexport () {
     upload(importexport);
   });
 }
+
 // Control stations
 $(document).on('pageinit', function(e){
   if (e.target.id == 'control') {
