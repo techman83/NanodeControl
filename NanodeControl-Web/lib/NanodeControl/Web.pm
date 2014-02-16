@@ -1,7 +1,10 @@
 package NanodeControl::Web;
-use Dancer2;
+use Dancer ':syntax';
+use Dancer::Plugin::Mongo;
+use Dancer::Plugin::Async;
+use AnyEvent;
 
-our $VERSION = '0.1';
+our $VERSION = '0.5';
 
 get '/' => sub {
     template 'index';

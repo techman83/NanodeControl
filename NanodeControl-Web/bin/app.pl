@@ -1,7 +1,18 @@
 #!/usr/bin/env perl
-
-use FindBin;
-use lib "$FindBin::Bin/../lib";
-
+use Dancer;
 use NanodeControl::Web;
-NanodeControl::Web->dance;
+use NanodeControl::API;
+use Dancer::Plugin::Async;
+use Twiggy::Server;
+use AnyEvent;
+use EV;
+
+my $server = Twiggy::Server->new(
+    host => '0.0.0.0',
+    port => 3000,
+);
+
+$server->register_service(Dancer::Plugin::Async::app());
+
+EV::loop;
+
