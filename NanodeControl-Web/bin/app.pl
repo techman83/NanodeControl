@@ -1,7 +1,5 @@
 #!/usr/bin/env perl
-
-use FindBin;
-use lib "$FindBin::Bin/../lib";
-
+use Dancer;
 use NanodeControl::Web;
-NanodeControl::Web->dance;
+use NanodeControl::API;
+dance;

@@ -1,10 +1,10 @@
 #!/usr/bin/env perl
-use Dancer2;
+use Dancer ':syntax';
 use FindBin '$RealBin';
 use Plack::Handler::FCGI;
 
 # For some reason Apache SetEnv directives dont propagate
-# correctly to the dispatchers, so forcing PSGI and env here
+# correctly to the dispatchers, so forcing PSGI and env here 
 # is safer.
 set apphandler => 'PSGI';
 set environment => 'production';

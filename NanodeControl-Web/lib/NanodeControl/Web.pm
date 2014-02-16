@@ -1,7 +1,9 @@
 package NanodeControl::Web;
-use Dancer2;
+use Dancer ':syntax';
+use Dancer::Plugin::WebSocket;
+use AnyEvent::Util;
 
-our $VERSION = '0.1';
+our $VERSION = '0.5';
 
 get '/' => sub {
     template 'index';
