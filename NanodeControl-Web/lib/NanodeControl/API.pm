@@ -6,9 +6,9 @@ use AnyEvent::Util;
 
 # https://github.com/jjn1056/Example-PlackStreamingAndNonblocking
 
-get '/api' => sub {
-    debug("Page Loaded");
-    template 'index';
+get '/api/stations' => sub {
+    debug("Stations Called");
+    return;
 };
 
 true;
