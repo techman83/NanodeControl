@@ -1,1 +1,1 @@
-plackup -r -R lib/NanodeControl/ -s Twiggy bin/app.pl -p 3000
+plackup -r -R "lib/NanodeControl/,layouts/,layouts/main/" -s Twiggy bin/app.pl -p 3000
