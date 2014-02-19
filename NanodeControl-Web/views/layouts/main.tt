@@ -19,8 +19,10 @@
 
 </head>
 <body>
+<input value="Send Message" type=button onclick="get_data()" />
 <% content %>
 <div id="footer">
+Connection Status: <span id="conn-status"> Disconnected </span>  
 Powered by <a href="http://perldancer.org/">Dancer</a> <% dancer_version %>
 </div>
 </body>

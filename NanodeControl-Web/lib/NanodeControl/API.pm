@@ -4,10 +4,16 @@ use Dancer::Plugin::WebSocket;
 use Dancer::Plugin::Mongo;
 use AnyEvent::Util;
 
-# https://github.com/jjn1056/Example-PlackStreamingAndNonblocking
 
 get '/api/stations' => sub {
     debug("Stations Called");
+    fork_call {
+      debug("Forking");
+      my $data->{type} = 'update';
+      $data->{content} = 'content!';
+      ws_send $data;
+      debug("Message Sent");
+    }
     return;
 };
 
