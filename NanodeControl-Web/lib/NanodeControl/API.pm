@@ -5,18 +5,25 @@ use Dancer::Plugin::Mongo;
 use AnyEvent::Util;
 
 
-get '/api/stations' => sub {
-    debug("Stations Called");
-    fork_call {
-      debug("Forking");
-      sleep 5;
-    } sub {
-      my $data->{type} = 'update';
-      $data->{content} = 'content!';
-      ws_send $data;
-      debug("Message Sent");
-    };
-    return;
+get '/api/:collection' => sub {
+  my $collection = params->{collection};
+  debug("Getting $collection");
+  fork_call {
+    my ($collection) = @_;
+    debug("Forking: $collection");
+    $collection = mongo->database->get_collection( "$collection" );
+    return $collection;
+  } $collection, sub {
+    my ($data) = @_;
+    debug($data);
+    ws_send $data;
+    debug("Message Sent");
+  };
+  return;
 };
 
+get '/api/stations' => sub {
+
+  return;
+};
 true;
