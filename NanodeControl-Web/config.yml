@@ -9,6 +9,8 @@ appname: "NanodeControl::Web"
 # views/layouts/main.tt)
 layout: "main"
 
+show_errors: 1
+
 # when the charset is set to UTF-8 Dancer will handle for you
 # all the magic of encoding and decoding. You should not care
 # about unicode within your app when this setting is set (recommended).
@@ -17,9 +19,9 @@ template: "tiny"
 
 # Plugin Settings
 plugins:
-    Mongo:
-        host: '127.0.0.1'
-        port: 27017
-        db_name: 'nanodecontrol'
-        username: 'nanode'
-        password: 'control'
+  Mongo:
+    host: '127.0.0.1'
+    port: 27017
+    username: 'nanode'
+    password: 'control'
+    db_name: 'nanodecontrol'
