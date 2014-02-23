@@ -1,9 +1,23 @@
 ko.bindingProvider.instance = new StringInterpolatingBindingProvider();
 var socket = new WebSocket(ws_path)
 
+function onlyUnique(value, index, self) {
+      return self.indexOf(value) === index;
+}
+
 var viewModel = {
   stations: ko.mapping.fromJS([]),
 }
+
+viewModel.categoryDuplicates = ko.computed(function() {
+  return viewModel.stations().map(function(item) {
+    return (item.category ? item.category() : '')
+  })
+}) 
+                                                                                                      
+viewModel.categories = ko.computed(function() {
+  return viewModel.categoryDuplicates().filter(onlyUnique)
+})
 
 ko.applyBindings(viewModel);
 

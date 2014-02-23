@@ -9,7 +9,7 @@
         <h3 class="panel-title">New Station</h3>
       </div>
       <div class="panel-body">
-        <form class="form-horizontal data-async" data-bind="with: {roles: [], room: null, nickname: null, record_path: null}" role="form">
+        <form class="form-horizontal data-async" data-bind="with: {category: null, name: null}" role="form">
           <legend>Station Details</legend>
           <div class="form-group">
             <label class="col-lg-2 col-md-3 col-sm-4 control-label">Station Address</label>
@@ -27,9 +27,32 @@
     </div>
   </div>
   <hr>
-  <div data-bind="foreach: {data: viewModel.stations, as: 'station'}" class="row rooms">
-    <div data-bind="if: station">
-      <p data-bind="text: ko.toJSON(station)" />
+  <div data-bind="foreach: {data: viewModel.categories, as: 'categoryName'}" class="row categories">
+    <div data-bind="if: categoryName">
+      <div class="panel panel-default">
+        <div class="panel-heading">
+          <h3 class="panel-title">
+            <span data-bind="text: categoryName" />
+          </h3>
+        </div>
+        <div class="panel-body">
+          <div data-bind="foreach: viewModel.stations().filter(function(item) { return categoryName == item.category() })" class="row">
+          <div class="col-md-4">
+            <div class="panel panel-primary">
+              <div class="panel-heading">
+                <h4>
+                  <span data-bind="text: $data.name" />
+                </h4>
+              </div>
+              <div class="panel-body">
+                <div data-bind="if: $data.type() == 'onoff'">
+                  <p data-bind="text: ko.toJSON($data)" />
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
     </div>
   </div>
 </div>
