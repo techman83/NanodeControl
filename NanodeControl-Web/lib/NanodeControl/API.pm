@@ -31,7 +31,7 @@ post '/api/:collection' => sub {
     my $insert = $collection->insert($data);
 
     # Get result
-    my $data = $collection->find_one({ _id => MongoDB::OID->new("$insert->{value}") });
+    $data = $collection->find_one({ _id => MongoDB::OID->new("$insert->{value}") });
     return $data;
   } ($collection, $data), sub {
     my ($data) = @_;
