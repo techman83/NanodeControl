@@ -56,7 +56,3 @@ $.get( "/api/stations", function( data ) {
       }
     }
   })
-
-function addStation(data) {
-
-}

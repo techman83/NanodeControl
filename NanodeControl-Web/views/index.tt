@@ -46,7 +46,19 @@
               </div>
               <div class="panel-body">
                 <div data-bind="if: $data.type() == 'onoff'">
-                  <p data-bind="text: ko.toJSON($data)" />
+                  <div class="onoffswitch" data-bind="with: {id: $data._id.$oid, state: $data.state || ''}">
+                    <!-- ko if: state -->
+                      <input data-bind="click: setStation(id(), 'off')" type="checkbox" name="onoffswitch" class="onoffswitch-checkbox" id="{{id}}" checked>
+                    <!-- /ko -->
+                    <!-- ko if: !state -->
+                      <input data-bind="click: setStation(id(), 'on')" type="checkbox" name="onoffswitch" class="onoffswitch-checkbox" id="{{id}}">
+                    <!-- /ko -->
+                    <label class="onoffswitch-label" for="{{id}}">
+                      <div class="onoffswitch-inner"></div>
+                      <div class="onoffswitch-switch"></div>
+                    </label>
+                  </div>
+                  <!--<p data-bind="text: ko.toJSON($data)" />-->
                 </div>
               </div>
             </div>
