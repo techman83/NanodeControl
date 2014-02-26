@@ -46,6 +46,37 @@ post '/api/:collection' => sub {
   return;
 };
 
+post '/api/:collection/partial/:id' => sub {
+  my $collection = params->{collection};
+  my $id = params->{id};
+  my $data = from_json(request->body);
+  
+  fork_call {
+    my ($collection, $data, $id) = @_;
+
+    # Get collection
+    $collection = mongo->get_database($db)->get_collection( "$collection" );
+
+    # Partial Update
+    my $update = $collection->update({ _id => MongoDB::OID->new("$id") }, {'$set' => { "$data->{key}" => "$data->{value}"}});
+    debug($update);
+    # Get result
+    $data = $collection->find_one({ _id => MongoDB::OID->new("$id") });
+    debug($data);
+    return $data;
+  } ($collection, $data, $id), sub {
+    my ($data) = @_;
+    # Send data to clients
+    my $result->{type} = 'update';
+    $result->{content} = $data;
+    $result = to_json($result,{allow_blessed=>1,convert_blessed=>1});
+    debug($result);
+    ws_send $result;
+    debug("Message Sent");
+  };
+  return;
+};
+
 true;
 
 __END__

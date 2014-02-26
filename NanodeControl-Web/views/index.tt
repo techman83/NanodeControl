@@ -47,7 +47,7 @@
               <div class="panel-body">
                 <div data-bind="if: $data.type() == 'onoff'">
                   <div class="onoffswitch" data-bind="with: {id: $data._id.$oid, state: $data.state || ''}">
-                    <input data-bind="click: setStation.bind($data), checked: state, attr: { id: id }" type="checkbox" name="onoffswitch" class="onoffswitch-checkbox">
+                    <input data-bind="click: setStationOnoff.bind($data), attr: { id: id }, checked: state" type="checkbox" name="onoffswitch" class="onoffswitch-checkbox">
                     <label data-bind="state, attr: { for: id }" class="onoffswitch-label">
                       <div class="onoffswitch-inner"></div>
                       <div class="onoffswitch-switch"></div>
