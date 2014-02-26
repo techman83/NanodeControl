@@ -6,19 +6,18 @@ var setStationOnoff = function () {
   var self = this;
 
   // self will send current state, we want to change it
-  var state = 1;
+  var state = true;
   if (! self.state) {
-    state = 1;
+    state = true;
   } else if (self.state() ){
-    state = 0;
+    state = '';
   }
 
   $.ajax({
     url: "/api/stations/partial/" + self.id(),
     type: 'POST',
     data: JSON.stringify({
-      key: 'state',
-      value: state
+      state: state,
     }),
     dataType: 'json',
     success: function(id) {

@@ -1,7 +1,7 @@
 package NanodeControl::API;
 use Dancer ':syntax';
-use Dancer::Plugin::WebSocket;
-use Dancer::Plugin::Mongo;
+use NanodeControl::DBAbstract;
+use NanodeControl::Websocket;
 use AnyEvent::Util;
 
 # settings
@@ -9,11 +9,7 @@ our $db = config->{plugins}{Mongo}{db_name};
 
 get '/api/:collection' => sub {
   my $collection = params->{collection};
-  debug("Getting $collection");
-  my $cursor = mongo->get_database($db)->get_collection( "$collection" )->find();
-  my $data;
-  @{$data} = $cursor->all;
-  debug(@{$data});
+  my $data = get_collection($collection);
   return to_json($data,{allow_blessed=>1,convert_blessed=>1});
 };
 
@@ -23,25 +19,12 @@ post '/api/:collection' => sub {
 
   fork_call {
     my ($collection, $data) = @_;
-
-    # Get collection
-    $collection = mongo->get_database($db)->get_collection( "$collection" );
-
-    # Insert data
-    my $insert = $collection->insert($data);
-
-    # Get result
-    $data = $collection->find_one({ _id => MongoDB::OID->new("$insert->{value}") });
+    $data = upsert($collection,$data);
     return $data;
   } ($collection, $data), sub {
     my ($data) = @_;
-    # Send data to clients
-    my $result->{type} = 'insert';
-    $result->{content} = $data;
-    $result = to_json($result,{allow_blessed=>1,convert_blessed=>1});
-    debug($result);
-    ws_send $result;
-    debug("Message Sent");
+    socket_insert($data);
+    return;
   };
   return;
 };
@@ -53,26 +36,14 @@ post '/api/:collection/partial/:id' => sub {
   
   fork_call {
     my ($collection, $data, $id) = @_;
-
-    # Get collection
-    $collection = mongo->get_database($db)->get_collection( "$collection" );
-
-    # Partial Update
-    my $update = $collection->update({ _id => MongoDB::OID->new("$id") }, {'$set' => { "$data->{key}" => "$data->{value}"}});
-    debug($update);
-    # Get result
-    $data = $collection->find_one({ _id => MongoDB::OID->new("$id") });
+    debug($data);
+    $data = upsert($collection,$data,$id);
     debug($data);
     return $data;
   } ($collection, $data, $id), sub {
     my ($data) = @_;
-    # Send data to clients
-    my $result->{type} = 'update';
-    $result->{content} = $data;
-    $result = to_json($result,{allow_blessed=>1,convert_blessed=>1});
-    debug($result);
-    ws_send $result;
-    debug("Message Sent");
+    socket_update($data);
+    return;
   };
   return;
 };
