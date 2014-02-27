@@ -4,9 +4,6 @@ use NanodeControl::DBAbstract;
 use NanodeControl::Websocket;
 use AnyEvent::Util;
 
-# settings
-our $db = config->{plugins}{Mongo}{db_name};
-
 get '/api/:collection' => sub {
   my $collection = params->{collection};
   my $data = get_collection($collection);
@@ -45,6 +42,24 @@ post '/api/:collection/partial/:id' => sub {
     socket_update($data);
     return;
   };
+  return;
+};
+
+post '/api/:key/:state' => sub {
+  my $key = params->{key};
+  my $state = params->{state};
+  
+  #fork_call {
+  #  my ($collection, $data, $id) = @_;
+  #  debug($data);
+  #  $data = upsert($collection,$data,$id);
+  #  debug($data);
+  #  return $data;
+  #} ($collection, $data, $id), sub {
+  #  my ($data) = @_;
+  #  socket_update($data);
+  #  return;
+  #};
   return;
 };
 
