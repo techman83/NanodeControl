@@ -9,19 +9,19 @@
         <h3 class="panel-title">New Station</h3>
       </div>
       <div class="panel-body">
-        <form class="form-horizontal data-async" data-bind="with: {category: null, name: null}" role="form">
+        <form class="form-horizontal data-async" data-bind="with: {category: null, name: null, controlFlag: ko.observable(false)}" role="form">
           <legend>Station Details</legend>
           <div class="form-group">
             <label class="col-lg-2 col-md-3 col-sm-4 control-label">Pi/Remote</label>
             <div class="col-lg-10 col-md-9 col-sm-8 btn-group" data-toggle="buttons">
               <label class="btn btn-primary">
-                <input type="radio" data-bind="checked: $data.controlType" value="pi"> Pi
+                <input type="radio" data-bind="checked: $data.controlType, click: function(data) {data.controlFlag = 'pi';}" value="pi"> Pi
               </label>
               <label class="btn btn-primary">
-                <input type="radio" data-bind="checked: $data.controlType" value="remote"> Remote
+                <input type="radio" data-bind="checked: $data.controlType, click: function(data) {data.controlFlag = 'remote';}" value="remote"> Remote
               </label>
             </div>
-            <div data-bind="if: $data.controlType == 'remote'">
+            <div data-bind="if: controlFlag == 'remote'">
               <label class="col-lg-2 col-md-3 col-sm-4 control-label">Station Address</label>
               <div class="col-lg-10 col-md-9 col-sm-8">
                 <input class="form-control" type="text" data-bind="value: $data.url" placeholder="http://pi/5" name="url">
