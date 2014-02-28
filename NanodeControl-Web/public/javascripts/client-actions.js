@@ -1,5 +1,15 @@
 var addStation = function (data) {
   console.log("add station");
+
+  $.ajax({
+    url: "/api/stations",
+    type: 'POST',
+    data: ko.toJSON(data),
+    dataType: 'json',
+    success: function(id) {
+      console.log(ko.toJSON(data));
+    }
+  })
 }
 
 var setStationOnoff = function () {

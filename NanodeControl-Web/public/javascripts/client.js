@@ -7,6 +7,8 @@ function onlyUnique(value, index, self) {
 
 var viewModel = {
   stations: ko.mapping.fromJS([]),
+  pipins: ko.mapping.fromJS([1,2,3,4]),
+  controlTypes: ko.mapping.fromJS([{"name":"On/Off", "type":"onoff"}]),
 }
 
 viewModel.categoryDuplicates = ko.computed(function() {
@@ -18,6 +20,28 @@ viewModel.categoryDuplicates = ko.computed(function() {
 viewModel.categories = ko.computed(function() {
   return viewModel.categoryDuplicates().filter(onlyUnique)
 })
+
+ko.bindingHandlers.dump = {
+  init: function (element, valueAccessor, allBindingsAccessor, viewmodel, bindingContext) {
+    var context = valueAccessor();
+    var allBindings = allBindingsAccessor();
+    var pre = document.createElement('pre');
+
+    element.appendChild(pre);
+
+    var dumpJSON = ko.computed({
+      read: function () {
+        return ko.toJSON(context, null, 2);
+      },
+      disposeWhenNodeIsRemoved: element
+    });
+
+    ko.applyBindingsToNode(pre,
+      {text: dumpJSON}
+    );
+  }
+};
+
 
 ko.applyBindings(viewModel);
 

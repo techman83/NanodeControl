@@ -9,28 +9,46 @@
         <h3 class="panel-title">New Station</h3>
       </div>
       <div class="panel-body">
-        <form class="form-horizontal data-async" data-bind="with: {category: null, name: null, controlType: ko.observable('remote')}" role="form">
+        <form class="form-horizontal data-async" data-bind="with: {category: null, name: null, controlType: ko.observable('pi')}, reversed: 'false', type: null, pin: null" role="form">
           <legend>Station Details</legend>
           <div class="form-group">
+            <div data-bind="dump: $data"></div>
+            <label class="col-lg-2 col-md-3 col-sm-4 control-label">Name</label>
+            <div class="col-lg-10 col-md-9 col-sm-8">
+              <input class="form-control" type="text" data-bind="value: $data.name" placeholder="Front" name="url" />
+            </div>
             <label class="col-lg-2 col-md-3 col-sm-4 control-label">Pi/Remote</label>
-            <div class="col-lg-10 col-md-9 col-sm-8 btn-group" data-toggle="buttons">
-              <label class="btn btn-primary">
+            <div class="col-lg-10 col-md-9 col-sm-8 btn-group">
+              <label class="btn btn-default">
                 <input type="radio" name="controlType" value="pi" data-bind="checked: $data.controlType" /> Pi
               </label>
-              <label class="btn btn-primary">
+              <label class="btn btn-default">
                 <input type="radio" name="controlType" value="remote" data-bind="checked: $data.controlType" /> Remote
               </label>
             </div>
-            <div data-bind="if: $data.controlType == 'remote'">
+            <div data-bind="if: $data.controlType() == 'remote'">
               <label class="col-lg-2 col-md-3 col-sm-4 control-label">Station Address</label>
               <div class="col-lg-10 col-md-9 col-sm-8">
-                <input class="form-control" type="text" data-bind="value: $data.url" placeholder="http://pi/5" name="url">
+                <input class="form-control" type="text" data-bind="value: $data.url" placeholder="http://pi/5" name="url" />
               </div>
             </div>
-            <p data-bind="text: ko.toJSON($data)"></p>
+            <div data-bind="if: $data.controlType() == 'pi'">
+              <label class="col-lg-2 col-md-3 col-sm-4 control-label">Pi Pin</label>
+              <div class="col-lg-10 col-md-9 col-sm-8">
+                <select class="form-control" data-bind="options: $root.pipins, value: $data.pin"></select>
+              </div>
+            </div>
             <label class="col-lg-2 col-md-3 col-sm-4 control-label">Category</label>
             <div class="col-lg-10 col-md-9 col-sm-8">
-              <input class="form-control" type="text" data-bind="value: $data.category" placeholder="Garden" name="category">
+              <input class="form-control" type="text" data-bind="value: $data.category" placeholder="Garden" name="category" />
+            </div>
+            <label class="col-lg-2 col-md-3 col-sm-4 control-label">Type</label>
+            <div class="col-lg-10 col-md-9 col-sm-8">
+              <select class="form-control" data-bind="options: $root.controlTypes, optionsText: 'name', optionsValue: 'type',value: $data.type"></select>
+            </div>
+            <label class="col-lg-2 col-md-3 col-sm-4 control-label">Reversed</label>
+            <div class="col-lg-10 col-md-9 col-sm-8">
+              <input type="checkbox" name="controlType" value="remote" data-bind="checked: $data.reversed" />
             </div>
           </div>
           <div class="form-group">
@@ -68,9 +86,8 @@
                       <div class="onoffswitch-inner"></div>
                       <div class="onoffswitch-switch"></div>
                     </label>
-
                   </div>
-                  <!--<p data-bind="text: ko.toJSON($data)" />-->
+                  <!-- <div data-bind="dump: $data"></div> -->
                 </div>
               </div>
             </div>
