@@ -81,3 +81,14 @@ $.get( "/api/stations", function( data ) {
       }
     }
   })
+
+$(function () {
+    $('#starttime').datetimepicker({
+        pickDate: false
+    });
+});
+$(function () {
+    $('#duration').datetimepicker({
+        pickDate: false
+    });
+});
