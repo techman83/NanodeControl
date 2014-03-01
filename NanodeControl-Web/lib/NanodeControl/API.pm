@@ -45,6 +45,25 @@ post '/api/:collection/partial/:id' => sub {
   return;
 };
 
+post '/api/:collection/delete/:id' => sub { # change this to a delete when figure out why 'del' doesn't respond
+  my $collection = params->{collection};
+  my $id = params->{id};
+  my $data->{deleted} = 'true';
+  
+  fork_call {
+    my ($collection, $data, $id) = @_;
+    debug($data);
+    $data = upsert($collection,$data,$id);
+    debug($data);
+    return $data;
+  } ($collection, $data, $id), sub {
+    my ($data) = @_;
+    socket_remove($data);
+    return;
+  };
+  return;
+};
+
 post '/api/:key/:state' => sub {
   my $key = params->{key};
   my $state = params->{state};

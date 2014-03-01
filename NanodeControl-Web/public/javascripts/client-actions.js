@@ -31,7 +31,21 @@ var setStationOnoff = function () {
     }),
     dataType: 'json',
     success: function(id) {
-      console.log( "Set State: " + state, id );
+      console.log( "Set State: " + self.id() );
+    }
+  })
+}
+
+var removeStation = function () {
+  var self = this;
+ 
+  console.log(self._id.$oid());
+  
+  $.ajax({
+    url: "/api/stations/delete/" + self._id.$oid(),
+    type: 'POST',
+    success: function() {
+      console.log( "Deleted Station " + self._id.$oid());
     }
   })
 }

@@ -61,7 +61,7 @@ $.get( "/api/stations", function( data ) {
         console.log(data)
         if (data.type == 'remove') {
           viewModel.stations.remove(function(item) {
-            return item._id.$oid() == data.content
+            return item._id.$oid() == data.content._id.$oid;
           })
         }
         if (data.type == 'insert') {

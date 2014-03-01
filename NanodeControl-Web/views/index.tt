@@ -74,14 +74,19 @@
           <div class="col-md-4">
             <div class="panel panel-primary">
               <div class="panel-heading">
-                <h4>
+                <button data-bind="click: removeStation.bind($data)" title="Delete Station" class="btn btn-default btn-xs station-remove">
+                  <small>
+                    <i class="glyphicon glyphicon-remove"></i>
+                  </small>
+                </button>
+                <h4 class="panel-title">
                   <span data-bind="text: $data.name" />
                 </h4>
               </div>
               <div class="panel-body">
                 <div data-bind="if: $data.type() == 'onoff'">
                   <div class="onoffswitch" data-bind="with: {id: $data._id.$oid, state: $data.state || ''}">
-                    <input data-bind="click: setStationOnoff.bind($data), attr: { id: id }, checked: state" type="checkbox" name="onoffswitch" class="onoffswitch-checkbox">
+                    <input data-bind="click: setStationOnoff.bind($data), attr: { 'id': id }, checked: state" type="checkbox" name="onoffswitch" class="onoffswitch-checkbox">
                     <label data-bind="state, attr: { for: id }" class="onoffswitch-label">
                       <div class="onoffswitch-inner"></div>
                       <div class="onoffswitch-switch"></div>

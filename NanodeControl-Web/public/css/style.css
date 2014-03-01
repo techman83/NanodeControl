@@ -1,3 +1,21 @@
+/* Interface */
+
+.categories .station-remove.btn-xs {
+  position: absolute;
+  top: 0;
+  left: 0;
+}
+
+.categories .panel-heading {
+  position: relative;
+}
+
+.categories .panel-title {
+  margin-top: 15px;
+  margin-bottom: -8px;
+}
+
+
 /* On/Off switch from -> http://proto.io/freebies/onoff/ */
 .onoffswitch {
     position: relative; width: 180px;

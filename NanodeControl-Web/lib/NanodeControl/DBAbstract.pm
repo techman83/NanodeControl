@@ -32,7 +32,7 @@ sub upsert {
 
 sub get_collection {
   my ($collection) = @_;
-  my $cursor = mongo->get_database($db)->get_collection( "$collection" )->find();
+  my $cursor = mongo->get_database($db)->get_collection( "$collection" )->find({"deleted" => {'$ne' => "true"}});
   my $data;
   @{$data} = $cursor->all;
   debug(@{$data});
