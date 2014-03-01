@@ -76,6 +76,7 @@ $.get( "/api/stations", function( data ) {
           }
         }
         if (data.type == 'notify') {
+          console.log("Notification here");
         }
       }
     }

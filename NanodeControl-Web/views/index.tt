@@ -85,12 +85,13 @@
               </div>
               <div class="panel-body">
                 <div data-bind="if: $data.type() == 'onoff'">
-                  <div class="onoffswitch" data-bind="with: {id: $data._id.$oid, state: $data.state || ''}">
+                  <div class="onoffswitch" data-bind="with: {id: $data._id.$oid, state: $data.state || '', apikey: $data.apikey || ''}">
                     <input data-bind="click: setStationOnoff.bind($data), attr: { 'id': id }, checked: state" type="checkbox" name="onoffswitch" class="onoffswitch-checkbox">
                     <label data-bind="state, attr: { for: id }" class="onoffswitch-label">
                       <div class="onoffswitch-inner"></div>
                       <div class="onoffswitch-switch"></div>
                     </label>
+                    <i  data-bind="attr: { id: id() + '-spinner' }"class="fa fa-spinner fa-spin fa-3x onoff-spin"></i>
                   </div>
                   <!-- <div data-bind="dump: $data"></div> -->
                 </div>

@@ -20,18 +20,17 @@ var setStationOnoff = function () {
   if (! self.state) {
     state = true;
   } else if (self.state() ){
-    state = '';
+    state = false;
   }
 
+  console.log(self)
+
   $.ajax({
-    url: "/api/stations/partial/" + self.id(),
+    url: "/api/" + self.apikey() + "/" + state,
     type: 'POST',
-    data: JSON.stringify({
-      state: state,
-    }),
-    dataType: 'json',
     success: function(id) {
       console.log( "Set State: " + self.id() );
+      $("#" + self.id() + "-spinner").css("visibility","visible");
     }
   })
 }

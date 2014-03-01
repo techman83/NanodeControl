@@ -2,6 +2,7 @@ package NanodeControl::API;
 use Dancer ':syntax';
 use NanodeControl::DBAbstract;
 use NanodeControl::Websocket;
+use NanodeControl::ControlState;
 use AnyEvent::Util;
 
 get '/api/:collection' => sub {
@@ -68,17 +69,24 @@ post '/api/:key/:state' => sub {
   my $key = params->{key};
   my $state = params->{state};
   
-  #fork_call {
-  #  my ($collection, $data, $id) = @_;
-  #  debug($data);
-  #  $data = upsert($collection,$data,$id);
-  #  debug($data);
-  #  return $data;
-  #} ($collection, $data, $id), sub {
-  #  my ($data) = @_;
-  #  socket_update($data);
-  #  return;
-  #};
+  fork_call {
+    my ($collection, $key, $state) = @_;
+    my $data = find_key($collection,$key);
+    my $result = set_station_state($data,$state);
+    my $update->{state} = $result->{state};
+
+    if ($result->{result} eq 'success') {
+      $data = upsert($collection,$update,$data->{_id}{value});
+    } else {
+      $result->{data} = $data;
+      socket_notify($result);
+    }
+    return ($data);
+  } ("stations", $key, $state), sub {
+    my ($data) = @_;
+    socket_update($data);
+    return;
+  };
   return;
 };
 
