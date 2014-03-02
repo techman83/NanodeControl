@@ -67,10 +67,9 @@
         <h3 class="panel-title">New Schedule</h3>
       </div>
       <div class="panel-body">
-        <form class="form-horizontal data-async" data-bind="with: {category: null, name: null, controlType: ko.observable('pi')}, reversed: 'false', type: null, pin: null" role="form">
+        <form class="form-horizontal data-async" data-bind="with: {name: null, categories: ko.observableArray(), statios: null}" role="form">
           <legend>Station Details</legend>
           <div class="form-group">
-            <div data-bind="dump: $data"></div>
             <label class="col-lg-2 col-md-3 col-sm-4 control-label">Name</label>
             <div class="col-lg-10 col-md-9 col-sm-8">
               <input class="form-control" type="text" data-bind="value: $data.name" placeholder="Front" name="url" />
@@ -80,7 +79,7 @@
               <div class='well'>
                 <div class="form-group">
                   <div class='input-group date' id='starttime'>
-                    <input type='text' class="form-control" data-bind="value: $data.starttime" />
+                    <input type='text' class="form-control" data-format="hh:mm:ss" data-bind="value: $data.starttime">
                     <span class="input-group-addon"><span class="glyphicon glyphicon-time"></span>
                     </span>
                   </div>
@@ -91,8 +90,8 @@
             <div class="col-lg-10 col-md-9 col-sm-8">
               <div class='well'>
                 <div class="form-group">
-                  <div class='input-group date' id='duration'>
-                    <input type='text' class="form-control" data-bind="value: $data.duration" />
+                  <div class='input-group' id='duration'>
+                    <input data-format="hh:mm:ss" type='text' class="form-control" data-bind="value: $data.duration" />
                     <span class="input-group-addon"><span class="glyphicon glyphicon-time"></span>
                     </span>
                   </div>
@@ -101,8 +100,35 @@
             </div>
             <label class="col-lg-2 col-md-3 col-sm-4 control-label">Weekdays</label>
             <div class="col-lg-10 col-md-9 col-sm-8">
-              <input class="form-control" type="checkbox" data-bind="value: $data.dow" name="dow" />
+              <div data-bind="foreach: viewModel.dows, as: 'day'">
+                <label class="checkbox-inline">
+                  <input type="checkbox" data-bind="checked: $parent.dow, attr: {value: $data.value}" name="dow" /> {{ $data.name }}
+                </label>
+              </div>
             </div>
+            <!-- ko if: viewModel.categories().length > 1 -->
+            <label class="col-lg-2 col-md-3 col-sm-4 control-label">Categories</label>
+            <!-- /ko -->
+            <!-- ko if: viewModel.categories().length < 2 -->
+            <label class="col-lg-2 col-md-3 col-sm-4 control-label">Category</label>
+            <!-- /ko -->
+            <div class="col-lg-10 col-md-9 col-sm-8">
+              <div data-bind="foreach: viewModel.categories, as: 'category'">
+                <label class="checkbox-inline">
+                  <input type="checkbox" data-bind="checked: $parent.categories, attr: {value: $data}" name="dow" /> {{ $data }}
+                </label>
+              </div>
+            </div>
+            <!-- ko foreach: $data.categories -->
+            <label class="col-lg-2 col-md-3 col-sm-4 control-label">{{$data}}</label>
+            <div class="col-lg-10 col-md-9 col-sm-8">
+              <div data-bind="foreach: viewModel.stations().filter(function(item) { return $data == item.category() })">
+                <label class="checkbox-inline">
+                  <input type="checkbox" data-bind="checked: $parents[1].stations, attr: {value: $data.apikey}" name="dow" /> {{ $data.name }}
+                </label>
+              </div>
+            </div>
+            <!-- /ko -->
           </div>
           <div class="form-group">
             <div class="col-lg-offset-2 col-lg-10 col-md-offset-3 col-md-9 col-sm-offset-4 col-sm-8">

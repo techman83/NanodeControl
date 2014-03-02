@@ -33,16 +33,16 @@ sub set_station_state {
 
   if ($data->{type} eq 'onoff') {
 
-    if ($data->{reversed} && $state eq 'true') {
+    if ($data->{reversed} && $state =~ /high/i) {
       $state = 'LOW';
       $return->{state} = '';
-    } elsif (! $data->{reversed} && $state eq 'true') {
+    } elsif (! $data->{reversed} && $state =~ /high/i) {
       $state = 'HIGH';
       $return->{state} = 'true';
-    } elsif ($data->{reversed} && $state eq 'false') {
+    } elsif ($data->{reversed} && $state =~ /low/i) {
       $state = 'HIGH';
       $return->{state} = 'true';
-    } elsif (! $data->{reversed} && $state eq 'false') {
+    } elsif (! $data->{reversed} && $state =~ /low/i) {
       $state = 'LOW';
       $return->{state} = '';
     }

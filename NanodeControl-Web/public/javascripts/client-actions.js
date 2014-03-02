@@ -14,27 +14,28 @@ var addStation = function (data) {
 
 var addSchedule = function (data) {
   console.log("add station");
+  console.log(ko.toJS(data));
 
-  $.ajax({
-    url: "/api/stations",
-    type: 'POST',
-    data: ko.toJSON(data),
-    dataType: 'json',
-    success: function(id) {
-      console.log(ko.toJSON(data));
-    }
-  })
+  //$.ajax({
+  //  url: "/api/stations",
+  //  type: 'POST',
+  //  data: ko.toJSON(data),
+  //  dataType: 'json',
+  //  success: function(id) {
+  //    console.log(ko.toJSON(data));
+  //  }
+  //})
 }
 
 var setStationOnoff = function () {
   var self = this;
 
   // self will send current state, we want to change it
-  var state = true;
+  var state = 'HIGH';
   if (! self.state) {
-    state = true;
+    state = 'HIGH';
   } else if (self.state() ){
-    state = false;
+    state = 'LOW';
   }
 
   console.log(self)

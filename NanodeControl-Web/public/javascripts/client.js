@@ -9,6 +9,15 @@ var viewModel = {
   stations: ko.mapping.fromJS([]),
   pipins: ko.mapping.fromJS([1,2,3,4]),
   controlTypes: ko.mapping.fromJS([{"name":"On/Off", "type":"onoff"}]),
+  dows: ko.mapping.fromJS([
+    {"name":"Sunday", "value":"0"},
+    {"name":"Monday", "value":"1"},
+    {"name":"Tuesday", "value":"2"},
+    {"name":"Wednesday", "value":"3"},
+    {"name":"Thursday", "value":"4"},
+    {"name":"Friday", "value":"5"},
+    {"name":"Saturday", "value":"6"},
+  ]),
 }
 
 viewModel.categoryDuplicates = ko.computed(function() {
@@ -83,12 +92,12 @@ $.get( "/api/stations", function( data ) {
   })
 
 $(function () {
-    $('#starttime').datetimepicker({
-        pickDate: false
-    });
+  $('#starttime').datetimepicker({
+    pickDate: false,            // disables the date picker
+  });
 });
 $(function () {
-    $('#duration').datetimepicker({
-        pickDate: false
-    });
+  $('#duration').datetimepicker({
+    pickDate: false,            // disables the date picker
+  });
 });
