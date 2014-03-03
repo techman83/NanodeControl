@@ -62,3 +62,17 @@ var removeStation = function () {
     }
   })
 }
+
+var removeSchedule = function () {
+  var self = this;
+ 
+  console.log(self._id.$oid());
+  
+  $.ajax({
+    url: "/api/schedules/delete/" + self._id.$oid(),
+    type: 'POST',
+    success: function() {
+      console.log( "Deleted Station " + self._id.$oid());
+    }
+  })
+}

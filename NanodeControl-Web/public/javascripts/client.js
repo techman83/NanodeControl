@@ -129,3 +129,9 @@ var masterStationsSelectDisplay = function(apikey) {
     return (station.apikey() == apikey)
   })[0].name();
 }
+
+var dowDisplay = function(value) {
+  return viewModel.dows.filter(function(day) {
+    return (day.value == value)
+  })[0].name;
+}

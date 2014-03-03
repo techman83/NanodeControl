@@ -30,7 +30,7 @@
                       </small>
                     </button>
                     <h4 class="panel-title">
-                      <span data-bind="text: $data.name" />
+                      <span>{{ $data.name }} ({{ $data.apikey }})</span>
                     </h4>
                   </div>
                   <div class="panel-body">
@@ -128,7 +128,53 @@
     <div class="panel panel-default">
       <div class="panel-body">
         <div data-bind="foreach: {data: viewModel.schedules, as: 'schedule'}" class="row">
-          <div data-bind="dump: $data"></div>
+          <div class="col-md-6">
+            <div class="panel panel-primary">
+              <div class="panel-heading">
+                <button data-bind="click: removeSchedule.bind($data)" title="Delete Station" class="btn btn-default btn-xs pull-right">
+                    <small>
+                      <i class="glyphicon glyphicon-remove"></i>
+                    </small>
+                  </button>
+                  <h4 class="panel-title">
+                    <span>{{ $data.name }} ({{ $data.apikey }})</span>
+                  </h4>
+                </div>
+              <div class="panel-body">
+                <dl>
+                  <dt>Start Time</dt>
+                  <dd>{{ $data.starttime }}</dd>
+                  <dt>Duration</dt>
+                  <dd>{{ $data.duration }}</dd>
+                  <!-- ko if: $data.master -->
+                  <dt>Master</dt>
+                  <!-- ko with: masterStationsSelectDisplay($data.master())--> 
+                  <dd>{{ $data }}</dd>
+                  <!-- /ko -->
+                  <!-- /ko -->
+                  <dt>Stations</dt>
+                  <dd>
+                    <ul class="list-inline">
+                      <!-- ko foreach: $data.scheduledStations -->
+                      <!-- ko with: masterStationsSelectDisplay($data)--> 
+                      <li>{{ $data }}</li>
+                      <!-- /ko -->
+                      <!-- /ko -->
+                    </ul>
+                  <dt>Days</dt>
+                  <dd>
+                    <ul class="list-inline">
+                      <!-- ko foreach: $data.dow -->
+                      <!-- ko with: dowDisplay($data)--> 
+                      <li>{{ $data }}</li>
+                      <!-- /ko -->
+                      <!-- /ko -->
+                    </ul>
+                  </dd>
+                </dl>
+              </div>
+            </div>
+          </div>
         </div>
       </div>
     </div>
