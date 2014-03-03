@@ -1,188 +1,215 @@
 <h1>Welcome to NanodeControl</h1>
 <hr>
 <div>
-  <button class="btn btn-default btn-sm pull-right" form-toggle="" type="button" data-target="#add-station" data-toggle="collapse">Add Station</button>
-  <button class="btn btn-default btn-sm pull-right" form-toggle="" type="button" data-target="#schedule" data-toggle="collapse">Schedule</button>
-  <h3>Stations</h3>
-  <div id="add-station" class="collapse">
-    <div class="panel panel-default">
-      <div class="panel-heading">
-        <h3 class="panel-title">New Station</h3>
-      </div>
-      <div class="panel-body">
-        <form class="form-horizontal data-async" data-bind="with: {category: null, name: null, controlType: ko.observable('pi')}, reversed: 'false', type: null, pin: null" role="form">
-          <legend>Station Details</legend>
-          <div class="form-group">
-            <div data-bind="dump: $data"></div>
-            <label class="col-lg-2 col-md-3 col-sm-4 control-label">Name</label>
-            <div class="col-lg-10 col-md-9 col-sm-8">
-              <input class="form-control" type="text" data-bind="value: $data.name" placeholder="Front" name="url" />
-            </div>
-            <label class="col-lg-2 col-md-3 col-sm-4 control-label">Pi/Remote</label>
-            <div class="col-lg-10 col-md-9 col-sm-8 btn-group">
-              <label class="btn btn-default">
-                <input type="radio" name="controlType" value="pi" data-bind="checked: $data.controlType" /> Pi
-              </label>
-              <label class="btn btn-default">
-                <input type="radio" name="controlType" value="remote" data-bind="checked: $data.controlType" /> Remote
-              </label>
-            </div>
-            <div data-bind="if: $data.controlType() == 'remote'">
-              <label class="col-lg-2 col-md-3 col-sm-4 control-label">Station Address</label>
-              <div class="col-lg-10 col-md-9 col-sm-8">
-                <input class="form-control" type="text" data-bind="value: $data.url" placeholder="http://pi/5" name="url" />
-              </div>
-            </div>
-            <div data-bind="if: $data.controlType() == 'pi'">
-              <label class="col-lg-2 col-md-3 col-sm-4 control-label">Pi Pin</label>
-              <div class="col-lg-10 col-md-9 col-sm-8">
-                <select class="form-control" data-bind="options: $root.pipins, value: $data.pin"></select>
-              </div>
-            </div>
-            <label class="col-lg-2 col-md-3 col-sm-4 control-label">Category</label>
-            <div class="col-lg-10 col-md-9 col-sm-8">
-              <input class="form-control" type="text" data-bind="value: $data.category" placeholder="Garden" name="category" />
-            </div>
-            <label class="col-lg-2 col-md-3 col-sm-4 control-label">Type</label>
-            <div class="col-lg-10 col-md-9 col-sm-8">
-              <select class="form-control" data-bind="options: $root.controlTypes, optionsText: 'name', optionsValue: 'type',value: $data.type"></select>
-            </div>
-            <label class="col-lg-2 col-md-3 col-sm-4 control-label">Reversed</label>
-            <div class="col-lg-10 col-md-9 col-sm-8">
-              <input type="checkbox" name="controlType" value="remote" data-bind="checked: $data.reversed" />
-            </div>
+  <ul class="nav nav-tabs">
+    <li data-bind="attr: {class: (viewModel.modeTab() == 'stations') ? 'active' : ''}">
+      <a href="#stations" data-bind="click: function(){viewModel.modeTab('stations');return true;}">Stations</a>
+    </li>
+    <li data-bind="attr: {class: (viewModel.modeTab() == 'schedules') ? 'active' : ''}">
+      <a href="#schedules" data-bind="click: function(){viewModel.modeTab('schedules');return true;}">Schedules</a>
+    </li>
+  </ul>
+  <br>
+  <div id="stations" data-bind="visible: viewModel.modeTab() == 'stations'" class="container">
+    <div data-bind="foreach: {data: viewModel.categories, as: 'categoryName'}" class="row categories">
+      <div data-bind="if: categoryName">
+        <div class="panel panel-default">
+          <div class="panel-heading">
+            <h3 class="panel-title">
+              <span data-bind="text: categoryName" />
+            </h3>
           </div>
-          <div class="form-group">
-            <div class="col-lg-offset-2 col-lg-10 col-md-offset-3 col-md-9 col-sm-offset-4 col-sm-8">
-              <button class="btn btn-default" data-bind="click: addStation" type="submit">Submit</button>
-            </div>
-          </div>
-        </form>
-      </div>
-    </div>
-  </div>
-  <div id="schedule" class="collapse">
-    <div class="panel panel-default">
-      <div class="panel-heading">
-        <h3 class="panel-title">New Schedule</h3>
-      </div>
-      <div class="panel-body">
-        <form class="form-horizontal data-async" data-bind="with: {name: null, categories: ko.observableArray(), statios: null}" role="form">
-          <legend>Station Details</legend>
-          <div class="form-group">
-            <label class="col-lg-2 col-md-3 col-sm-4 control-label">Name</label>
-            <div class="col-lg-10 col-md-9 col-sm-8">
-              <input class="form-control" type="text" data-bind="value: $data.name" placeholder="Front" name="url" />
-            </div>
-            <label class="col-lg-2 col-md-3 col-sm-4 control-label">Start Time</label>
-            <div class="col-lg-10 col-md-9 col-sm-8">
-              <div class='well'>
-                <div class="form-group">
-                  <div class='input-group date' id='starttime'>
-                    <input type='text' class="form-control" data-format="hh:mm:ss" data-bind="value: $data.starttime">
-                    <span class="input-group-addon"><span class="glyphicon glyphicon-time"></span>
-                    </span>
+          <div class="panel-body">
+            <div data-bind="foreach: viewModel.stations().filter(function(item) { return categoryName == item.category() })" class="row">
+              <div class="col-md-4">
+                <div class="panel panel-primary">
+                  <div class="panel-heading">
+                    <button data-bind="click: removeStation.bind($data)" title="Delete Station" class="btn btn-default btn-xs pull-right">
+                      <small>
+                        <i class="glyphicon glyphicon-remove"></i>
+                      </small>
+                    </button>
+                    <h4 class="panel-title">
+                      <span data-bind="text: $data.name" />
+                    </h4>
+                  </div>
+                  <div class="panel-body">
+                    <div data-bind="if: $data.type() == 'onoff'">
+                      <div class="onoffswitch" data-bind="with: {id: $data._id.$oid, state: $data.state || '', apikey: $data.apikey || ''}">
+                        <input data-bind="click: setStationOnoff.bind($data), attr: { 'id': id }, checked: state" type="checkbox" name="onoffswitch" class="onoffswitch-checkbox">
+                        <label data-bind="state, attr: { for: id }" class="onoffswitch-label">
+                          <div class="onoffswitch-inner"></div>
+                          <div class="onoffswitch-switch"></div>
+                        </label>
+                        <i  data-bind="attr: { id: id() + '-spinner' }"class="fa fa-spinner fa-spin fa-3x onoff-spin"></i>
+                      </div>
+                      <!-- <div data-bind="dump: $data"></div> -->
+                    </div>
                   </div>
                 </div>
               </div>
             </div>
-            <label class="col-lg-2 col-md-3 col-sm-4 control-label">Duration</label>
-            <div class="col-lg-10 col-md-9 col-sm-8">
-              <div class='well'>
-                <div class="form-group">
-                  <div class='input-group' id='duration'>
-                    <input data-format="hh:mm:ss" type='text' class="form-control" data-bind="value: $data.duration" />
-                    <span class="input-group-addon"><span class="glyphicon glyphicon-time"></span>
-                    </span>
-                  </div>
-                </div>
-              </div>
-            </div>
-            <label class="col-lg-2 col-md-3 col-sm-4 control-label">Weekdays</label>
-            <div class="col-lg-10 col-md-9 col-sm-8">
-              <div data-bind="foreach: viewModel.dows, as: 'day'">
-                <label class="checkbox-inline">
-                  <input type="checkbox" data-bind="checked: $parent.dow, attr: {value: $data.value}" name="dow" /> {{ $data.name }}
-                </label>
-              </div>
-            </div>
-            <!-- ko if: viewModel.categories().length > 1 -->
-            <label class="col-lg-2 col-md-3 col-sm-4 control-label">Categories</label>
-            <!-- /ko -->
-            <!-- ko if: viewModel.categories().length < 2 -->
-            <label class="col-lg-2 col-md-3 col-sm-4 control-label">Category</label>
-            <!-- /ko -->
-            <div class="col-lg-10 col-md-9 col-sm-8">
-              <div data-bind="foreach: viewModel.categories, as: 'category'">
-                <label class="checkbox-inline">
-                  <input type="checkbox" data-bind="checked: $parent.categories, attr: {value: $data}" name="dow" /> {{ $data }}
-                </label>
-              </div>
-            </div>
-            <!-- ko foreach: $data.categories -->
-            <label class="col-lg-2 col-md-3 col-sm-4 control-label">{{$data}}</label>
-            <div class="col-lg-10 col-md-9 col-sm-8">
-              <div data-bind="foreach: viewModel.stations().filter(function(item) { return $data == item.category() })">
-                <label class="checkbox-inline">
-                  <input type="checkbox" data-bind="checked: $parents[1].stations, attr: {value: $data.apikey}" name="dow" /> {{ $data.name }}
-                </label>
-              </div>
-            </div>
-            <!-- /ko -->
           </div>
-          <div class="form-group">
-            <div class="col-lg-offset-2 col-lg-10 col-md-offset-3 col-md-9 col-sm-offset-4 col-sm-8">
-              <button class="btn btn-default" data-bind="click: addSchedule" type="submit">Submit</button>
-            </div>
-          </div>
-        </form>
-      </div>
-    </div>
-    <div class="panel panel-default">
-      <div class="panel-heading">
-        <h3 class="panel-title">Schedules</h3>
-      </div>
-      <div class="panel-body">
-      </div>
-    </div>
-  </div>
-  <hr>
-  <div data-bind="foreach: {data: viewModel.categories, as: 'categoryName'}" class="row categories">
-    <div data-bind="if: categoryName">
-      <div class="panel panel-default">
-        <div class="panel-heading">
-          <h3 class="panel-title">
-            <span data-bind="text: categoryName" />
-          </h3>
         </div>
-        <div class="panel-body">
-          <div data-bind="foreach: viewModel.stations().filter(function(item) { return categoryName == item.category() })" class="row">
-          <div class="col-md-4">
-            <div class="panel panel-primary">
-              <div class="panel-heading">
-                <button data-bind="click: removeStation.bind($data)" title="Delete Station" class="btn btn-default btn-xs station-remove">
-                  <small>
-                    <i class="glyphicon glyphicon-remove"></i>
-                  </small>
-                </button>
-                <h4 class="panel-title">
-                  <span data-bind="text: $data.name" />
-                </h4>
-              </div>
-              <div class="panel-body">
-                <div data-bind="if: $data.type() == 'onoff'">
-                  <div class="onoffswitch" data-bind="with: {id: $data._id.$oid, state: $data.state || '', apikey: $data.apikey || ''}">
-                    <input data-bind="click: setStationOnoff.bind($data), attr: { 'id': id }, checked: state" type="checkbox" name="onoffswitch" class="onoffswitch-checkbox">
-                    <label data-bind="state, attr: { for: id }" class="onoffswitch-label">
-                      <div class="onoffswitch-inner"></div>
-                      <div class="onoffswitch-switch"></div>
-                    </label>
-                    <i  data-bind="attr: { id: id() + '-spinner' }"class="fa fa-spinner fa-spin fa-3x onoff-spin"></i>
-                  </div>
-                  <!-- <div data-bind="dump: $data"></div> -->
+      </div>
+    </div>
+    <div class="row">
+      <a class="btn btn-default btn-block" href="#add-station" data-toggle="collapse">Add Station</a>
+      <br>
+      <div id="add-station" class="collapse">
+        <div class="panel panel-default">
+          <div class="panel-heading">
+            <h3 class="panel-title">New Station</h3>
+          </div>
+          <div class="panel-body">
+            <form class="form-horizontal data-async" data-bind="with: {category: null, name: null, controlType: ko.observable('pi')}, reversed: 'false', type: null, pin: null" role="form">
+              <legend>Station Details</legend>
+              <div class="form-group">
+                <label class="col-lg-2 col-md-3 col-sm-4 control-label">Name</label>
+                <div class="col-lg-10 col-md-9 col-sm-8">
+                  <input class="form-control" type="text" data-bind="value: $data.name" placeholder="Front" name="url" />
                 </div>
               </div>
-            </div>
+              <div class="form-group">
+                <label class="col-lg-2 col-md-3 col-sm-4 control-label">Pi/Remote</label>
+                <div class="col-lg-10 col-md-9 col-sm-8">
+                  <label>
+                    <input type="radio" class="radio-inline" name="controlType" value="pi" data-bind="checked: $data.controlType" /> Pi
+                  </label>
+                  <label>
+                    <input type="radio" class="radio-inline" name="controlType" value="remote" data-bind="checked: $data.controlType" /> Remote
+                  </label>
+                </div>
+              </div>
+              <div class="form-group">
+                <div data-bind="if: $data.controlType() == 'remote'">
+                  <label class="col-lg-2 col-md-3 col-sm-4 control-label">Station Address</label>
+                  <div class="col-lg-10 col-md-9 col-sm-8">
+                    <input class="form-control" type="text" data-bind="value: $data.url" placeholder="http://pi/5" name="url" />
+                  </div>
+                </div>
+                <div data-bind="if: $data.controlType() == 'pi'">
+                  <label class="col-lg-2 col-md-3 col-sm-4 control-label">Pi Pin</label>
+                  <div class="col-lg-10 col-md-9 col-sm-8">
+                    <select class="form-control" data-bind="options: $root.pipins, value: $data.pin"></select>
+                  </div>
+                </div>
+              </div>
+              <div class="form-group">
+                <label class="col-lg-2 col-md-3 col-sm-4 control-label">Category</label>
+                <div class="col-lg-10 col-md-9 col-sm-8">
+                  <input class="form-control" type="text" data-bind="value: $data.category" placeholder="Garden" name="category" />
+                </div>
+              </div>
+              <div class="form-group">
+                <label class="col-lg-2 col-md-3 col-sm-4 control-label">Type</label>
+                <div class="col-lg-10 col-md-9 col-sm-8">
+                  <select class="form-control" data-bind="options: $root.controlTypes, optionsText: 'name', optionsValue: 'type',value: $data.type"></select>
+                </div>
+              </div>
+              <div class="form-group">
+                <label class="col-lg-2 col-md-3 col-sm-4 control-label">Reversed</label>
+                <div class="col-lg-10 col-md-9 col-sm-8">
+                  <input type="checkbox" name="controlType" value="remote" data-bind="checked: $data.reversed" />
+                </div>
+              </div>
+              <div class="form-group">
+                <div class="col-lg-offset-2 col-lg-10 col-md-offset-3 col-md-9 col-sm-offset-4 col-sm-8">
+                  <button class="btn btn-default" data-bind="click: addStation" type="submit">Submit</button>
+                </div>
+              </div>
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div id="schedules" data-bind="visible: viewModel.modeTab() == 'schedules'" class="container">
+    <div class="panel panel-default">
+      <div class="panel-body">
+        <div data-bind="foreach: {data: viewModel.schedules, as: 'schedule'}" class="row">
+          <div data-bind="dump: $data"></div>
+        </div>
+      </div>
+    </div>
+    <div class="row">
+      <a class="btn btn-default btn-block" href="#schedule" data-toggle="collapse">Schedule</a>
+      <br>
+      <div id="schedule" class="collapse">
+        <div class="panel panel-default">
+          <div class="panel-heading">
+            <h3 class="panel-title">New Schedule</h3>
+          </div>
+          <div class="panel-body">
+            <form class="form-horizontal data-async" data-bind="with: {name: ko.observable(), dow: ko.observableArray(), starttime: ko.observable(moment().format('HH:mm:ss')), duration: ko.observable('00:00:00'), categories: ko.observableArray(), scheduledStations: ko.observableArray(), master: ko.observable()}" role="form">
+              <legend>Station Details</legend>
+              <div class="form-group">
+                <label class="col-lg-2 col-md-3 col-sm-4 control-label">Name</label>
+                <div class="col-lg-10 col-md-9 col-sm-8">
+                  <input class="form-control" type="text" data-bind="value: $data.name" placeholder="Front" name="name" />
+                </div>
+              </div>
+              <div class="form-group">
+                <label class="col-lg-2 col-md-3 col-sm-4 control-label">Start Time</label>
+                <div class="col-lg-10 col-md-9 col-sm-8">
+                  <input id="starttime" type='text' class="form-control" data-format="HH:mm:ss" data-bind="value: $data.starttime" name="starttime">
+                </div>
+              </div>
+              <div class="form-group">
+                <label class="col-lg-2 col-md-3 col-sm-4 control-label">Duration</label>
+                <div class="col-lg-10 col-md-9 col-sm-8">
+                  <input id="duration" data-format="HH:mm:ss" type='text' class="form-control" data-bind="value: $data.duration" name="duration"/>
+                </div>
+              </div>
+              <div class="form-group">
+                <label class="col-lg-2 col-md-3 col-sm-4 control-label">Weekdays</label>
+                <div class="col-lg-10 col-md-9 col-sm-8">
+                  <div data-bind="foreach: viewModel.dows, as: 'day'">
+                    <label class="checkbox-inline">
+                      <input type="checkbox" data-bind="checked: $parent.dow, attr: {value: $data.value}" name="dow" /> {{ $data.name }}
+                    </label>
+                  </div>
+                </div>
+              </div>
+              <div class="form-group">
+                <!-- ko if: viewModel.categories().length > 1 -->
+                <label class="col-lg-2 col-md-3 col-sm-4 control-label">Categories</label>
+                <!-- /ko -->
+                <!-- ko if: viewModel.categories().length < 2 -->
+                <label class="col-lg-2 col-md-3 col-sm-4 control-label">Category</label>
+                <!-- /ko -->
+                <div class="col-lg-10 col-md-9 col-sm-8">
+                  <div data-bind="foreach: viewModel.categories, as: 'category'">
+                    <label class="checkbox-inline">
+                      <input type="checkbox" data-bind="checked: $parent.categories, attr: {value: $data}" name="dow" /> {{ $data }}
+                    </label>
+                  </div>
+                </div>
+              </div>
+              <div class="form-group">
+                <!-- ko foreach: $data.categories -->
+                <label class="col-lg-2 col-md-3 col-sm-4 control-label">{{$data}}</label>
+                <div class="col-lg-10 col-md-9 col-sm-8">
+                  <div data-bind="foreach: viewModel.stations().filter(function(item) { return $data == item.category() })">
+                    <label class="checkbox-inline">
+                      <input type="checkbox" data-bind="checked: $parents[1].scheduledStations, attr: {value: $data.apikey}" /> {{ $data.name }}
+                    </label>
+                  </div>
+                </div>
+                <!-- /ko -->
+              </div>
+              <div class="form-group">
+                <label class="col-lg-2 col-md-3 col-sm-4 control-label">Master Pin</label>
+                <div class="col-lg-10 col-md-9 col-sm-8">
+                  <select class="form-control" data-bind="options: $data.scheduledStations, optionsText: masterStationsSelectDisplay, optionsCaption: 'Choose a Master', value: $data.master"></select>
+                </div>
+              </div>
+              <div class="form-group">
+                <div class="col-lg-offset-2 col-lg-10 col-md-offset-3 col-md-9 col-sm-offset-4 col-sm-8">
+                  <button class="btn btn-default" data-bind="click: addSchedule" type="submit">Submit</button>
+                </div>
+              </div>
+            </form>
           </div>
         </div>
       </div>

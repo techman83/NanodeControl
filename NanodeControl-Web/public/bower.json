@@ -1,0 +1,19 @@
+{
+  "name": "public",
+  "version": "0.0.0",
+  "authors": [
+    "Leon Wright <techman83@gmail.com>"
+  ],
+  "license": "MIT",
+  "private": true,
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ],
+  "dependencies": {
+    "eonasdan-bootstrap-datetimepicker": "~2.1.30"
+  }
+}

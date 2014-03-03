@@ -1,19 +1,9 @@
 /* Interface */
 
-.categories .station-remove.btn-xs {
-  position: absolute;
-  top: 0;
-  left: 0;
+.categories .panel-heading button {
+  margin-top: -3px;
 }
 
-.categories .panel-heading {
-  position: relative;
-}
-
-.categories .panel-title {
-  margin-top: 15px;
-  margin-bottom: -8px;
-}
 
 .fa-spin.onoff-spin {
   visibility: hidden;

@@ -10,6 +10,10 @@ sub upsert {
   my ($collection, $data, $id) = @_;
   my $oid;
 
+  if ($collection eq 'schedules') {
+    $data->{type} = 'schedule';
+  }
+
   if ($id) {
     $oid = MongoDB::OID->new($id);
   } else {

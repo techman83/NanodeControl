@@ -10,11 +10,10 @@
     [% END %]
     
     <link rel="stylesheet" href="[% request.uri_base %]/bootstrap/css/bootstrap.min.css" />
-    <link rel="stylesheet" href="[% request.uri_base %]/bootstrap/css/bootstrap-theme.min.css" />
     <link rel="stylesheet" href="[% request.uri_base %]/css/style.css" />
     <link rel="stylesheet" href="[% request.uri_base %]/font-awesome/css/font-awesome.min.css" />
-    <link rel="stylesheet" href="[% request.uri_base %]/css/bootstrap-datetimepicker.min.css" />
-    
+    <link rel="stylesheet" href="[% request.uri_base %]/bower_components/eonasdan-bootstrap-datetimepicker/build/css/bootstrap-datetimepicker.min.css" /> 
+
     <!-- Set Path for Websocket -->
     <script>
       var ws_path = "[% request.uri_base %]/_hippie/ws";
@@ -24,7 +23,10 @@
   <body>
     <div class="container">
       [% content %]
-      <div id="footer">
+    </div>
+    <div id="footer">
+      <hr>
+      <div class="container">
         <div>
           Connection Status: <span id="conn-status"> Disconnected </span>
         </div>
@@ -34,13 +36,13 @@
       </div>
     </div>
     <script src="[% request.uri_base %]/javascripts/jquery-2.1.0.min.js" type="text/javascript"></script>
+    <script src="[% request.uri_base %]/javascripts/moment.min.js" type="text/javascript"></script>
     <script src="[% request.uri_base %]/bootstrap/js/bootstrap.min.js" type="text/javascript"></script>
     <script src="[% request.uri_base %]/javascripts/knockout-3.0.0.js" type="text/javascript"></script>
     <script src="[% request.uri_base %]/javascripts/knockout.mapping-latest.js" type="text/javascript"></script>
     <script src="[% request.uri_base %]/javascripts/StringInterpolatingBindingProvider.js" type="text/javascript"></script>
     <script src="[% request.uri_base %]/javascripts/client-actions.js" type="text/javascript"></script>
     <script src="[% request.uri_base %]/javascripts/client.js" type="text/javascript"></script>
-    <script src="[% request.uri_base %]/javascripts/moment.min.js" type="text/javascript"></script>
-    <script src="[% request.uri_base %]/javascripts/bootstrap-datetimepicker.min.js" type="text/javascript"></script>
+    <script type="text/javascript" src="[% request.uri_base %]/bower_components/eonasdan-bootstrap-datetimepicker/build/js/bootstrap-datetimepicker.min.js"></script>
   </body>
 </html>

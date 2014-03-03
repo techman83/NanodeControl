@@ -18,10 +18,10 @@ post '/api/:collection' => sub {
   fork_call {
     my ($collection, $data) = @_;
     $data = upsert($collection,$data);
-    return $data;
+    return ($data,$collection);
   } ($collection, $data), sub {
-    my ($data) = @_;
-    socket_insert($data);
+    my ($data,$collection) = @_;
+    socket_insert($data,$collection);
     return;
   };
   return;
@@ -37,10 +37,10 @@ post '/api/:collection/partial/:id' => sub {
     debug($data);
     $data = upsert($collection,$data,$id);
     debug($data);
-    return $data;
+    return ($data,$collection);
   } ($collection, $data, $id), sub {
-    my ($data) = @_;
-    socket_update($data);
+    my ($data,$collection) = @_;
+    socket_update($data,$collection);
     return;
   };
   return;
@@ -56,10 +56,10 @@ post '/api/:collection/delete/:id' => sub { # change this to a delete when figur
     debug($data);
     $data = upsert($collection,$data,$id);
     debug($data);
-    return $data;
+    return ($data,$collection);
   } ($collection, $data, $id), sub {
-    my ($data) = @_;
-    socket_remove($data);
+    my ($data,$collection) = @_;
+    socket_remove($data,$collection);
     return;
   };
   return;
@@ -81,10 +81,10 @@ post '/api/:key/:state' => sub {
       $result->{data} = $data;
       socket_notify($result);
     }
-    return ($data);
+    return ($data,$collection);
   } ("stations", $key, $state), sub {
-    my ($data) = @_;
-    socket_update($data);
+    my ($data,$collection) = @_;
+    socket_update($data,$collection);
     return;
   };
   return;

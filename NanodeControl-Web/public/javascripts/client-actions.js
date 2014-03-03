@@ -14,17 +14,16 @@ var addStation = function (data) {
 
 var addSchedule = function (data) {
   console.log("add station");
-  console.log(ko.toJS(data));
 
-  //$.ajax({
-  //  url: "/api/stations",
-  //  type: 'POST',
-  //  data: ko.toJSON(data),
-  //  dataType: 'json',
-  //  success: function(id) {
-  //    console.log(ko.toJSON(data));
-  //  }
-  //})
+  $.ajax({
+    url: "/api/schedules",
+    type: 'POST',
+    data: ko.toJSON(data),
+    dataType: 'json',
+    success: function(id) {
+      console.log(ko.toJSON(data));
+    }
+  })
 }
 
 var setStationOnoff = function () {
