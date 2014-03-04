@@ -9,48 +9,58 @@ use base 'Exporter';
 our @EXPORT = qw(set_station_state);
 
 sub get_station_state {
-  my ($url) = @_;
-  debug("Getting URL: $url");
-  my $result = "";
-  my $state = get($url);
-  if ( ! defined $state ){
-    debug("Failed: state undefined");
-    return "failure";
-  } elsif (valid_json($state)) {
-    my $data = from_json($state);
-    my $result = $data->{value};
-    debug("State: $state Result: $result");
+  my ($data) = @_;
+  my $result;
+  my $state;
+
+  if ($data->{controlType} eq 'remote') {
+    $state = get($data->{url});
+    if (valid_json($state)) {
+      $state = from_json($state);
+      return $state->{value};
+    } else {
+      debug("Failed: $state");
+      return "failure";
+    }
+  } elsif ($data->{controlType} eq 'pi') {
+    $result = `/usr/local/bin/gpio -g read $data->{pin}`; # There are better more reliable ways to do this. Will implement later.
     return $result;
-  } else {
-    debug("Failed: $state");
-    return "failure";
   }
 }
 
 sub set_station_state {
-  my ($data,$state,) = @_;
+  my ($data,$state) = @_;
   my $return;
+  my $pistate;
 
   if ($data->{type} eq 'onoff') {
 
     if ($data->{reversed} && $state =~ /high/i) {
       $state = 'LOW';
+      $pistate = '0';
       $return->{state} = '';
     } elsif (! $data->{reversed} && $state =~ /high/i) {
       $state = 'HIGH';
+      $pistate = '1';
       $return->{state} = 'true';
     } elsif ($data->{reversed} && $state =~ /low/i) {
       $state = 'HIGH';
+      $pistate = '1';
       $return->{state} = 'true';
     } elsif (! $data->{reversed} && $state =~ /low/i) {
       $state = 'LOW';
+      $pistate = '0';
       $return->{state} = '';
     }
+    
+    if ($data->{controlType} eq 'remote') {
+      my $stateurl = "$data->{url}/$state";  
+      get($stateurl);
+    } elsif ($data->{controlType} eq 'pi') {
+      system("/usr/local/bin/gpio -g write $data->{pin} $state");
+    }
 
-    my $stateurl = "$data->{url}/$state";  
-    get($stateurl);
-
-    my $result = get_station_state($data->{url});
+    my $result = get_station_state($data);
     debug("State: $state - Result: $result");
     if ( $result eq "failure" ) {
       $return->{result} = 'failed';

@@ -10,7 +10,7 @@
     </li>
   </ul>
   <br>
-  <div id="stations" data-bind="visible: viewModel.modeTab() == 'stations'" class="container">
+  <div id="stations" data-bind="if: viewModel.modeTab() == 'stations'" class="container">
     <div data-bind="foreach: {data: viewModel.categories, as: 'categoryName'}" class="row categories">
       <div data-bind="if: categoryName">
         <div class="panel panel-default">
@@ -124,7 +124,7 @@
       </div>
     </div>
   </div>
-  <div id="schedules" data-bind="visible: viewModel.modeTab() == 'schedules'" class="container">
+  <div id="schedules" data-bind="if: viewModel.modeTab() == 'schedules'" class="container">
     <div class="panel panel-default">
       <div class="panel-body">
         <div data-bind="foreach: {data: viewModel.schedules, as: 'schedule'}" class="row">

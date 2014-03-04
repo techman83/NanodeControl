@@ -18,6 +18,8 @@ WriteMakefile(
         'Dancer::Plugin::WebSocket'   => 0,
         'Dancer::Plugin::Mongo'       => 0,
         'AnyEvent::Util'              => 0,
+        'Config::Crontab'             => 0,
+        'DateTime::Format::Strptime'  => 0,
     },
     dist                => { COMPRESS => 'gzip -9f', SUFFIX => 'gz', },
     clean               => { FILES => 'NanodeControl-Web-*' },

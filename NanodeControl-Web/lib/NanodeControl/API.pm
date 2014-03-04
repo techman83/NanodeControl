@@ -3,6 +3,7 @@ use Dancer ':syntax';
 use NanodeControl::DBAbstract;
 use NanodeControl::Websocket;
 use NanodeControl::ControlState;
+use NanodeControl::Schedule;
 use AnyEvent::Util;
 
 get '/api/:collection' => sub {
@@ -70,10 +71,21 @@ post '/api/:key/:state' => sub {
   my $state = params->{state};
   
   fork_call {
-    my ($collection, $key, $state) = @_;
-    my $data = find_key($collection,$key);
-    my $result = set_station_state($data,$state);
-    my $update->{state} = $result->{state};
+    my ($key, $state) = @_;
+    my ($result,$update,$data,$collection);
+
+    if ($key =~ /schedule/) {
+      debug('Setting Cron');
+      $collection = 'schedules';
+      $data = find_key($collection,$key);
+      $result = set_cron($data,$state);
+      $update->{state} = $result->{state};
+    } else {
+      $collection = 'stations';
+      $data = find_key($collection,$key);
+      $result = set_station_state($data,$state);
+      $update->{state} = $result->{state};
+    }
 
     if ($result->{result} eq 'success') {
       $data = upsert($collection,$update,$data->{_id}{value});
@@ -82,7 +94,7 @@ post '/api/:key/:state' => sub {
       socket_notify($result);
     }
     return ($data,$collection);
-  } ("stations", $key, $state), sub {
+  } ($key, $state), sub {
     my ($data,$collection) = @_;
     socket_update($data,$collection);
     return;
