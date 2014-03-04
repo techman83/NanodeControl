@@ -136,6 +136,8 @@
                       <i class="glyphicon glyphicon-remove"></i>
                     </small>
                   </button>
+                <a class="btn btn-default btn-xs pull-right" data-bind="visible: !$data.state(),click: scheduleState.bind($data,'true')">Enable</a>
+                <a class="btn btn-default btn-xs pull-right" data-bind="visible: $data.state(),click: scheduleState.bind($data,'false')">Disable</a>
                   <h4 class="panel-title">
                     <span>{{ $data.name }} ({{ $data.apikey }})</span>
                   </h4>

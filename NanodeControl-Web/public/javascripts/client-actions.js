@@ -14,6 +14,8 @@ var addStation = function (data) {
 
 var addSchedule = function (data) {
   console.log("add station");
+  
+  data.state = ''; // data model expects state to exist. Must fix that..
 
   $.ajax({
     url: "/api/schedules",
@@ -48,6 +50,20 @@ var setStationOnoff = function () {
     }
   })
 }
+
+var scheduleState = function (state) {
+  var self = this;
+  console.log(self)
+
+  $.ajax({
+    url: "/api/" + self.apikey() + "/" + state,
+    type: 'POST',
+    success: function(id) {
+      console.log( "Set Schedule State" );
+    }
+  })
+}
+
 
 var removeStation = function () {
   var self = this;
