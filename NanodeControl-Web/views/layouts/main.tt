@@ -38,7 +38,7 @@
     <script src="[% request.uri_base %]/javascripts/jquery-2.1.0.min.js" type="text/javascript"></script>
     <script src="[% request.uri_base %]/javascripts/moment.min.js" type="text/javascript"></script>
     <script src="[% request.uri_base %]/bootstrap/js/bootstrap.min.js" type="text/javascript"></script>
-    <script src="[% request.uri_base %]/javascripts/knockout-3.0.0.js" type="text/javascript"></script>
+    <script src="[% request.uri_base %]/javascripts/knockout-3.1.0.js" type="text/javascript"></script>
     <script src="[% request.uri_base %]/javascripts/knockout.mapping-latest.js" type="text/javascript"></script>
     <script src="[% request.uri_base %]/javascripts/StringInterpolatingBindingProvider.js" type="text/javascript"></script>
     <script src="[% request.uri_base %]/javascripts/client-actions.js" type="text/javascript"></script>
