@@ -15,6 +15,8 @@ WriteMakefile(
         'Test::More'                  => 0,
         'YAML'                        => 0,
         'Dancer'                      => 1.311,
+        'LWP::Simple::Post'           => 0,
+        'LWP::Simple'                 => 0,
         'Dancer::Plugin::WebSocket'   => 0,
         'Dancer::Plugin::Mongo'       => 0,
         'AnyEvent::Util'              => 0,
