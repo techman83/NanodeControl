@@ -79,7 +79,7 @@ var messagehandler = function (msg) {
         return data.content._id.$oid === item._id.$oid();
       });
       if (match) {
-        viewModel[data.collection].splice(viewModel.stations.indexOf(match),1,ko.mapping.fromJS(data.content));
+        viewModel[data.collection].splice(viewModel[data.collection].indexOf(match),1,ko.mapping.fromJS(data.content));
       }
     }
     if (data.type == 'notify') {
