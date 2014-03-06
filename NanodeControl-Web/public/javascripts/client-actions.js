@@ -14,8 +14,9 @@ var addStation = function (data) {
 
 var addSchedule = function (data) {
   console.log("add station");
-  
+  data = ko.toJS(data);  
   data.state = ''; // data model expects state to exist. Must fix that..
+  data.duration = moment.duration(data.duration).asSeconds();
 
   $.ajax({
     url: "/api/schedules",
