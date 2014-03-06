@@ -12,6 +12,19 @@ get '/api/:collection' => sub {
   return to_json($data,{allow_blessed=>1,convert_blessed=>1});
 };
 
+get '/api/key/:key' => sub {
+  my $key = params->{key};
+  my $data;
+
+  if ($key =~ /schedule/) {
+    $data = find_key('schedules',$key);
+  } else {
+    $data = find_key('stations',$key);
+  }
+
+  return to_json($data,{allow_blessed=>1,convert_blessed=>1});
+};
+
 post '/api/:collection' => sub {
   my $collection = params->{collection};
   my $data = from_json(request->body);
