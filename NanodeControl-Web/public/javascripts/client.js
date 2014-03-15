@@ -8,7 +8,7 @@ function onlyUnique(value, index, self) {
 var viewModel = {
   stations: ko.mapping.fromJS([]),
   schedules: ko.mapping.fromJS([]),
-  pipins: [1,2,3,4],
+  pipins: [2, 3, 4, 7, 8, 9, 10, 11, 14, 15, 17, 18, 22, 23, 24, 25, 27],
   controlTypes: [{"name":"On/Off", "type":"onoff"}],
   dows: [
     {"name":"Sunday", "value":"0"},
