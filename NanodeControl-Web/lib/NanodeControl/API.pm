@@ -4,6 +4,7 @@ use NanodeControl::DBAbstract;
 use NanodeControl::Websocket;
 use NanodeControl::ControlState;
 use NanodeControl::Schedule;
+use NanodeControl::Initialise;
 use AnyEvent::Util;
 
 get '/api/:collection' => sub {
@@ -31,10 +32,22 @@ post '/api/:collection' => sub {
 
   fork_call {
     my ($collection, $data) = @_;
-    $data = upsert($collection,$data);
+    $data = upsert($collection,$data);   
+
     return ($data,$collection);
   } ($collection, $data), sub {
     my ($data,$collection) = @_;
+    
+    # Initialise Pin if Pi
+    if ($data->{controlType} eq 'pi') {
+      debug("Pi Pin, calling initialise");
+      initialise_pin($data);
+      my $result->{result} = 'success';
+      $result->{content} = "$data->{name} initialised";
+      socket_notify($result);
+    }
+
+    # Notify Clients
     socket_insert($data,$collection);
     return;
   };

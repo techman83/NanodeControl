@@ -45,7 +45,7 @@ sub socket_remove {
 }
 
 sub socket_notify {
-  my ($data,$collection) = @_;
+  my ($data) = @_;
   # Send data to clients
   my $result->{type} = 'notify';
   $result->{content} = $data;
