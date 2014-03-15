@@ -39,7 +39,7 @@ sub set_station_state {
     if ($data->{reversed} && $state =~ /high/i) {
       $state = 'LOW';
       $pistate = '0';
-      $return->{state} = '';
+      $return->{state} = 'true';
     } elsif (! $data->{reversed} && $state =~ /high/i) {
       $state = 'HIGH';
       $pistate = '1';
@@ -47,7 +47,7 @@ sub set_station_state {
     } elsif ($data->{reversed} && $state =~ /low/i) {
       $state = 'HIGH';
       $pistate = '1';
-      $return->{state} = 'true';
+      $return->{state} = '';
     } elsif (! $data->{reversed} && $state =~ /low/i) {
       $state = 'LOW';
       $pistate = '0';
@@ -58,16 +58,22 @@ sub set_station_state {
       my $stateurl = "$data->{url}/$state";  
       get($stateurl);
     } elsif ($data->{controlType} eq 'pi') {
-      system("/usr/local/bin/gpio -g write $data->{pin} $state");
+      system("/usr/local/bin/gpio -g write $data->{pin} $pistate");
     }
 
     my $result = get_station_state($data);
-    debug("State: $state - Result: $result");
+    debug("State: $state - Pi State: $pistate - Result: $result");
+
     if ( $result eq "failure" ) {
       $return->{result} = 'failed';
       return $return;
-    } elsif ( ($data->{controlType} eq 'remote' && $state eq $result) || ($data->{controlType} eq 'pi' && $pistate eq $result) ) {
+    } elsif ( $data->{controlType} eq 'remote' && $state eq $result ) {
       $return->{result} = 'success';
+      debug($return);
+      return $return;
+    } elsif ( $data->{controlType} eq 'pi' && $pistate == $result ) {
+      $return->{result} = 'success';
+      debug($return);
       return $return;
     } else {
       $return->{result} = 'failed';
