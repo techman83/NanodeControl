@@ -14,6 +14,7 @@ WriteMakefile(
     PREREQ_PM => {
         'Test::More'                  => 0,
         'YAML'                        => 0,
+        'EV'                          => 0,
         'Dancer'                      => 1.311,
         'LWP::Simple::Post'           => 0,
         'LWP::Simple'                 => 0,
