@@ -66,7 +66,7 @@ sub set_station_state {
     if ( $result eq "failure" ) {
       $return->{result} = 'failed';
       return $return;
-    } elsif ( $state eq $result) {
+    } elsif ( ($data->{controlType} eq 'remote' && $state eq $result) || ($data->{controlType} eq 'pi' && $pistate eq $result) ) {
       $return->{result} = 'success';
       return $return;
     } else {
