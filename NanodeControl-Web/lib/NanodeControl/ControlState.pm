@@ -24,6 +24,7 @@ sub get_station_state {
     }
   } elsif ($data->{controlType} eq 'pi') {
     $result = `/usr/local/bin/gpio -g read $data->{pin}`; # There are better more reliable ways to do this. Will implement later.
+    debug("Pi Read: $result");
     return $result;
   }
 }
