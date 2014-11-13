@@ -16,22 +16,25 @@ my $masterstation;
 if ( $schedule->{master} ) {
   print "Master $schedule->{master} ON\n";
   post("http://localhost:3000/api/$schedule->{master}/HIGH");
+} else {
+  $schedule->{master} = 0;
 }
 
 # Run through each station schedule
 foreach my $station (@{$schedule->{scheduledStations}}) {
-  
-  print "Station $station ON\n";
-  post("http://localhost:3000/api/$station/HIGH");
+  if ( $station ne $schedule->{master} ) {
+    print "Station $station ON\n";
+    post("http://localhost:3000/api/$station/HIGH");
 
-  print "Sleeping for $schedule->{duration}\n";
-  sleep($schedule->{duration});
+    print "Sleeping for $schedule->{duration}\n";
+    sleep($schedule->{duration});
 
-  print "Station $station OFF\n";
-  post("http://localhost:3000/api/$station/LOW");
+    print "Station $station OFF\n";
+    post("http://localhost:3000/api/$station/LOW");
+  }
 }
 
-# Turn on Master Station (Master valve in irrigation etc)
+# Turn off Master Station (Master valve in irrigation etc)
 my $masterstation;
 if ( $schedule->{master} ) {
   print "Master $schedule->{master} OFF\n";
