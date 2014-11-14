@@ -1,4 +1,4 @@
-#!/usr/bin/perl
+#!/usr/bin/env perl
 use LWP::Simple 'get';
 use LWP::Simple::Post 'post';
 use JSON;
